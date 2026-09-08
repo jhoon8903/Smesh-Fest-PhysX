@@ -1,0 +1,488 @@
+{
+  "active": {
+    "success": true,
+    "message": "Retrieved active scene information.",
+    "data": {
+      "name": "Game",
+      "path": "Assets/Scenes/Game.unity",
+      "buildIndex": 0,
+      "isDirty": false,
+      "isLoaded": true,
+      "rootCount": 3
+    }
+  },
+  "hierarchy": {
+    "success": true,
+    "message": "Retrieved hierarchy page for scene 'Game'.",
+    "data": {
+      "scope": "roots",
+      "cursor": 0,
+      "pageSize": 50,
+      "next_cursor": null,
+      "truncated": false,
+      "total": 3,
+      "items": [
+        {
+          "name": "WorldObjects",
+          "instanceID": 125552,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "WorldObjects",
+          "childCount": 4,
+          "childrenTruncated": true,
+          "childrenCursor": "0",
+          "childrenPageSizeDefault": 20,
+          "componentTypes": [
+            "Transform",
+            "GameFlow",
+            "UpdateLoop"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "GameObjects",
+          "instanceID": 125514,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects",
+          "childCount": 5,
+          "childrenTruncated": true,
+          "childrenCursor": "0",
+          "childrenPageSizeDefault": 20,
+          "componentTypes": [
+            "Transform"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "UI(HUD)",
+          "instanceID": 125518,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 5,
+          "isStatic": false,
+          "path": "UI(HUD)",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 20,
+          "componentTypes": [
+            "RectTransform",
+            "Canvas",
+            "CanvasScaler",
+            "GraphicRaycaster"
+          ],
+          "transform": {
+            "position": [
+              642,
+              1389,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "world": {
+    "success": true,
+    "message": "Retrieved hierarchy page for scene 'Game'.",
+    "data": {
+      "scope": "children",
+      "cursor": 0,
+      "pageSize": 30,
+      "next_cursor": null,
+      "truncated": false,
+      "total": 4,
+      "items": [
+        {
+          "name": "Main Camera",
+          "instanceID": 125528,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "MainCamera",
+          "layer": 0,
+          "isStatic": false,
+          "path": "WorldObjects/Main Camera",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "Camera",
+            "AudioListener",
+            "UniversalAdditionalCameraData"
+          ],
+          "transform": {
+            "position": [
+              0,
+              1,
+              -10
+            ],
+            "rotation": [
+              2.99999714,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "Directional Light",
+          "instanceID": 125538,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "WorldObjects/Directional Light",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "Light",
+            "UniversalAdditionalLightData"
+          ],
+          "transform": {
+            "position": [
+              0,
+              3,
+              0
+            ],
+            "rotation": [
+              16.35141,
+              339.3544,
+              6.42731953
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "Global Volume",
+          "instanceID": 125546,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "WorldObjects/Global Volume",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "Volume"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "EventSystem",
+          "instanceID": 125556,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "WorldObjects/EventSystem",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "EventSystem",
+            "InputSystemUIInputModule"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "gameObjects": {
+    "success": true,
+    "message": "Retrieved hierarchy page for scene 'Game'.",
+    "data": {
+      "scope": "children",
+      "cursor": 0,
+      "pageSize": 30,
+      "next_cursor": null,
+      "truncated": false,
+      "total": 5,
+      "items": [
+        {
+          "name": "Ground",
+          "instanceID": -194808,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects/Ground",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "MeshFilter",
+            "MeshRenderer",
+            "MeshCollider"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "name": "Table",
+          "instanceID": -195890,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects/Table",
+          "childCount": 2,
+          "childrenTruncated": true,
+          "childrenCursor": "0",
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "Blocks",
+          "instanceID": -276112,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects/Blocks",
+          "childCount": 24,
+          "childrenTruncated": true,
+          "childrenCursor": "0",
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0.29,
+              0
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "name": "Ball",
+          "instanceID": -282582,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects/Ball",
+          "childCount": 0,
+          "childrenTruncated": false,
+          "childrenCursor": null,
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform",
+            "MeshFilter",
+            "MeshRenderer",
+            "SphereCollider"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0.35,
+              -2
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              0.1,
+              0.1,
+              0.1
+            ]
+          }
+        },
+        {
+          "name": "Cannon",
+          "instanceID": -217926,
+          "activeSelf": true,
+          "activeInHierarchy": true,
+          "tag": "Untagged",
+          "layer": 0,
+          "isStatic": false,
+          "path": "GameObjects/Cannon",
+          "childCount": 1,
+          "childrenTruncated": true,
+          "childrenCursor": "0",
+          "childrenPageSizeDefault": 200,
+          "componentTypes": [
+            "Transform"
+          ],
+          "transform": {
+            "position": [
+              0,
+              0.1,
+              -6
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "console": {
+    "success": true,
+    "message": "Retrieved 0 log entries.",
+    "data": []
+  }
+}

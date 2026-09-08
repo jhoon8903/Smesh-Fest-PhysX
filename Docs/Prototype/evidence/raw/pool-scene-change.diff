@@ -1,0 +1,38 @@
+--- before-pool/Game.unity
++++ after-pool/Game.unity
+@@ -2367,6 +2367,7 @@
+   autoRun: 1
+   autoInjectGameObjects: []
+   uiRoot: {fileID: 94034841}
++  poolContainer: {fileID: 2091545049}
+ --- !u!1 &1404091388
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -3980,6 +3981,7 @@
+   serializedVersion: 6
+   m_Component:
+   - component: {fileID: 2091545048}
++  - component: {fileID: 2091545049}
+   m_Layer: 0
+   m_Name: PoolContainer
+   m_TagString: Untagged
+@@ -4002,6 +4004,19 @@
+   m_Children: []
+   m_Father: {fileID: 6166785}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!114 &2091545049
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 2091545047}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: a07dc64ffab94ccc80b90e48a79f8b68, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: Assembly-CSharp::Framework.Pool.PoolContainer
++  configs: []
+ --- !u!1 &2131061042
+ GameObject:
+   m_ObjectHideFlags: 0

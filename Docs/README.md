@@ -2,6 +2,8 @@
 
 이 저장소에는 사람과 AI가 함께 프로토타입을 준비하고 제작하는 워크플로우와 스킬 지침을 보관한다. 개인 컴퓨터의 스킬 폴더 없이 프로젝트와 함께 읽을 수 있도록 상대 경로로 연결했다.
 
+진행 중인 제작을 재개할 때는 먼저 [확정된 기본 아키텍처](Prototype/ARCHITECTURE.md)와 [현재 인계](HANDOFF.md)를 읽는다. 10개 아키텍처 기준은 사용자 결정이며 채택 여부를 반복 질문하지 않는다. 저장소 루트 [AGENTS.md](../AGENTS.md)에도 이 로드 순서를 연결했다.
+
 ## 처음 읽는 순서
 
 1. [스킬 설명서](Work-flow/prototype-workflow/GUIDE.md): 무엇을 도와주는지, 사람과 AI가 어떻게 분담하는지.
@@ -42,7 +44,13 @@ Docs/
 
 ## 현재 범위
 
-현재는 프로젝트를 시작하기 위한 협업 흐름과 스킬 문서를 저장소에 보관하는 단계다. 문서 배치 요청을 게임 코드·씬·패키지 변경이나 제작 시작 승인으로 해석하지 않는다.
+2026-09-08 사용자가 이 기존 프로젝트의 작업 시작과 A안(Block 영역 클릭으로 목표 선택·발사 → 파괴 → 결과 → 재도전 + 물리 비교)을 명시했다. **현재는 Daniel이 제시한 10개 확정 기준을 바탕으로 전체 아키텍처를 다듬고 제작하는 단계**다. 하이어라키·코드 폴더 준비 후 진행 요청에 따라 Observable과 LoopDispatcher의 독립 기반을 구현하고 Unity Editor 검사를 통과했다. R-013의 VContainer·UI Pause 결정을 반영해 GameFlow·Loop를 현재 씬에 연결했고 Play Mode 검사 25개를 통과했다. 현재 R-015·R-016의 IPoolable·PoolConfig·Factory·MVC 생성 계획과 객체별 반환 시간을 반영해 Pool 기반을 구현했고 R-018 인터페이스 구조로 Play Mode 66개 검사와 DI/UI Pause 25개 검사를 통과했다. Model·Controller 재사용은 객체별로 정하고 게임 씬을 나갈 때 풀을 정리한다. R-018에 따라 ObView는 독립적으로 유지하고 풀링 View만 IPoolable을 구현한다. R-017로 비활성 미사용 재고만 정리하고 그중 MinPool을 남기는 정책까지 확정했다. 아키텍처를 만든 뒤 개별 플레이 기능을 구현한다. 발사 기능 선행 제작은 구현 전에 철회했다. 현재 순서는 [제작 계획](Prototype/PLAN.md)에서 관리한다. R-011에 따라 별도 조준 단계 없이 클릭이 조준·발사를 겸하며 Cannon은 Ball 진행 방향으로 회전한다. 조작 원본은 [DESIGN](Prototype/DESIGN.md)이다.
+
+- [확정 아키텍처 원본](Prototype/ARCHITECTURE.md) · [요청과 제약](Prototype/BRIEF.md) · [기획 원본](Prototype/DESIGN.md)
+- [첫 목표와 분담](Prototype/PLAN.md) · [실제 확인 결과](Prototype/REVIEW.md)
+- [자동 제작 기록](Prototype/evidence/REPORT.md) · [다음 작업 인계](HANDOFF.md)
+
+2026-09-09 업데이트: R-019에 따라 Daniel의 ProjectTemplate MVC를 비교하고 **현재 필요한 책임부터 간소화해 연결**하는 기준을 [ARCHITECTURE](Prototype/ARCHITECTURE.md)에 기록했다. 이번 비교는 문서·설계 작업이며 MVC 코드는 아직 골격이다. 다음 단위는 Model 변경 → View 갱신 → 구독 해제 연결이다. 참고의 Pool 상속·모듈 부팅 구조를 그대로 복제하지 않는다.
 
 기본 협업 순서는 **이번 목표 → 사람·AI 분담 → 작은 결과 제작 → 함께 확인 → 다음 작업 조정**이다. 사용자는 원하는 제작을 직접 맡고 AI는 합의된 범위와 자동 기록을 지원한다.
 

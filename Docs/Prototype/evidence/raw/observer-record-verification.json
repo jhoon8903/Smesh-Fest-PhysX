@@ -1,0 +1,1051 @@
+{
+  "status": "verified",
+  "checked_at": "2026-09-08T12:10:15.028093Z",
+  "evidence": [
+    {
+      "event_id": "sf-initial-audit-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/startup-baseline.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 11543,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/startup-baseline.json",
+        "sha256": "649dcd238c3223f45d8f127c766a346f905ec1868e41daa91f680ea943557a08",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/startup-baseline.json",
+        "state": "file",
+        "sha256": "649dcd238c3223f45d8f127c766a346f905ec1868e41daa91f680ea943557a08",
+        "bytes": 11543
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3930,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "acedf2a4ec2fb4f73987bae46d142b06e1570804f94c0f270733e7ae805cb4c4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 2995,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "6215fb4d2c992ef01816040918685e49326c2f7d8d504a949920e51e99efb262",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 2385,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "state": "file",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "bytes": 2385
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3429,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "4ba9c67b1c1e4351d1b6e15fc83bd59c438f5425ad3e8a4d3b1e66148bc2a8fa",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4474,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "82a114855ea2d6ade9fbfe30507520dff8887bf4c9babcf4d71082db1b4e435a",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4854,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "6c6cdcca298949dfb2a0b448b1095f2397730b80e355e95dab765c33ada64ad4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-architecture-first-decision-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 263,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+        "sha256": "cb1ebc90b73e91bea6134cee6ef8f2e8e07769c2212ef59750e0bfcc5b1a02bf",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+        "state": "file",
+        "sha256": "cb1ebc90b73e91bea6134cee6ef8f2e8e07769c2212ef59750e0bfcc5b1a02bf",
+        "bytes": 263
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3930,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "acedf2a4ec2fb4f73987bae46d142b06e1570804f94c0f270733e7ae805cb4c4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 2995,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "6215fb4d2c992ef01816040918685e49326c2f7d8d504a949920e51e99efb262",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 2385,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "state": "file",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "bytes": 2385
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3429,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "4ba9c67b1c1e4351d1b6e15fc83bd59c438f5425ad3e8a4d3b1e66148bc2a8fa",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4474,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "82a114855ea2d6ade9fbfe30507520dff8887bf4c9babcf4d71082db1b4e435a",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4854,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "6c6cdcca298949dfb2a0b448b1095f2397730b80e355e95dab765c33ada64ad4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-document-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 263,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+        "sha256": "cb1ebc90b73e91bea6134cee6ef8f2e8e07769c2212ef59750e0bfcc5b1a02bf",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/document-check-architecture-correction.json",
+        "state": "file",
+        "sha256": "cb1ebc90b73e91bea6134cee6ef8f2e8e07769c2212ef59750e0bfcc5b1a02bf",
+        "bytes": 263
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 963,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "sha256": "7f69f08840345929553a832e271c28b22b90d58fa7e631a9e2fe65f40180d740",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "state": "file",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "bytes": 964
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4353,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "4c5864bd61663c646b028ff4df4635be624611500234223bd45c7b4ef1bf435f",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 6349,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "sha256": "3a9644f426f8c9e577ba99d0ffb8ebea0999669107474802ad86f08b5396729a",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "state": "file",
+        "sha256": "31b4068893ad342c0844a3e783ac7152c455ca8a84e2e37e5ec5f8762c455253",
+        "bytes": 10020
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3369,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "5f04e25924110a3fc32fcb979b0baf11179afa6c4cc12c298209fd73ab2848b1",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3895,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "d498dddcd2dda76f03244097199771104b92675eaba7142effb00912a49bac15",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 5778,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "e92a5c2deb2ab39d7abd856b2937c01a8578128b60f0972345f3cfe5893c0528",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 5531,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "54e141704b20e2fdfe0ecd1a2716cb103fc357b76f39f1994789f8e4e2ba94fe",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-architecture-document-finish-20260908-002",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-baseline-document-check.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 488,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-baseline-document-check.json",
+        "sha256": "767ac3535bb12fde009d4b585acce076f5177cf7d8090c41bfbd63f4a78d8dd8",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-baseline-document-check.json",
+        "state": "file",
+        "sha256": "767ac3535bb12fde009d4b585acce076f5177cf7d8090c41bfbd63f4a78d8dd8",
+        "bytes": 488
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 963,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "sha256": "0216b517bac44d1aba037b9778f61fb928efef78144a415e1565a82ee1929df0",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "state": "file",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "bytes": 964
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4353,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "8304186e7cc3fd5f070ceaf333b4c9699bd08c7dccee90676445ced2bc89863f",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 6847,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "sha256": "eb46722b744c139e42335ee8cf6ae5f0063a0e968ad08c8fb734a68922faf4d4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "state": "file",
+        "sha256": "31b4068893ad342c0844a3e783ac7152c455ca8a84e2e37e5ec5f8762c455253",
+        "bytes": 10020
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3593,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "f1b8320b6af7bb7129ba530dc8eef72ac39000afd17d5cee89f54c8db4b75771",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3895,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "e4f6e68b9d151819fdcf4705fbf73ac6c80688881796943d3dd50ef3377f3da4",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 5708,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "6f4e2d10c3abfd225d2df0d471082a68b1afc3bb94f74eec583f5f395cd5ce0a",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-di-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 6074,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "47277caf2018956f5455c744fb026b9904c427c861f934d951348d02d4ec38cd",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 964,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "state": "file",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "bytes": 964
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4355,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "44cc6446954776f84f3f396e9ba98a2e9f1546f24916c429b3d6fd7daffca5fb",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 9251,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "sha256": "b92a6772c29765e3447bbc23f109e8581e005de0a4064d3166faad465e45ff9b",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "state": "file",
+        "sha256": "31b4068893ad342c0844a3e783ac7152c455ca8a84e2e37e5ec5f8762c455253",
+        "bytes": 10020
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 3828,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "cc286acdce7b45cd50be454b225c13e749d324377cae480b5ebb75b1873bbab3",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 4030,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "e990a539f30e7442e8ad878713e5b16aeeddfdb9d606f21f01dc4fffaf14456a",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 5969,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "4a5265dc2c8566357ea44a5747068e46d37ef8853d3b3bf37f12b443d1a98137",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-stripping-document-checkpoint-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "changed",
+      "recorded": {
+        "bytes": 6828,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "9b56c2363dd4a3f99a9fd0cb13b8e2ebb64101a816b8d7492d5b121647555922",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-architecture-resume-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 11484,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+        "sha256": "7244aeff3011b24d756409f16a317b7a3a418d024b9a8ee06de75866f68aba37",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+        "state": "file",
+        "sha256": "7244aeff3011b24d756409f16a317b7a3a418d024b9a8ee06de75866f68aba37",
+        "bytes": 11484
+      }
+    },
+    {
+      "event_id": "sf-architecture-resume-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 11256,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+        "sha256": "2447da25fda54b625c95649374366c81419960b2e440c2cab460dbc58191e0e1",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+        "state": "file",
+        "sha256": "2447da25fda54b625c95649374366c81419960b2e440c2cab460dbc58191e0e1",
+        "bytes": 11256
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 3765,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+        "sha256": "871e9944ead3ef022a444b101906ca3e7c6e6cdc0dabcc891c2fb8b8177791fd",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+        "state": "file",
+        "sha256": "871e9944ead3ef022a444b101906ca3e7c6e6cdc0dabcc891c2fb8b8177791fd",
+        "bytes": 3765
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 12146,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs",
+        "sha256": "2b5059ff3c869feff698b4fe55197f9345d665a4c0b48c7a0a4d43ef86930137",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs",
+        "state": "file",
+        "sha256": "2b5059ff3c869feff698b4fe55197f9345d665a4c0b48c7a0a4d43ef86930137",
+        "bytes": 12146
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs.meta",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 59,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs.meta",
+        "sha256": "ab424cc2243bb1b46056f06198029f32be85b30457fecf411a18178090895124",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs.meta",
+        "state": "file",
+        "sha256": "ab424cc2243bb1b46056f06198029f32be85b30457fecf411a18178090895124",
+        "bytes": 59
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation.meta",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 172,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation.meta",
+        "sha256": "a0a74fad2870e8fc8d90ce583a8dbc521d103a1d6b1aac7aefeac6a1e5aa2622",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation.meta",
+        "state": "file",
+        "sha256": "a0a74fad2870e8fc8d90ce583a8dbc521d103a1d6b1aac7aefeac6a1e5aa2622",
+        "bytes": 172
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor.meta",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 172,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor.meta",
+        "sha256": "d8c17eb6c1fdaa6eb2543d17a6cd552e29843d63fa009b4c9a1efa1f786f2bcf",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor.meta",
+        "state": "file",
+        "sha256": "d8c17eb6c1fdaa6eb2543d17a6cd552e29843d63fa009b4c9a1efa1f786f2bcf",
+        "bytes": 172
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 7190,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+        "sha256": "972bdf5c708e5fad210abd41c42a152c14801fc7f580fc255f7e20bcf5d8ec87",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+        "state": "file",
+        "sha256": "972bdf5c708e5fad210abd41c42a152c14801fc7f580fc255f7e20bcf5d8ec87",
+        "bytes": 7190
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-validation.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 473,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-validation.json",
+        "sha256": "11985b00e64683fb15f9916774b626d134fb6660f33a3d129db294b503ff2d1b",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-validation.json",
+        "state": "file",
+        "sha256": "11985b00e64683fb15f9916774b626d134fb6660f33a3d129db294b503ff2d1b",
+        "bytes": 473
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-execution-path.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 1233,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-execution-path.json",
+        "sha256": "9e6e13eaee4c0d2359f78a76a93331a26c7b1e4e9677f7ad89e4638f3d59b580",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observable-execution-path.json",
+        "state": "file",
+        "sha256": "9e6e13eaee4c0d2359f78a76a93331a26c7b1e4e9677f7ad89e4638f3d59b580",
+        "bytes": 1233
+      }
+    },
+    {
+      "event_id": "sf-observer-build-finish-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-preservation-check.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 701,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-preservation-check.json",
+        "sha256": "0e8ef036f26540eac8a05eab552722e17f70398c1a2f1b4316d92ca58637d9f2",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-preservation-check.json",
+        "state": "file",
+        "sha256": "0e8ef036f26540eac8a05eab552722e17f70398c1a2f1b4316d92ca58637d9f2",
+        "bytes": 701
+      }
+    },
+    {
+      "event_id": "sf-observer-review-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 3765,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+        "sha256": "871e9944ead3ef022a444b101906ca3e7c6e6cdc0dabcc891c2fb8b8177791fd",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+        "state": "file",
+        "sha256": "871e9944ead3ef022a444b101906ca3e7c6e6cdc0dabcc891c2fb8b8177791fd",
+        "bytes": 3765
+      }
+    },
+    {
+      "event_id": "sf-observer-review-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 7190,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+        "sha256": "972bdf5c708e5fad210abd41c42a152c14801fc7f580fc255f7e20bcf5d8ec87",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/checks/ObservableChecks.cs.txt",
+        "state": "file",
+        "sha256": "972bdf5c708e5fad210abd41c42a152c14801fc7f580fc255f7e20bcf5d8ec87",
+        "bytes": 7190
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 964,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/AGENTS.md",
+        "state": "file",
+        "sha256": "627da237dbb318e9c62f1ec1d4817e067d70d152f7044bc64c6e825e16ed85ca",
+        "bytes": 964
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 4533,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+        "state": "file",
+        "sha256": "877547fdd39924ede2e910b505c65e8680218ac5f83071334be4a8559ce04511",
+        "bytes": 4533
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 7108,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+        "state": "file",
+        "sha256": "873aaccdd2d4b144faad5c5dc4aeab11545206f8cc1d04655d70d3e97edd5efa",
+        "bytes": 7108
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 10020,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "sha256": "31b4068893ad342c0844a3e783ac7152c455ca8a84e2e37e5ec5f8762c455253",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+        "state": "file",
+        "sha256": "31b4068893ad342c0844a3e783ac7152c455ca8a84e2e37e5ec5f8762c455253",
+        "bytes": 10020
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 4290,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/BRIEF.md",
+        "state": "file",
+        "sha256": "bee1acc16b0752237b9698e2a0e618fbb24c19502452bc435bd70b81d61afd87",
+        "bytes": 4290
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 2385,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/DESIGN.md",
+        "state": "file",
+        "sha256": "b4c7894a87db5893f79645bd2f4bdbda64683d7796e9b8b7667df7ea9c2abaf6",
+        "bytes": 2385
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 8650,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+        "state": "file",
+        "sha256": "5976b20d9ee8dd6f2db83e0c2e6fc4061be69782b7a54bd19d10b0ce09cd69a9",
+        "bytes": 8650
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 10700,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+        "state": "file",
+        "sha256": "45137d16d6d9eed9595fc36b2be6780ea86fedb3ca829b7d0208fdec93d46984",
+        "bytes": 10700
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-document-check.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 449,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-document-check.json",
+        "sha256": "5d53d86b38b8f690a41efac21d0d2eab9b5ec06754a5ca5fa0c51e2881077347",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/observer-document-check.json",
+        "state": "file",
+        "sha256": "5d53d86b38b8f690a41efac21d0d2eab9b5ec06754a5ca5fa0c51e2881077347",
+        "bytes": 449
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 11256,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+        "sha256": "2447da25fda54b625c95649374366c81419960b2e440c2cab460dbc58191e0e1",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-hierarchy.json",
+        "state": "file",
+        "sha256": "2447da25fda54b625c95649374366c81419960b2e440c2cab460dbc58191e0e1",
+        "bytes": 11256
+      }
+    },
+    {
+      "event_id": "sf-observer-handoff-20260908-001",
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+      "status": "unchanged",
+      "recorded": {
+        "bytes": 11484,
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+        "sha256": "7244aeff3011b24d756409f16a317b7a3a418d024b9a8ee06de75866f68aba37",
+        "state": "file"
+      },
+      "current": {
+        "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/architecture-resume-baseline.json",
+        "state": "file",
+        "sha256": "7244aeff3011b24d756409f16a317b7a3a418d024b9a8ee06de75866f68aba37",
+        "bytes": 11484
+      }
+    }
+  ],
+  "counts": {
+    "unchanged": 31,
+    "changed": 30,
+    "missing": 0,
+    "unavailable": 0,
+    "now_available": 0,
+    "unverified": 0
+  }
+}

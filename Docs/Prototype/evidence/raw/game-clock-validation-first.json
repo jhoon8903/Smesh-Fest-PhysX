@@ -1,0 +1,17 @@
+{
+    "recordedAtUtc": "2026-09-08T13:41:41.0119700Z",
+    "unityVersion": "6000.3.10f1",
+    "execution": "Editor menu; plain C# instances; no Play Mode",
+    "success": true,
+    "summary": "Game Clock checks passed (owners, pause lifecycle, scale validation, disposal; management allocation: 0 bytes).",
+    "error": "",
+    "sceneBefore": "Assets/Scenes/Game.unity",
+    "sceneAfter": "Assets/Scenes/Game.unity",
+    "dirtyBefore": false,
+    "dirtyAfter": false,
+    "sceneStateUnchanged": true,
+    "allocationMeasured": true,
+    "managementAllocatedBytes": 0,
+    "warmupCycles": 100,
+    "measuredCycles": 1000
+}

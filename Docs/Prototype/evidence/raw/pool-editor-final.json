@@ -1,0 +1,133 @@
+{
+  "observedAtUtc": "2026-09-08T15:03:49.579Z",
+  "taskId": "W-000-POOL-001",
+  "results": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Retrieved active scene information.\",\"data\":{\"name\":\"Game\",\"path\":\"Assets/Scenes/Game.unity\",\"buildIndex\":0,\"isDirty\":false,\"isLoaded\":true,\"rootCount\":3}}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "message": "Retrieved active scene information.",
+          "data": {
+            "name": "Game",
+            "path": "Assets/Scenes/Game.unity",
+            "buildIndex": 0,
+            "isDirty": false,
+            "isLoaded": true,
+            "rootCount": 3
+          }
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Retrieved hierarchy page for scene 'Game'.\",\"data\":{\"scope\":\"roots\",\"cursor\":0,\"pageSize\":10,\"next_cursor\":null,\"truncated\":false,\"total\":3,\"items\":[{\"name\":\"WorldObjects\",\"instanceID\":125552,\"activeSelf\":true,\"activeInHierarchy\":true,\"tag\":\"Untagged\",\"layer\":0,\"isStatic\":false,\"path\":\"WorldObjects\",\"childCount\":4,\"childrenTruncated\":true,\"childrenCursor\":\"0\",\"childrenPageSizeDefault\":200,\"componentTypes\":[\"Transform\",\"GameFlow\",\"UpdateLoop\",\"GameLifetimeScope\"]},{\"name\":\"GameObjects\",\"instanceID\":125514,\"activeSelf\":true,\"activeInHierarchy\":true,\"tag\":\"Untagged\",\"layer\":0,\"isStatic\":false,\"path\":\"GameObjects\",\"childCount\":6,\"childrenTruncated\":true,\"childrenCursor\":\"0\",\"childrenPageSizeDefault\":200,\"componentTypes\":[\"Transform\"]},{\"name\":\"UI(HUD)\",\"instanceID\":125518,\"activeSelf\":true,\"activeInHierarchy\":true,\"tag\":\"Untagged\",\"layer\":5,\"isStatic\":false,\"path\":\"UI(HUD)\",\"childCount\":0,\"childrenTruncated\":false,\"childrenCursor\":null,\"childrenPageSizeDefault\":200,\"componentTypes\":[\"RectTransform\",\"Canvas\",\"CanvasScaler\",\"GraphicRaycaster\"]}]}}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "message": "Retrieved hierarchy page for scene 'Game'.",
+          "data": {
+            "scope": "roots",
+            "cursor": 0,
+            "pageSize": 10,
+            "next_cursor": null,
+            "truncated": false,
+            "total": 3,
+            "items": [
+              {
+                "name": "WorldObjects",
+                "instanceID": 125552,
+                "activeSelf": true,
+                "activeInHierarchy": true,
+                "tag": "Untagged",
+                "layer": 0,
+                "isStatic": false,
+                "path": "WorldObjects",
+                "childCount": 4,
+                "childrenTruncated": true,
+                "childrenCursor": "0",
+                "childrenPageSizeDefault": 200,
+                "componentTypes": [
+                  "Transform",
+                  "GameFlow",
+                  "UpdateLoop",
+                  "GameLifetimeScope"
+                ]
+              },
+              {
+                "name": "GameObjects",
+                "instanceID": 125514,
+                "activeSelf": true,
+                "activeInHierarchy": true,
+                "tag": "Untagged",
+                "layer": 0,
+                "isStatic": false,
+                "path": "GameObjects",
+                "childCount": 6,
+                "childrenTruncated": true,
+                "childrenCursor": "0",
+                "childrenPageSizeDefault": 200,
+                "componentTypes": [
+                  "Transform"
+                ]
+              },
+              {
+                "name": "UI(HUD)",
+                "instanceID": 125518,
+                "activeSelf": true,
+                "activeInHierarchy": true,
+                "tag": "Untagged",
+                "layer": 5,
+                "isStatic": false,
+                "path": "UI(HUD)",
+                "childCount": 0,
+                "childrenTruncated": false,
+                "childrenCursor": null,
+                "childrenPageSizeDefault": 200,
+                "componentTypes": [
+                  "RectTransform",
+                  "Canvas",
+                  "CanvasScaler",
+                  "GraphicRaycaster"
+                ]
+              }
+            ]
+          }
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Retrieved 2 log entries.\",\"data\":[\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6400 not released yet after reload; retrying same port.\",\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6400 still occupied after 3s; falling back to port 6402 (clients follow via the status file).\"]}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "message": "Retrieved 2 log entries.",
+          "data": [
+            "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6400 not released yet after reload; retrying same port.",
+            "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6400 still occupied after 3s; falling back to port 6402 (clients follow via the status file)."
+          ]
+        },
+        "isError": false
+      }
+    }
+  ]
+}

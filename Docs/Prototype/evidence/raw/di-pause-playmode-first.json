@@ -1,0 +1,14 @@
+{
+    "recordedAtUtc": "2026-09-08T13:43:35.7773120Z",
+    "unityVersion": "6000.3.10f1",
+    "isEditor": true,
+    "success": true,
+    "assertions": 25,
+    "error": "",
+    "updateTicks": 131,
+    "fixedTicks": 26,
+    "lateTicks": 130,
+    "elapsedFrames": 209,
+    "initialTimeScale": 1.0,
+    "finalTimeScale": 1.0
+}

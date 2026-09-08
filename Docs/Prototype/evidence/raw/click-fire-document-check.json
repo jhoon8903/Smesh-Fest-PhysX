@@ -1,0 +1,17 @@
+{
+  "recorded_at_utc": "2026-09-08T12:15:49.794145+00:00",
+  "requirement": "R-011",
+  "documents": [
+    "Docs/Prototype/DESIGN.md",
+    "Docs/Prototype/BRIEF.md",
+    "Docs/Prototype/PLAN.md",
+    "Docs/README.md",
+    "Docs/HANDOFF.md",
+    "Docs/Prototype/REVIEW.md"
+  ],
+  "local_links_checked": 51,
+  "missing_local_links": [],
+  "manifest_blocks": 1,
+  "manifest_missing": [],
+  "scope": "Document consistency only; no code, scene, Inspector or package changes; no new Unity test execution."
+}

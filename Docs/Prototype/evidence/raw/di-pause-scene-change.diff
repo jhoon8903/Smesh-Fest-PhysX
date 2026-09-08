@@ -1,0 +1,34 @@
+--- before-scope-addition/Game.unity
++++ after-scope-addition/Game.unity
+@@ -2295,6 +2295,7 @@
+   - component: {fileID: 1383522105}
+   - component: {fileID: 1383522107}
+   - component: {fileID: 1383522106}
++  - component: {fileID: 1383522108}
+   m_Layer: 0
+   m_Name: WorldObjects
+   m_TagString: Untagged
+@@ -2348,6 +2349,23 @@
+   m_Name: 
+   m_EditorClassIdentifier: Assembly-CSharp::Framework.Flow.GameFlow
+   logLevel: 0
++--- !u!114 &1383522108
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1383522104}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 098188209f09c49f39b9bfed9c2014b6, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: Assembly-CSharp::GameLifetimeScope
++  parentReference:
++    TypeName: 
++  autoRun: 1
++  autoInjectGameObjects: []
++  uiRoot: {fileID: 94034841}
+ --- !u!1 &1404091388
+ GameObject:
+   m_ObjectHideFlags: 0

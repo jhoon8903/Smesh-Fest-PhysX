@@ -1,0 +1,17 @@
+{
+    "recordedAtUtc": "2026-09-08T13:59:39.6700780Z",
+    "unityVersion": "6000.3.10f1",
+    "execution": "Editor menu; plain C# instances; no Play Mode",
+    "success": true,
+    "summary": "Loop checks passed (lifecycle, phase routing, mutation, recovery, delta bounds; stable three-phase Tick allocation: 0 bytes).",
+    "error": "",
+    "sceneBefore": "Assets/Scenes/Game.unity",
+    "sceneAfter": "Assets/Scenes/Game.unity",
+    "dirtyBefore": false,
+    "dirtyAfter": false,
+    "sceneStateUnchanged": true,
+    "allocationMeasured": true,
+    "stableTickAllocatedBytes": 0,
+    "warmupCycles": 100,
+    "measuredCycles": 1000
+}
