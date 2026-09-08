@@ -1,6 +1,6 @@
 # 제작 계획
 
-현재 단계: **W-000-MVC-REFERENCE-001 참고 비교·간소화 설계 기록 완료, 다음은 최소 MVC 연결 제작**. R-019의 적용 기준은 ARCHITECTURE에 기록했다. ObModel·ObController·ObView의 모델 연결은 아직 골격이다. 기존 W-000-POOL-001의 Play Mode 66개와 DI/UI Pause 25개 통과는 Pool·시간 기반의 결과이며 MVC 연결 증거가 아니다. R-018 독립 ObView/선택적 IPoolable과 해결된 O-004~O-008을 유지한다. 전체 아키텍처는 진행 중이다.
+현재 단계: **W-000-BALL-MVC-001 완료, 다음 컨텍스트는 W-000-OBSTACLE-MVC-001**. Ball은 R-021·R-022에 따라 풀 객체별 View·Model·Controller 묶음을 유지하고, 물리 비종속 대여 상태와 사용 세대만 소유한다. Unity Play Mode 격리 검사 19개를 통과했다. 다음은 Obstacle을 같은 원칙으로 연결한 뒤 위치·속도·충돌 권위를 정하는 물리 단위로 진행한다.
 
 ## 현재 순서 — 사용자 정정 반영
 
@@ -40,7 +40,9 @@
 | W-000-POOL-CONTRACT-001 | Main 계약·검증안 / Terra Medium 기존 코드·API 조사 | R-015~R-017 답변 반영 완료; O-006~O-008 해결 |
 | W-000-POOL-001 | Main 통합·기록 / Terra Medium 초안 / Sol High 수명 검토·검증 보완 | R-018 인터페이스 구조·씬 DI 연결 완료; Pool Play Mode 66개 및 DI/Pause 25개 통과; High Player 미실행 |
 | W-000-MVC-REFERENCE-001 | Main: Core·Observer·View와 적용 기준 / Terra Medium: Pool·DI·실제 호출 비교 | R-019 참고 비교·간소화 기준 문서화. 코드 변경·Unity 실행 없음 |
-| W-000-MVC-001 | Main 책임 통합 / AI 최소 Model–View 연결·수명 검증 | 다음 제작 단위. 아래 범위·검증 계획만 정리했으며 구현 미착수 |
+| W-000-MVC-001 | Terra Medium: Model/View 제작 / Main: 통합·검사·기록 / Sol High: 수명 읽기 검토 | 공통 연결·Play Mode 58개 검사·두 반복 구간 0바이트 확인. 실제 Ball 연결·High Player 미실행 |
+| W-000-BALL-MVC-001 | Main: 계약·통합·기록 / Terra Medium: 수명 조사·검사 코드 / Sol High: 수명·파괴 순서 검토 / Daniel: Prefab·PoolConfig·씬 값 | 완료. Play Mode 19개 검사, 씬·Ball/Cube Prefab·PoolConfig 저장 파일 보존. 물리/입력 제외 |
+| W-000-OBSTACLE-MVC-001 | 다음 컨텍스트: Obstacle별 MVC 조립·초기화 | Cube 최신 상태를 재확인하고 같은 객체별 원칙으로 구현한 뒤 물리 단위로 인계 |
 | W-001-AI | 발사 기능 구현의 사전 시작 기록 | 구현 전 철회; 코드 수정 없음 |
 | W-001 | Block 영역 클릭 발사·충돌 + Cannon 방향 회전 | 아키텍처 마련 후 진행; 별도 조준 단계 없음 |
 | W-002 | 파괴·결과·재도전 | 후속 |
@@ -58,7 +60,7 @@ Daniel은 현재 씬·카메라·Block/Ball/Cannon 배치와 조작감을 맡고
 
 Main은 실제 실행 메타데이터에서 Astra·Ultra를 확인했다. 초기 코드 조사, 최신 조사·검토, 이번 작은 제작에 Terra·Medium을 사용했다. 보조는 명시 배정과 fork_turns: none으로 시작했고 기존 보조를 재사용했다. 단순 확인 Luna·Low, 합의된 작은 제작 Terra·Medium, 복잡한 검토 Sol·High 정책을 유지한다. 보조 최대 2개, 재위임 없음. 실제 사용량·비용은 미제공이다.
 
-O-004·O-005 답변에 따른 GameFlow·UpdateLoop와 Pool 기반을 연결했다. 다음 행동은 R-019 참고 적용 기준에 따른 최소 Model–View 연결과 구독 수명 제작이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
+GameFlow·UpdateLoop·Pool과 최소 Model–View 연결을 마련했다. 다음 행동은 이 기반을 실제 객체별 MVC 조립·초기화에 적용하는 것이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
 
 ## W-000-CORE-001 — 첫 기반 단위의 당시 계획
 
@@ -161,4 +163,28 @@ R-019에 따라 위의 Ball별 연결 전에 공통 Model–View 통지·해제 
 
 검증 계획: 비풀링 View의 독립 사용, 최초 연결 시 상태 표시, 같은 Model 재연결, Model 교체, 비활성/재활성, 풀 반환/재대여와 객체별 Controller 구독 정리를 확인한다. 재사용 여부·첫 게임 상태 필드·Controller 공통 API는 실제 연결에 필요한 만큼 정한다. 제네릭 형태나 추가 인터페이스를 미리 필수로 고정하지 않는다. 안정된 반복 통지 구간의 할당은 측정 조건과 함께 기록한다. High Player와 실제 Ball 물리는 별도 검증이다.
 
-W-000-MVC-REFERENCE-001에서는 문서와 조사 증거만 갱신했다. W-000-MVC-001의 코드 작성·Unity 실행·합격 결과를 앞서 기록하지 않는다.
+W-000-MVC-REFERENCE-001에서는 문서와 조사 증거만 갱신했다. 이후 R-020으로 아래 W-000-MVC-001을 실제 제작했다.
+
+### W-000-MVC-001 완료와 다음 연결
+
+AI 소유 변경은 기존 ObModel.cs, 신규 ObViewOfT.cs와 .meta, MvcRuntimeProbe.cs·MvcValidation.cs와 .meta다. 독립 ObView·기존 Observer/Loop/Pool·GameLifetimeScope·Ball 코드는 변경하지 않았다. 기존 씬·Prefab·설정도 보존했다.
+
+Unity 6000.3.10f1 컴파일 및 Play Mode 58개 검사 통과. 최초/같은 Model 연결, 교체, 비활성/disabled·재활성, 해제/실패·재진입, 주입 → Controller의 Loop 구독 → Model 통지 → View 갱신, 반환/재대여/Factory 종료를 임시 객체로 확인했다. 묶음 재사용과 Model/Controller 재생성은 둘 다 확인했다. 준비된 반복 통지 1,000회와 Unbind/Bind 1,000회는 각각 관리 할당 0바이트이며 실제 게임·렌더·전체 풀 할당 측정이 아니다.
+
+다음은 실제 Ball별 MVC 조립·상태 초기화 계약을 연결하는 단위다. Daniel은 사용할 Prefab·설정·배치와 상태 유지 의도를 맡고, AI는 기존 수명 훅에 연결할 객체별 Model/Controller와 검증을 맡는다. 공통 ObController API를 추측으로 채우거나 모든 타입의 묶음 재사용을 강제하지 않는다. 월드/MVP·SO/Addressables 전체 기반을 정리한 뒤 클릭 발사·Cannon 회전으로 진행한다.
+
+## W-000-BALL-MVC-001 — Ball 묶음 재사용과 초기화
+
+[DECISION:user / R-021] Ball은 풀 인스턴스마다 View·Model·Controller를 한 번 조립해 유지한다. 매 대여마다 새 논리 객체를 만들지 않고, 반환 뒤 첫 사용의 상태·Loop/Model 구독·비동기 작업이 남지 않도록 객체별 초기화 책임을 둔다.
+
+[DECISION:user / R-022] 첫 BallModel의 상태는 `대여 중 여부`와 `사용 세대`처럼 물리 구현과 무관한 수명 정보로 제한한다. Rigidbody 위치·속도·충돌 결과를 지금 권위 상태로 정하지 않는다. Ball MVC를 마치면 다음 컨텍스트에서 Obstacle MVC를 구현하고, 그 뒤 W-003 물리 구현·비교 조건을 진행한다.
+
+| 분담 | 이번 단위 |
+|---|---|
+| Daniel | 최신 Ball/Cube Prefab·PoolConfig·Game 씬 연결과 Inspector 값을 소유한다. AI 검증을 위해 씬을 재생성하거나 값을 되돌릴 필요가 없다. |
+| AI | `InGame/Ball`의 Model·View·Controller 조립과 풀 수명 초기화, 격리 검증, 기록을 맡는다. 발사 입력·Cannon·실제 Physics 비교와 사용자 자산 편집은 제외한다. |
+| 함께 확인할 결과 | 같은 Ball을 반환 후 다시 대여했을 때 같은 Model/Controller가 유지되고, 이전 사용 세대는 무효이며 Model 관찰은 한 번만 연결되는가. 실제 Loop/물리 구독은 물리 구현 단위 전까지 만들지 않는다. |
+
+구현 결과: `BallView.OnPoolCreated`가 묶음을 한 번 만들고, 대여에서 Model 세대·View Bind·Controller lease를 연결한다. 반환은 Controller → View → Model 순서로 정리한다. 풀 종료뿐 아니라 씬 계층이 먼저 파괴되는 경우도 Unity `OnDestroy`에서 즉시 같은 정리를 수행한다. 정상 Controller 반환과 PoolLease 반환, 재대여 동일성, 오래된 세대 거절, 활성 풀 종료, 계층 선파괴를 임시 객체로 검사해 19개 assertion을 통과했다. 실제 Ball Prefab·씬·PoolConfig와 물리/입력은 건드리지 않았다.
+
+다음 컨텍스트 시작점: `InGame/Obstacle` 골격과 Daniel의 최신 Cube Prefab/Cube PoolConfig/Game PoolContainer를 다시 읽는다. 현재 저장 근거로 Cube Prefab에는 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 목록은 Ball 하나다. Obstacle의 대여 상태·세대를 Ball과 동일하게 둘 수 있는지 확인하되, 공통 베이스로 성급히 추출하지 않는다. Obstacle MVC 검사 후 W-003 물리 권위와 비교 조건으로 진행한다.

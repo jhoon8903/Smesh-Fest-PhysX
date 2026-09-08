@@ -55,3 +55,9 @@
 [DECISION:user / R-018] “ObView는 단독일 수도 있고 … Pooling을 사용하는 객체라면 OBView를 상속 받고 IPoolable을 인터페이스로” — ObView를 Poolable 기반에 묶은 AI 구현 방향을 정정했다. ObView는 독립 MonoBehaviour이며 풀링이 필요한 View만 ObView와 IPoolable을 사용한다. R-015의 상속 설명과 이전 AI 상속 체인보다 이 후속 결정을 우선한다.
 
 [DECISION:user / R-019 / 2026-09-09 KST] ProjectTemplate의 `Assets/Framework/MVC`를 참고로 제공하고 “똑같이 만들필요는 없지만 지금 프로젝트에는 간소화해서 붙여나가야” 한다고 지정했다. 기존 구조와 실제 차이를 확인한 뒤 필요한 책임부터 적용한다. R-018과 확정된 Pool 정책은 유지한다. 비교 근거와 적용 기준의 원본은 [ARCHITECTURE](ARCHITECTURE.md)의 R-019 절이다.
+
+[DECISION:user / R-020 / 2026-09-09 KST] 최소 Model–View 연결·구독 해제 단위와 분담을 제시한 뒤 “다음 작업 진행핮”으로 진행을 요청했다. W-000-MVC-001의 코드·임시 객체 검증·문서 갱신을 수행한다. 기존 씬·Prefab 배치와 전체 아키텍처 선행 순서는 유지한다.
+
+[DECISION:user / R-021 / 2026-09-09 KST] Ball의 메모리·수명 관리는 **풀 객체별 View·Model·Controller 묶음 재사용**으로 진행한다. 각 대여·반환에서 런타임 상태와 구독을 초기화하며 매 대여마다 Model/Controller를 새로 생성하지 않는다. Daniel이 만든 최신 Ball/Cube Prefab·PoolConfig·Game 씬 연결은 사용자 소유 값으로 보존한다.
+
+[DECISION:user / R-022 / 2026-09-09 KST] 첫 BallModel은 물리 비종속 대여 상태와 사용 세대만 소유한다. 위치·속도·충돌 상태는 Physics 권위를 정하기 전에 넣지 않는다. 이번 컨텍스트에서 Ball MVC를 구현·검증하고, 다음 컨텍스트는 Obstacle MVC를 같은 원칙으로 구현한 뒤 물리 구현으로 진행한다.

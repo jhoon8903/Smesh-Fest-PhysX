@@ -1,6 +1,6 @@
 # 기본 아키텍처 — 확정 기준
 
-상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher에 이어 VContainer와 게임 시간·UI Pause를 연결했고 현재 씬 Play Mode 검사 25개를 통과했다. Pool 기반은 R-018의 독립 ObView/선택적 IPoolable로 수정해 Play Mode 66개를 통과했다. 전체 기반은 미완성이며 단위별 실행 결과는 REVIEW에 남긴다.
+상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View 기반에 이어 R-021·R-022의 Ball별 MVC 묶음을 구현했다. 2026-09-09 W-000-BALL-MVC-001 Play Mode 19개 검사 통과. Obstacle MVC, 물리 권위·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
 
 출처: Daniel이 “내가 만드는 게임들은 대부분 아래 설명한 아키텍처 기반으로 작동해”라고 제시한 1–8번과 “문서에 기록하여 다음부터 질문하지 않도록” 요청한 메시지, 이후 “추가로 나는 DI 의존성 주입으로 코드 작성을 해”라는 추가 기준과 “Code Stripping을 High로 하기 때문에 관리도 해야해”라는 후속 기준. 이 문서는 해당 기준의 단일 원본이다.
 
@@ -88,14 +88,14 @@
 
 ## Pool/Factory 수명 계약 — R-015·R-016
 
-상태: **사용자 계약 반영 / W-000-POOL-001 기반 구현·Play Mode 66개 검사 통과**. 최초 조사는 빈 Pool/MVC 골격을 기준으로 했고, R-018까지 반영한 최종 구현을 검증했다. 실제 Ball MVC·Addressables 연결은 후속이다.
+상태: **사용자 계약 반영 / W-000-POOL-001 기반 구현·Play Mode 66개 검사 통과**. 최초 조사는 빈 Pool/MVC 골격을 기준으로 했고, R-018까지 반영한 최종 구현을 검증했다. 이후 Ball의 물리 비종속 MVC 수명 연결까지 적용했으며 Addressables와 물리 상태 연결은 후속이다.
 
 [DECISION:user / R-015] O-006·O-007 답변을 받았다. 아래 내용을 다음 작업에서도 유지하며 재질문하지 않는다.
 
 1. [R-018 정정 우선] `ObView`는 독립적으로 사용할 수 있다. 풀링 대상 View만 `ObView`를 상속하고 `IPoolable` 인터페이스를 구현한다. R-015의 Poolable 상속 설명보다 후속 정정을 우선한다.
 2. `PoolContainer`에 풀링 대상을 모으고, SO `PoolConfig`로 Pool Root Name·MinPool·MaxPool 등을 설정한다.
 3. Factory가 사전 설정에 따라 풀을 생성한다.
-4. 월드 풀 객체는 이벤트를 구독하는 MVC 묶음으로 구성한다. 하이어라키의 `BallView`는 R-018에 따라 `ObView, IPoolable`로 선언한다.
+4. 월드 풀 객체는 이벤트를 구독하는 MVC 묶음으로 구성한다. `BallView`는 R-018·R-021에 따라 `ObView<BallModel>, IPoolable`이며 Model/Controller를 풀 인스턴스 수명 동안 유지한다.
 5. Model·Controller는 재사용할 수 있으나, 상태와 객체 종류에 따라 재사용 또는 재생성을 선택한다. 전 타입의 영구 재사용을 강제하지 않는다.
 6. Factory로 꺼낼 때 초기화하고 반환할 때 다시 초기화한다.
 7. 같은 스테이지 재도전·다음 스테이지에서 풀을 유지하고, 게임 씬을 종료하여 로비로 돌아갈 때 정리한다. 5분 이상 미사용 객체도 정리한다.
@@ -138,7 +138,7 @@ Factory는 비활성 부모 아래에 복제한 뒤 DI를 주입한다. VContain
 - UniTask와 DOTween 파일은 모두 있지만 현재 로드된 어셈블리에서 DOTweenAsyncExtensions를 찾지 못했다. 설치 소스는 UNITASK_DOTWEEN_SUPPORT 조건부다. 확장 메서드 사용 가능을 가정하지 않고 실제 연결 시 활성화/컴파일을 확인한다. 이 조사에서 define·패키지는 변경하지 않았다.
 - VContainer 1.19.0의 Instantiate 경로에는 원본의 활성 상태를 일시 변경하고 복제·주입 뒤 복원하는 구현이 있다. Pool Factory는 사용자 자산 값을 쓰지 않는 생성 경로와 DI/활성화 순서를 실제 실행으로 확인해야 한다. 재대여마다 자동 Inject되거나 scope가 모든 복제물을 자동 Destroy한다고 가정하지 않는다.
 
-함께 확인할 첫 결과: 같은 테스트 객체를 두 번 사용해도 첫 사용의 Tween·입자·콜백이 남지 않고, 중복 반환으로 두 번 꺼내지지 않는가. 추가 검증은 Pause 중 비활성 정리, 정리 중 재진입, 초기화/정리 실패, 풀 종료, 준비 이후 반복 대여/반환의 관리 할당을 포함한다. 실제 Ball 물리 상태는 Ball MVC 연결 단위에서 확인한다. High Player에서는 실제 선택한 Factory 생성·DI·재대여 경로를 별도로 확인한다. 실행 결과는 REVIEW에 기록한다.
+함께 확인할 첫 결과: 같은 테스트 객체를 두 번 사용해도 첫 사용의 Tween·입자·콜백이 남지 않고, 중복 반환으로 두 번 꺼내지지 않는가. 추가 검증은 Pause 중 비활성 정리, 정리 중 재진입, 초기화/정리 실패, 풀 종료, 준비 이후 반복 대여/반환의 관리 할당을 포함한다. R-022에 따라 실제 Ball 위치·속도·충돌 초기화는 물리 권위를 정하는 후속 단위에서 확인한다. High 설정 빌드에서는 실제 선택한 Factory 생성·DI·재대여 경로를 별도로 확인한다. 실행 결과는 REVIEW에 기록한다.
 
 ## MVC 참고와 간소화 적용 기준 — R-019
 
@@ -148,14 +148,14 @@ Factory는 비활성 부모 아래에 복제한 뒤 DI를 주입한다. VContain
 
 | 비교 지점 | ProjectTemplate에서 확인한 구조 | 현재 Smesh와 적용 방향 |
 |---|---|---|
-| Model 변경 → View 갱신 | `CellModel : Observable`이 상태 변경 후 Raise. `BaseView<TModel>.Model` 대입으로 구독·RefreshView 연결, 교체·비활성화·반환 때 해제. | 현재 Observable<T>는 일반 이벤트 전달기이며 ObModel·ObController는 빈 클래스, ObView도 연결 없는 MonoBehaviour다. 기존 전달기를 사용해 모델 통지와 View 연결부터 채운다. |
+| Model 변경 → View 갱신 | `CellModel : Observable`이 상태 변경 후 Raise. `BaseView<TModel>.Model` 대입으로 구독·RefreshView 연결, 교체·비활성화·반환 때 해제. | 비교 당시 Observable<T>는 일반 이벤트 전달기이며 ObModel·ObController·ObView의 모델 연결은 골격이었다. 이후 W-000-MVC-001에서 기존 전달기를 재사용해 아래의 모델 통지·View 연결을 구현했다. |
 | View와 Pool 관계 | `BaseView<TModel> : PoolableView`로 모델을 사용하는 View의 기반이 Pool 수명도 가진다. | R-018 유지. 모델 연결은 ObView 쪽 책임, 풀링은 필요한 구체 View의 IPoolable 계약이다. 참고의 상속 체인을 그대로 가져오면 이 결정과 충돌한다. |
 | 기동·DI 조립 | SO Modular와 ModuleContainer가 순서/단계별 비동기 초기화, 모듈별 VContainer 등록, 지속 수명을 관리한다. | 기존 씬 GameLifetimeScope와 명시적 Factory 조립을 유지한다. 이 단위에 전역 ModuleContainer·자동 타입 탐색·초기화 속성 체계를 추가하지 않는다. SO 데이터 설정 사용은 A-07대로 계속 적용한다. |
 | Pool 사용·정리 | 타입별 Pool에서 View를 직접 Get/Return. PoolableView가 공통 Tween·구독 정리도 담당한다. | 기존 PoolLease·수명 훅·PoolConfig 반환 시간·비활성 MinPool 정책을 유지한다. MVC는 해당 훅에 조립/해제를 연결하고 Pool 내부에 게임 상태를 넣지 않는다. |
 
 [DECISION:agent] 간소화는 책임을 한 스크립트에 합치는 것이 아니라, 현재 사용하는 연결만 만드는 것으로 적용한다. 별도의 Observer 구현을 복제하지 않고 검증된 `Framework.Observer.Observable<T>`를 재사용한다. Controller는 입력·Loop를 받아 Model의 상태 변경을 요청하고, View는 Model을 관찰해 표현한다. 의존성은 구체적인 조립 코드에서 주입한다. 공통 Controller 기반의 구체 API와 객체별 상태 필드는 실제 첫 연결에 필요한 만큼 정한다.
 
-다음 작은 MVC 단위의 설계안:
+W-000-MVC-001로 구현·검증한 최소 MVC 단위의 설계:
 
 1. Model이 상태를 바꾼 뒤 변경을 통지한다. View는 처음 연결할 때 현재 상태를 표시하고, 이후 통지를 받아 갱신한다.
 2. Model 교체·View 비활성화·명시적 연결 해제에서 이전 구독을 정리한다. 다시 활성화할 때 최신 상태를 표시하고 구독을 중복시키지 않는다.
@@ -166,7 +166,46 @@ Factory는 비활성 부모 아래에 복제한 뒤 DI를 주입한다. VContain
 
 참고 원본(다른 로컬 프로젝트): [BaseView](</Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/View/BaseView.cs>), [Observable](</Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/Observable.cs>), [ModuleContainer](</Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModuleContainer.cs>), [BoardBuilder](</Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Board/BoardBuilder.cs>). 현재 저장소 밖의 조사 근거이며 빌드 의존성이나 필수 인계 파일은 아니다. 확인 파일의 시점별 해시는 [조사 기준](evidence/raw/mvc-reference-baseline.json)에 기록했다.
 
-이 단위는 **비교·설계 기록**이다. MVC 코드 작성이나 실행 검증 완료를 뜻하지 않으며 다음 제작 소유 범위·확인 기준은 [PLAN](PLAN.md)에 둔다.
+W-000-MVC-REFERENCE-001은 비교·설계만 수행했다. 후속 진행 요청(R-020)에 따른 실제 코드와 검증은 아래 W-000-MVC-001이다.
+
+### 구현한 Model–View 연결 계약 — W-000-MVC-001
+
+[DECISION:agent / R-019·R-020] `ObModel`은 private `Observable<ObModel>`로 변경을 통지한다. 파생 모델은 자기 상태를 바꾼 뒤 `NotifyChanged()`를 호출한다. 외부에는 Subscribe/Unsubscribe와 ObserverCount만 제공하며 공통 reset·Dispose·게임 상태 필드를 강제하지 않는다.
+
+기존 `ObView : MonoBehaviour`는 그대로다. 모델이 필요한 View는 `ObView<TModel> : ObView`를 사용할 수 있으며 풀 관련 인터페이스를 자동으로 갖지 않는다. 모델 연결 API는 `Bind(model)`·`Unbind()`, 표현 구현점은 `RefreshView(model)`이다. 구체 View의 참조는 외부 조립 코드에서 넣는다.
+
+| 시점 | 실제 계약 |
+|---|---|
+| 활성 View에 Bind | 모델 관찰 시작 → OnModelBound → 최신 상태 RefreshView. 동일 인스턴스 재대입은 중복 처리하지 않는다. null은 거절하고 분리는 Unbind로 표현한다. |
+| 비활성/disabled View에 Bind | 모델 참조만 보관한다. 구독·훅·표현은 OnEnable까지 시작하지 않는다. |
+| Model 변경 | 활성 관찰 대상의 변경만 RefreshView로 전달한다. 같은 모델의 재귀 통지는 기존 Observable 계약대로 예외다. |
+| 비활성/disabled | 기본 통지 구독과 OnModelUnbound의 추가 구독을 정리한다. 모델 참조는 재활성화를 위해 유지한다. |
+| 재활성화 | 한 번만 재구독하고 그동안 바뀐 최신 상태를 표시한다. |
+| Unbind / 파괴 | retained Model 참조와 관찰을 분리한다. 풀 반환/폐기의 Unbind 호출은 구체 IPoolable/조립 파츠 책임이다. Unity 수명 콜백을 override하는 파생 View는 base를 호출한다. |
+| 초기 연결 실패 / 연결 중 교체 | 실패한 관찰의 내부 구독·참조를 정리하고 예외를 전달한다. 훅에서 같은 모델을 다시 연결해도 이전 관찰의 갱신·실패 정리가 새 관찰을 건드리지 않게 사용 세대를 구분한다. |
+
+OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므로, 파생 View의 추가 모델 이벤트도 여기서 쌍으로 관리한다. 단순 비활성화를 풀 반환으로 취급하지 않는다. 실제 반환 시 Controller의 Loop 구독을 끊고 View.Unbind 후 객체별 상태를 초기화한다. Model/Controller 묶음 유지와 재생성 두 방식은 임시 객체로 모두 검사했으며 공통부에서 하나를 강제하지 않았다.
+
+현재 공통 ObController는 빈 기반이고 Cannon/Obstacle별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball의 객체별 수명 계약은 다음 절에서 실제 코드로 연결했다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
+
+### Ball 객체별 MVC 묶음 계약 — W-000-BALL-MVC-001
+
+[DECISION:user / R-021·R-022 / 2026-09-09 KST] 각 풀 Ball은 View·Model·Controller를 한 번 조립해 인스턴스가 파괴될 때까지 재사용한다. 매 대여마다 논리 객체를 재생성하지 않는다. 첫 BallModel은 물리와 무관한 `IsRented`와 `RentalEpoch`만 소유하며 위치·속도·충돌·Rigidbody 권위는 Obstacle MVC 다음의 물리 단위로 미룬다.
+
+| 시점 | Ball의 실제 계약 |
+|---|---|
+| `OnPoolCreated` | `BallModel`과 `BallController`를 한 번 만들고 `BallView`가 묶음 수명을 소유한다. |
+| `OnPoolRent` | Model의 세대를 0이 아닌 다음 값으로 올리고 대여 중으로 전환 → 비활성 View에 Bind → Controller가 현재 PoolLease와 세대를 보관한다. |
+| 활성화 | 공통 `ObView<BallModel>`이 Model을 한 번 관찰하고 최신 상태를 갱신한다. 현재 수명 상태에는 시각 표현이 없어 RefreshView는 의도적으로 비어 있다. |
+| `TryReturn(epoch)` | Controller·Model·PoolLease가 모두 같은 현재 세대일 때만 반환한다. 이전 세대의 callback/반환 요청은 새 대여를 건드리지 않는다. |
+| `OnPoolReturn` | Controller의 현재 lease/세대 해제 → View.Unbind → Model 대여 상태 해제. Model/Controller 인스턴스와 마지막 세대 값은 다음 대여까지 유지한다. |
+| 풀 종료 / 계층 선파괴 | 풀 콜백과 Unity `OnDestroy`가 같은 idempotent 정리 경로를 사용한다. 씬 계층이 Factory보다 먼저 파괴돼도 Controller·Model·관찰을 즉시 끊고, 뒤이은 Pool Dispose는 안전하게 중복 정리한다. |
+
+BallController에는 실제 입력·Loop·물리 구독을 넣지 않았다. 구독할 권위가 정해지기 전에 빈 Tick을 등록하면 구현 완료처럼 보이면서 반환 누수만 늘기 때문이다. 물리 단위에서 구독을 추가할 때는 대여 세대를 캡처하고 모든 늦은 충돌·Tween·UniTask 완료가 `IsCurrentRental(epoch)`를 확인해야 한다.
+
+현재 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지며 Rigidbody는 없다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있다. 이 값들은 이번 코드/검사에서 수정하지 않았다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
+
+다음 컨텍스트는 같은 원칙으로 Obstacle MVC를 구현한다. 현재 Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 씬 목록에도 등록되지 않았다. 이를 과거 설정으로 되돌리거나 자동 완성하지 않고, 최신 사용자 값과 Obstacle 코드 상태를 다시 확인한 뒤 필요한 참조만 부분 연결한다. 그 다음 물리 구현에서 Ball/Obstacle의 상태 권위와 Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 확정한다.
 
 ## 성능 근거를 기록하는 방법
 

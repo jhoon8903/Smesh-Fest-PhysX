@@ -1,0 +1,11 @@
+{
+    "recordedAtUtc": "2026-09-08T15:56:48.3065190Z",
+    "unityVersion": "6000.3.10f1",
+    "success": true,
+    "assertions": 58,
+    "error": "",
+    "notificationAllocationBytes": 0,
+    "reconnectionAllocationBytes": 0,
+    "allocationMeasured": true,
+    "allocationCondition": "Unity Editor current thread; precreated model/view/cached callbacks; 100 warmups, 1000 synchronous updates or Unbind/Bind pairs; includes a single extra model event; excludes object creation, pool rent/return, logging/assertions and real game rendering."
+}

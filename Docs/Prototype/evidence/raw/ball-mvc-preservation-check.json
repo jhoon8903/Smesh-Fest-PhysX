@@ -1,0 +1,34 @@
+{
+  "task_id": "W-000-BALL-MVC-001",
+  "baseline_checked_at_utc": "2026-09-08T16:51:19Z",
+  "final_checked_at_utc": "2026-09-08T17:08:30Z",
+  "unchanged": [
+    {
+      "path": "Assets/Scenes/Game.unity",
+      "sha256_before": "9f6976e025ecc3334dcf3cec01bbe189fa7721bb97ebc0f91260a442835aede3",
+      "sha256_after": "9f6976e025ecc3334dcf3cec01bbe189fa7721bb97ebc0f91260a442835aede3"
+    },
+    {
+      "path": "Assets/Project/Prefabs/Ball.prefab",
+      "sha256_before": "412681aa63d20248fbd990d1fafe1a4c406637d1f089a08a2650a521965d954d",
+      "sha256_after": "412681aa63d20248fbd990d1fafe1a4c406637d1f089a08a2650a521965d954d"
+    },
+    {
+      "path": "Assets/Project/Prefabs/Cube.prefab",
+      "sha256_before": "6e5c7923581f166838d2921d7cbf3475096336faab52bf2332a179e019659f52",
+      "sha256_after": "6e5c7923581f166838d2921d7cbf3475096336faab52bf2332a179e019659f52"
+    },
+    {
+      "path": "Assets/Project/So/Ball.asset",
+      "sha256_before": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+      "sha256_after": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1"
+    },
+    {
+      "path": "Assets/Project/So/Cube.asset",
+      "sha256_before": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579",
+      "sha256_after": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+    }
+  ],
+  "unexpected_changes": [],
+  "note": "Unity imported metadata for the two new validation scripts. The active Game scene and Daniel-owned Ball/Cube prefabs and PoolConfig assets were not saved or changed by the validation."
+}

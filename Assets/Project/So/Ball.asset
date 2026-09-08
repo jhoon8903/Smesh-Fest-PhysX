@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ae29c53bdff4d52817ac6d92f68623, type: 3}
+  m_Name: Ball
+  m_EditorClassIdentifier: Assembly-CSharp::Framework.Pool.PoolConfig
+  poolRootName: Pool
+  prefab: {fileID: -1990879116515876126, guid: f31f53f3b7c1b4f27a5bcf323442d28a, type: 3}
+  minPool: 3
+  maxPool: 7
+  returnDelaySeconds: 200

@@ -1,0 +1,13 @@
+{
+  "task_id": "W-000-BALL-MVC-001",
+  "checked_at_utc": "2026-09-08T17:16:30Z",
+  "documents": 7,
+  "local_links": 125,
+  "missing_links": [],
+  "context_manifest_blocks": 1,
+  "context_manifest_paths": 63,
+  "missing_manifest_paths": [],
+  "diff_whitespace_errors": 0,
+  "handoff_tracked": true,
+  "handoff_ignored": false
+}

@@ -1,0 +1,50 @@
+{
+  "task_id": "W-000-MVC-001",
+  "scene": {
+    "status": "fulfilled",
+    "value": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved active scene information.\",\"data\":{\"name\":\"Game\",\"path\":\"Assets/Scenes/Game.unity\",\"buildIndex\":0,\"isDirty\":false,\"isLoaded\":true,\"rootCount\":4}}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved active scene information.",
+        "data": {
+          "name": "Game",
+          "path": "Assets/Scenes/Game.unity",
+          "buildIndex": 0,
+          "isDirty": false,
+          "isLoaded": true,
+          "rootCount": 4
+        }
+      },
+      "isError": false
+    }
+  },
+  "console": {
+    "status": "fulfilled",
+    "value": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 3 log entries.\",\"data\":[\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 not released yet after reload; retrying same port.\",\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 not released yet after reload; retrying same port.\",\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 still occupied after 3s; falling back to port 6400 (clients follow via the status file).\"]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 3 log entries.",
+        "data": [
+          "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 not released yet after reload; retrying same port.",
+          "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 not released yet after reload; retrying same port.",
+          "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: Port 6402 still occupied after 3s; falling back to port 6400 (clients follow via the status file)."
+        ]
+      },
+      "isError": false
+    }
+  },
+  "play_mode_stopped": true,
+  "checks_scope": "Targeted transient MVC Play Mode probe. No scene save or whole-scene rebuild."
+}

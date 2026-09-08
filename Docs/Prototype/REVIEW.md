@@ -1,6 +1,6 @@
 # 확인·검증 기록
 
-초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. Pool Play Mode 66개와 DI/UI Pause 25개 검증 이후 최신 단위는 마지막의 W-000-MVC-REFERENCE-001 참고 비교·설계 기록이다. 이 비교에서는 Unity를 실행하지 않았으며 High Player는 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
+초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-000-BALL-MVC-001은 Ball별 묶음 재사용의 Play Mode 19개 검사 결과다. 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개와 조건을 구분하며 High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
 
 | 검증 ID / 관련 요구·작업 | 실제 확인 방법·담당 | 관측 결과 | 상태·한계 |
 |---|---|---|---|
@@ -170,3 +170,69 @@ PoolConfig(SO)·PoolContainer·Factory·사용 번호를 가진 PoolLease를 구
 보존 기준: 현재 프로젝트 152개 파일(기존 수정 파일 포함), 참고 MVC와 대표 사용 파일 34개를 기록했다. 비교 후 참고 34개는 모두 동일하다. 현재 프로젝트의 기준 중 변경은 이번 대상인 Docs/README.md 하나이며 나머지 151개는 동일하다. 기존 사용자 씬·코드·Material·설정과 새 Assets/Project 폴더 파일을 덮어쓰지 않았다. 이는 저장된 파일 기준이며 미저장 Editor 상태를 확인한 결과는 아니다. [조사 기준](evidence/raw/mvc-reference-baseline.json), [보존 결과](evidence/raw/mvc-reference-preservation-check.json).
 
 Luna·Low의 읽기 전용 문서 일치 검토 후 과거 Pool 목표의 표현을 당시 기록으로 명확히 했다. 문서 6개에서 R-019 연결·기준 10개·MVC 미구현 표기, 로컬 링크 109개와 인계 manifest 67개 경로를 확인했고 누락·뒤 공백은 없었다. [문서 확인 결과](evidence/raw/mvc-reference-document-check.json). 누적 기록 파일 검사는 미변경 90개·과거 기록 이후 변경 85개·누락 0개였다. 현재 갱신 문서는 새 종료 이벤트에서 최신 해시로 연결하며 과거 증거는 유지한다. 다음 작업은 PLAN의 W-000-MVC-001이며 이번 비교를 코드 구현 성과로 계산하지 않는다.
+
+## W-000-MVC-001 — 최소 Model–View 연결과 풀 수명 검사
+
+2026-09-09 KST / R-019·R-020. Terra·Medium이 ObModel 변경 통지와 ObView<TModel>의 활성 관찰 수명을 작성했다. Main은 임시 MVC/Pool/DI 검증, 통합·컴파일 보완과 문서를 맡았고 Sol·High는 예외·재진입·구독 수명을 읽기 전용으로 검토했다. Sol은 현재 계약에서 추가 재현 결함을 찾지 못했다. 사용량·비용은 미제공이다.
+
+### 구현과 검토에서 보완한 경계
+
+ObModel은 기존 Observable<ObModel>을 private 전달기로 사용한다. 모델이 필요한 View만 새 ObView<TModel>을 상속하며 기존 ObView의 독립성을 유지한다. Bind/Unbind, 활성 상태의 관찰·최초/변경 RefreshView, 추가 이벤트 구독을 위한 OnModelBound/OnModelUnbound가 공통 책임이다. 비활성 Bind는 참조만 보관하며 Model/Controller의 reset·Dispose·재생성을 강제하지 않는다.
+
+Main이 같은 모델을 연결 훅 안에서 해제하고 다시 연결할 때 이전 호출도 최초 갱신을 수행할 수 있는 경계를 발견했다. 관찰 세대를 구분해 중복 최초 갱신과 이전 연결의 실패 정리가 새 연결을 해제하는 문제를 보완했고 재현 검사를 추가했다. C# 컴파일에서 public/private IsObserving 이름 충돌(CS0102), 검증 코드의 Framework.Object/UnityEngine.Object 해석 충돌(CS0234)을 수정한 뒤 일반 Unity 컴파일을 통과했다.
+
+### 실제 실행과 제한
+
+Unity 6000.3.10f1, 명시적 `Tools/Smesh Fest/Validation/MVC Runtime` 메뉴로 만든 임시 객체에서 **58개 assertion 통과**. [실행 결과](evidence/raw/mvc-runtime-validation.json)의 recordedAtUtc `2026-09-08T15:56:48.3065190Z`는 검사 시작 시각이며 결과 파일은 정리 후 두 프레임을 지난 다음 기록했다. NUnit Test Runner나 Player 결과가 아니다.
+
+- 비풀링 ObView 독립 사용, 비활성 Bind, 최초 현재 상태 표시, 동일 Model 중복 Bind 억제, 변경 통지와 추가 모델 이벤트, Model 교체 후 옛 통지 차단.
+- GameObject 비활성/재활성, 컴포넌트 disabled/재활성에서 구독·추가 이벤트 해제 및 최신 상태 표시. Unbind 반복·null 거절·파괴 전 비활성화에서 구독 해제.
+- 연결/최초 Refresh/해제 훅 예외 후 정리·재연결. 통지 중 교체/해제, 연결 훅의 동일 모델 재연결·disable/enable, 이전 훅의 실패가 새 관찰을 지우지 않는 경계.
+- 별도 VContainer와 실제 PoolFactory가 비활성 복제물에 주입한 뒤 생성·대여. 주입된 ILoopEvents → 테스트 Controller → Model 변경 → View 갱신, 반환 뒤 모델/Loop 통지 차단, 재대여 중복 방지, 오래된 lease 거절, 대여 중 Factory Dispose의 구독 정리.
+- MVC 묶음을 유지하는 종류와 Model/Controller를 새로 만드는 종류를 각각 확인했다. 이 두 정책을 공통부가 덮어쓰지 않는다.
+
+할당: 모델·View·추가 모델 이벤트의 delegate를 준비하고 100회 워밍업한 뒤, 동기 상태 변경 통지 1,000회와 Unbind/Bind 1,000회를 각각 현재 스레드에서 측정해 **각각 0바이트**. 측정 구간 안의 로그·assertion, 객체 생성, 풀 대여/반환, 실제 게임 표현·렌더는 제외했다. 전체 게임 Zero Alloc이나 지연 개선률의 증거가 아니다.
+
+Play 전환 직후 MCP 연결이 끊겨 포트 6402를 재선택한 뒤 메뉴를 실행했다. Editor가 비활성이라 정리 후 프레임 진행이 지연되어 Unity 창을 활성화해 결과 기록을 완료했다. 첫 AppleEvent 활성화 시도는 시간 초과했으며 이후 OS 앱 열기로 창을 활성화했다. Game 시간 설정이나 runInBackground를 바꾸지 않았다. 종료 후 Play=false·컴파일 대기 없음, Console 오류 0건이며 MCP 포트 재연결 경고 3건은 남았다. [실행 전](evidence/raw/mvc-editor-before.json), [종료 상태](evidence/raw/mvc-editor-final.json).
+
+### 보존과 다음 범위
+
+시작 기준 140개 파일 중 139개 동일, ObModel.cs만 예상 변경, 누락·미설명 변경 0개. 신규 ObViewOfT.cs·MvcRuntimeProbe.cs·MvcValidation.cs와 각 .meta를 추가했다. 저장 Game 씬과 기존 스크립트·Prefab·Material·설정은 그대로이며 Play 전후 dirty=false·루트 4개다. 이전 기록의 루트 3개로 되돌리지 않았다. [기준](evidence/raw/mvc-baseline.json), [보존 결과](evidence/raw/mvc-preservation-check.json).
+
+실제 BallModel/BallController/BallView 연결·물리·발사·Cannon 회전, 화면별 MVP·SO/Addressables 핸들 정책과 **High Player·IL2CPP/AOT·기기 검증은 미실행**이다. 임시 ProbeController를 실제 게임 Controller 완료로 기록하지 않는다. 이번에 변경하지 않은 DI/Pause·Pool 기존 전체 검사를 다시 수행한 것은 아니며, 실제 Factory를 사용하는 이번 MVC 통합 경로만 새로 검증했다.
+
+현재 Git 브랜치 MVC·HEAD 21567e5와 HANDOFF의 추적 상태를 확인했다. 이전 인계의 SciptSkeleton·미추적 설명을 현재 상태로 정정했다. 시작 baseline의 Git 상태에 이미 UI/Clear.meta·UI/Failed.meta 삭제가 있었으므로 기존 변경으로 보존했다. 이번 작업에서는 커밋·브랜치 전환·푸시를 수행하지 않았다.
+
+문서 6개의 로컬 링크·인계 manifest 75개 경로와 공통 연결/실제 Ball 미완료 구분을 확인했다. [문서 검사](evidence/raw/mvc-document-check.json). 변경 대상의 diff 공백 검사도 통과했다.
+
+## W-000-BALL-MVC-001 — Ball별 묶음 재사용
+
+2026-09-09 KST / R-021·R-022. Daniel은 Ball을 풀 인스턴스별 View·Model·Controller 묶음으로 유지하고, 첫 Model은 물리 비종속 대여 상태·사용 세대만 갖도록 결정했다. 이 컨텍스트에서 Ball MVC를 끝내고 다음 컨텍스트에서 Obstacle MVC, 그 다음 물리 구현으로 진행한다.
+
+Main은 최신 Ball/Cube Prefab·PoolConfig·Game 씬을 읽어 사용자 소유 상태를 기준으로 고정하고 BallModel/BallController/BallView를 통합했다. Terra·Medium은 기존 Pool/ObView 수명을 읽고 임시 검사 코드를 작성했다. Sol·High의 독립 검토에서 계층 선파괴 즉시 정리와 Controller 정상 반환 검사가 빠진 점을 발견했고 Main이 보완했다. 재검사 전 첫 시도는 12개 assertion이었으며, 보완 후 최종 결과는 19개다. 같은 Sol·High 재검토에서 남은 수명·재진입·폐기 결함은 발견되지 않았다. 보조 사용량·비용은 제공되지 않았다.
+
+### 구현 계약
+
+- BallModel은 `IsRented`, 0이 아닌 `RentalEpoch`, 현재 세대 확인만 소유한다. 위치·속도·충돌 결과와 Rigidbody 상태는 없다.
+- BallView는 `OnPoolCreated`에서 Model/Controller를 한 번 만들고, 대여 때 Model 시작 → 비활성 Bind → Controller에 현재 PoolLease/세대를 연결한다. 반환 때 Controller → View 관찰 → Model 순서로 정리한다.
+- BallController의 `TryReturn(epoch)`는 Controller·Model·PoolLease가 모두 현재 대여일 때만 반환한다. 반환 뒤 lease와 세대를 버려 오래된 완료/반환이 새 대여를 건드리지 않게 한다.
+- Pool `OnPoolDestroy`와 Unity `OnDestroy`가 같은 idempotent 묶음 정리를 사용한다. 따라서 씬 계층이 Factory보다 먼저 파괴돼도 캐시된 Controller·Model은 즉시 비활성 상태다.
+- 실제 입력·Loop·물리 구독과 시각 갱신은 권위 계약이 없는 상태에서 가짜 구현하지 않았다.
+
+### 실제 검사와 보완 이력
+
+Unity 6000.3.10f1 일반 스크립트 컴파일 후 `Tools/Smesh Fest/Validation/Ball MVC Runtime`을 Play Mode에서 실행했다. 최종 [결과](evidence/raw/ball-mvc-runtime-validation.json)는 `2026-09-08T17:05:38.0294770Z`, success=true, **19 assertions**다.
+
+- 임시 BallView source와 두 개의 임시 PoolConfig만 사용해 prewarm → 대여 → Controller 정상 반환 → 같은 View/Model/Controller 재대여 → 이전 lease/세대 거절 → PoolLease 정상 반환을 확인했다.
+- 활성 객체가 남은 Pool Dispose에서 Model·Controller·View 관찰이 모두 정리되는지 확인했다.
+- 별도 활성 Ball의 GameObject를 먼저 파괴해 Unity `OnDestroy` 직후 Model·Controller·Observer가 정리되고, 나중 Pool Dispose가 lease를 무효화하며 중복 정리해도 안전한지 확인했다.
+- 첫 컴파일에서 검증 메뉴의 `Object`가 `Framework.Object` namespace로 해석된 CS0118 한 건을 확인해 `UnityEngine.Object`로 명시한 뒤 재컴파일했다. 최종 실행 후 Console 오류는 0건이다.
+- Play Mode 전환 뒤 Unity가 백그라운드에서 프레임을 진행하지 않아 창만 활성화했다. `runInBackground`, 시간 설정, 씬 값은 바꾸지 않았다. stdio bridge는 domain reload 때 포트를 바꿨지만 검사 결과와 종료 상태는 파일·Console·씬 조회로 다시 확인했다. [Editor 종료 기록](evidence/raw/ball-mvc-editor-final.json).
+
+### 사용자 자산 보존과 남은 범위
+
+검사 전후 Game 씬, Ball/Cube Prefab, Ball/Cube PoolConfig의 SHA256이 각각 동일하다. 저장된 Game 씬은 dirty=false·루트 4개였고 자동 저장·씬/Prefab 재생성은 하지 않았다. [보존 결과](evidence/raw/ball-mvc-preservation-check.json).
+
+Daniel이 만든 현재 Ball Prefab은 MeshRenderer·SphereCollider·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이며 Game PoolContainer에 등록돼 있다. Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 목록에 등록되지 않았다. 이는 다음 작업의 시작 상태이지 오류 판정이나 AI 수정 결과가 아니다.
+
+실제 Ball 발사·이동·충돌·Cannon 회전, Obstacle MVC, Unity Physics/직접 구현 Physics, 화면 MVP, SO/Addressables, High 설정 빌드·IL2CPP/AOT·기기 실행은 미실행이다. 이번 19개는 객체 수명 격리 검사이며 실제 게임 플레이 검증이 아니다. 기존 공통 MVC 58개·Pool 66개·DI/UI Pause 25개 전체를 다시 실행한 결과도 아니다. 브랜치 전환·커밋·푸시는 하지 않았다.
