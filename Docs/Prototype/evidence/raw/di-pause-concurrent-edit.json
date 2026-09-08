@@ -1,0 +1,10 @@
+{
+  "recorded_at_utc": "2026-09-08T13:55:02.135006+00:00",
+  "reason": "Concurrent edits observed after first PlayMode validation; retain and revalidate",
+  "files": {
+    "Assets/Scripts/Framework/Flow/GameFlow.cs": "0b61a7f41de1716e0e4fc649684a80d15c900e6f65418ec06e41e23e0f480b26",
+    "Assets/Scripts/Framework/Loop/GameClock.cs": "759aaf7cda11294e711113161132ff0cab71094bb6bea4d600d22de951965133",
+    "Assets/Scripts/Framework/Loop/UpdateLoop.cs": "a90b0717dbf9e0f87db0d651151c1f89095c997f1b3b09ec46738dacc496159b"
+  },
+  "semantic_change": "GameClock scale equality now Mathf.Approximately; other observed edits formatting/expression body"
+}

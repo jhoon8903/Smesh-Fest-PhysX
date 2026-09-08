@@ -1,0 +1,21 @@
+{
+  "recorded_at_utc": "2026-09-08T12:05:45.933114+00:00",
+  "baseline": "architecture-resume-baseline.json",
+  "baseline_file_count": 93,
+  "unchanged": 92,
+  "changed": [
+    "Assets/Scripts/Framework/Observer/Observable.cs"
+  ],
+  "missing": [],
+  "expected_changed": [
+    "Assets/Scripts/Framework/Observer/Observable.cs"
+  ],
+  "unexpected_changed": [],
+  "new_ai_editor_files": [
+    "Assets/Editor/Validation/ObservableValidation.cs",
+    "Assets/Editor/Validation/ObservableValidation.cs.meta",
+    "Assets/Editor/Validation.meta",
+    "Assets/Editor.meta"
+  ],
+  "limitations": "Hashes establish file equality to this baseline; they do not identify an author or prove Play Mode behavior."
+}

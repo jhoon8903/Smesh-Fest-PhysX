@@ -1,0 +1,45 @@
+{
+  "recorded_at_utc": "2026-09-08T15:04:17.448219+00:00",
+  "task_id": "W-000-POOL-001",
+  "baseline_count": 129,
+  "unchanged_count": 121,
+  "changed_existing": [
+    "Assets/Scenes/Game.unity",
+    "Assets/Scripts/Framework/DI/GameLifetimeScope.cs",
+    "Assets/Scripts/Framework/Object/ObView.cs",
+    "Assets/Scripts/Framework/Pool/IPool.cs",
+    "Assets/Scripts/Framework/Pool/PoolFactory.cs",
+    "Assets/Scripts/InGame/Ball/BallView.cs"
+  ],
+  "unexplained_changes": [],
+  "renamed": [
+    {
+      "from": "Assets/Scripts/Framework/Pool/Poolable.cs",
+      "to": "Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs",
+      "same_hash": false
+    },
+    {
+      "from": "Assets/Scripts/Framework/Pool/Poolable.cs.meta",
+      "to": "Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs.meta",
+      "same_hash": true
+    }
+  ],
+  "missing": [],
+  "scene": {
+    "existing_blocks": 190,
+    "added": [
+      "2091545049"
+    ],
+    "edited_existing_blocks": [
+      "1383522108",
+      "2091545047"
+    ],
+    "dropped": [],
+    "only_pool_component_and_scope_reference": true
+  },
+  "preserved": {
+    "manual_scene_values": true,
+    "materials_packages_project_settings": true
+  },
+  "success": true
+}

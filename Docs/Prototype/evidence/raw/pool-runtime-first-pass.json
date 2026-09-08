@@ -1,0 +1,11 @@
+{
+    "name": "Pool Runtime Validation",
+    "recordedAtUtc": "2026-09-08T14:57:21.0722820Z",
+    "unityVersion": "6000.3.10f1",
+    "success": true,
+    "assertions": 63,
+    "error": "",
+    "allocationMeasured": true,
+    "allocationBytes": 0,
+    "allocationCondition": "100 warmup, 1000 cached rent/return, empty IPoolable without effects, tokens, child lifecycle parts, or assertions inside the measured interval"
+}

@@ -1,0 +1,768 @@
+{
+  "checked_at": "2026-09-08T15:42:49.142836+00:00",
+  "task_id": "W-000-MVC-REFERENCE-001",
+  "project_file_count": 152,
+  "reference_file_count": 34,
+  "project_changes": [
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed"
+    }
+  ],
+  "reference_changes": [],
+  "expected_document_changes": [
+    "Docs/README.md"
+  ],
+  "unity_execution": false,
+  "code_changes_by_ai": false,
+  "scope_note": "Saved files only. Reference inspection preceded snapshot. Existing dirty changes preserved; not evidence of unsaved Editor state.",
+  "project_files": [
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/.idea/.idea.Smesh-Fest-PhysX/.idea/workspace.xml",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Portals/portal_stripes_yellow_ADD.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bomb.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_boxingglove.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bullet.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_exclamation.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_shield.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/Material #30.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/sphereshield.mat",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/DiPauseValidation.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/DiPauseValidation.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/GameClockValidation.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/GameClockValidation.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LoopValidation.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LoopValidation.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/PoolValidation.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/PoolValidation.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/So.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI/GameLifetimeScope.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI/GameLifetimeScope.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow/GameFlow.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow/GameFlow.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log/GameLog.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log/GameLog.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/GameClock.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/GameClock.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/IGamePause.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/IGamePause.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/ILoopEvents.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/ILoopEvents.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/LoopDispatcher.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/LoopDispatcher.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UnityGameTime.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UnityGameTime.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UpdateLoop.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UpdateLoop.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObModel.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/PhysX.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPool.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPool.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolLifecycle.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolLifecycle.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolable.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolConfig.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolConfig.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolContainer.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolContainer.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolSpawnArgs.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolSpawnArgs.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/SafeArea.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/SafeArea.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenModel.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenNavi.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenNavi.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPauseScope.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPauseScope.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPresenter.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPresenter.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenView.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallModel.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonHead.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonHead.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonModel.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonView.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Particles.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI/Clear.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI/Failed.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/DiPauseProbe.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/DiPauseProbe.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PoolRuntimeProbe.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PoolRuntimeProbe.cs.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test.meta",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "status": "changed"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Packages/manifest.json",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Packages/packages-lock.json",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/AudioManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ClusterInputManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/DynamicsManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/EditorBuildSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/EditorSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/GraphicsSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/InputManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/MemorySettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/MultiplayerManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/NavMeshAreas.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/PackageManagerSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/Physics2DSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/PresetManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ProjectSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ProjectVersion.txt",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/QualitySettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/SceneTemplateSettings.json",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ShaderGraphSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/TagManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/TimeManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/URPProjectSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/UnityConnectSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/VFXManager.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/VersionControlSettings.asset",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/XRSettings.asset",
+      "status": "unchanged"
+    }
+  ],
+  "reference_files": [
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Config/MConfigContainer.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Config/ScriptableConfiguration.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/IModular.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/IVContainerConfigurable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/Modular.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModularAttribute.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModuleComposition.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModuleContainer.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/StaticScriptable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/BaseViewEditor.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/FindBrokenReferences.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/ModuleCompositionValidator.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/ModuleContainerEditor.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IConfigs.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IPool.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/ITimeController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/ITimerHandle.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IUpdateLoop.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/IObservable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/IObserver.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/Observable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/IPoolInternal.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/IPoolable.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/MPool.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/Pool.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/PoolConfiguration.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/PoolableView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/UpdateLoop/MTimeController.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/UpdateLoop/MUpdateLoop.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/View/BaseView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Cell/CellModel.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Cell/CellView.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Board/BoardBuilder.cs",
+      "status": "unchanged"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/UserInterface/HUD/Lives/LivesView.cs",
+      "status": "unchanged"
+    }
+  ],
+  "unexpected_project_changes": []
+}

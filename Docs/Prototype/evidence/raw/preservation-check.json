@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-09-08T09:29:12.185981+00:00",
+  "baseline_file_count": 77,
+  "current_file_count": 82,
+  "unchanged_count": 77,
+  "changed": [],
+  "missing": [],
+  "added": [
+    "Assets/Scripts/Framework/Observer.meta",
+    "Assets/Scripts/Framework/Observer/Observeable.cs.meta",
+    "Assets/Scripts/Framework/Observer/Observeable.cs",
+    "Assets/Scripts/Framework/Pool/PoolFactory.cs.meta",
+    "Assets/Scripts/Framework/Pool/PoolFactory.cs"
+  ],
+  "limitation": "디스크 파일만 비교. Editor 미저장 상태는 미확인. 해시로 작성자를 추정하지 않음."
+}

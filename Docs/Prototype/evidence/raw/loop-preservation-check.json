@@ -1,0 +1,16 @@
+{
+  "recorded_at_utc": "2026-09-08T12:38:45.831378+00:00",
+  "baseline_file_count": 105,
+  "unchanged": 105,
+  "changed": [],
+  "missing": [],
+  "new_files": [
+    "Assets/Scripts/Framework/Loop/ILoopEvents.cs",
+    "Assets/Scripts/Framework/Loop/ILoopEvents.cs.meta",
+    "Assets/Scripts/Framework/Loop/LoopDispatcher.cs",
+    "Assets/Scripts/Framework/Loop/LoopDispatcher.cs.meta",
+    "Assets/Editor/Validation/LoopValidation.cs",
+    "Assets/Editor/Validation/LoopValidation.cs.meta"
+  ],
+  "scope": "Compare existing scripts, Editor validation, scenes, Packages, ProjectSettings, and modified material files captured before this work. Current scene path and dirty status are separately recorded in loop-validation.json."
+}

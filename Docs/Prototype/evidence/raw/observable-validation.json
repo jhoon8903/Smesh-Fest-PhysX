@@ -1,0 +1,13 @@
+{
+    "recordedAtUtc": "2026-09-08T12:05:10.8966720Z",
+    "unityVersion": "6000.3.10f1",
+    "execution": "Editor menu; plain C# instances; no Play Mode",
+    "success": true,
+    "summary": "Observable checks passed (10 behavioral cases; stable Publish allocation: 0 bytes).",
+    "error": "",
+    "sceneBefore": "Assets/Scenes/Game.unity",
+    "sceneAfter": "Assets/Scenes/Game.unity",
+    "dirtyBefore": false,
+    "dirtyAfter": false,
+    "sceneStateUnchanged": true
+}

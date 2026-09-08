@@ -1,0 +1,55 @@
+{
+  "recorded_at_utc": "2026-09-08T14:08:30.184Z",
+  "task_id": "W-000-POOL-CONTRACT-001",
+  "validation_level": "static",
+  "reader": {
+    "model": "gpt-5.6-terra",
+    "effort": "medium",
+    "scope": "current Pool/MVC skeletons, bounded VContainer source",
+    "usage": null
+  },
+  "findings": {
+    "pool_mvc": "IPool, Poolable, PoolFactory, Object MVC and Ball MVC empty classes; no usage calls observed",
+    "vcontainer": "1.19.0 Instantiate deactivates input, clones/injects, restores activity in inspected overload; no automatic per-rental inject or clone tracking destruction established",
+    "dotween": "local XML: Kill complete=true completes first; OnKill invoked on kill; recyclable tween stale refs cautioned",
+    "unitask": "DOTweenAsyncExtensions conditional on UNITASK_DOTWEEN_SUPPORT; live assembly reflection not found"
+  },
+  "unitask_reflection": {
+    "success": true,
+    "message": "Type 'Cysharp.Threading.Tasks.DOTweenAsyncExtensions' not found.",
+    "data": {
+      "found": false,
+      "query": "Cysharp.Threading.Tasks.DOTweenAsyncExtensions"
+    }
+  },
+  "scene_observation": {
+    "success": true,
+    "message": "Retrieved active scene information.",
+    "data": {
+      "name": "Game",
+      "path": "Assets/Scenes/Game.unity",
+      "buildIndex": 0,
+      "isDirty": false,
+      "isLoaded": true,
+      "rootCount": 3
+    }
+  },
+  "primary_sources": [
+    "https://dotween.demigiant.com/documentation.php",
+    "https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ParticleSystem.Stop.html",
+    "https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ParticleSystemStopBehavior.StopEmittingAndClear.html"
+  ],
+  "source_files": [
+    "Library/PackageCache/jp.hadashikick.vcontainer@1fd3ba2a5e26/Runtime/Unity/ObjectResolverUnityExtensions.cs",
+    "Library/PackageCache/jp.hadashikick.vcontainer@1fd3ba2a5e26/Runtime/Unity/LifetimeScope.cs",
+    "Assets/Plugins/Demigiant/DOTween/DOTween.XML",
+    "Library/PackageCache/com.cysharp.unitask@dc216dc4183d/Runtime/External/DOTween/DOTweenAsyncExtensions.cs"
+  ],
+  "runtime_checks_run": false,
+  "play_mode_run": false,
+  "code_or_scene_mutated": false,
+  "questions_pending": [
+    "O-006",
+    "O-007"
+  ]
+}

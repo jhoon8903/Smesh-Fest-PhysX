@@ -1,0 +1,12 @@
+{
+  "recorded_at_utc": "2026-09-08T15:07:32.331484+00:00",
+  "task_id": "W-000-POOL-001",
+  "local_links_checked": 103,
+  "broken_links": [],
+  "manifest_paths": 62,
+  "manifest_missing": [],
+  "architecture_rules_present": true,
+  "R018_interface_correction_recorded": true,
+  "O008_resolved": true,
+  "success": true
+}

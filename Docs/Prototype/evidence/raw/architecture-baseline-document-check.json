@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-09-08T09:47:13.049107+00:00",
+  "local_links_checked": 42,
+  "missing_paths": [],
+  "confirmed_principle_ids": [
+    "A-01",
+    "A-02",
+    "A-03",
+    "A-04",
+    "A-05",
+    "A-06",
+    "A-07",
+    "A-08"
+  ],
+  "manifest_valid": true,
+  "canonical_architecture_required_on_resume": true,
+  "ignored_files": [],
+  "game_code_changes_by_ai": false,
+  "validation_scope": "문서 내용·연결·인계 manifest·Git 제외 여부. Unity 실행 검증 아님."
+}

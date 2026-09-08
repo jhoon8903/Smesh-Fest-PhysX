@@ -1,0 +1,23 @@
+{
+  "recorded_at_utc": "2026-09-08T13:45:47.492Z",
+  "console_errors": {
+    "success": true,
+    "message": "Retrieved 0 log entries.",
+    "data": []
+  },
+  "scene_after_playmode": {
+    "success": true,
+    "message": "Retrieved active scene information.",
+    "data": {
+      "name": "Game",
+      "path": "Assets/Scenes/Game.unity",
+      "buildIndex": 0,
+      "isDirty": false,
+      "isLoaded": true,
+      "rootCount": 3
+    }
+  },
+  "validation": "Unity Play Mode; 25 assertions; runtime probe JSON is authoritative",
+  "high_player_run": false,
+  "il2cpp_run": false
+}

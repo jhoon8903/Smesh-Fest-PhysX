@@ -1,0 +1,29 @@
+{
+  "recorded_at_utc": "2026-09-08T13:54:26.082580+00:00",
+  "local_links_checked": 84,
+  "context_manifest_blocks": 1,
+  "context_manifest_paths_checked": 39,
+  "architecture_criteria": [
+    "A-01",
+    "A-02",
+    "A-03",
+    "A-04",
+    "A-05",
+    "A-06",
+    "A-07",
+    "A-08",
+    "A-09",
+    "A-10"
+  ],
+  "source_drift_after_playmode": [
+    "Assets/Scripts/Framework/Flow/GameFlow.cs",
+    "Assets/Scripts/Framework/Loop/GameClock.cs",
+    "Assets/Scripts/Framework/Loop/UpdateLoop.cs"
+  ],
+  "errors": [
+    "Assets/Scripts/Framework/Flow/GameFlow.cs",
+    "Assets/Scripts/Framework/Loop/GameClock.cs",
+    "Assets/Scripts/Framework/Loop/UpdateLoop.cs"
+  ],
+  "success": false
+}

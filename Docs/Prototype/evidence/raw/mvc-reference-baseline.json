@@ -1,0 +1,754 @@
+{
+  "task_id": "W-000-MVC-REFERENCE-001",
+  "recorded_at": "2026-09-08T15:39:10.120667+00:00",
+  "scope": "Read-only reference comparison; documentation changes only. Snapshot after inspection, before documentation edits.",
+  "project_files": [
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/.idea/.idea.Smesh-Fest-PhysX/.idea/workspace.xml",
+      "sha256": "35acd79a8a31dba3acdbf05b71c9c6c4791f9b0a2d07a221db28464658356161"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Portals/portal_stripes_yellow_ADD.mat",
+      "sha256": "b9ccd440a68ff550cf1c3bf3c5eaa01a6f3f292d28c406d6332b7af827e259a9"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bomb.mat",
+      "sha256": "4eb43fabd044a0330df4aead7d51ccc409a40fbfea34b66acd6aa31b839104c4"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_boxingglove.mat",
+      "sha256": "af7fac88519bb5194434b13ae654e76a6f74de22646d9f07d8e00675a3749be7"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bullet.mat",
+      "sha256": "e40f064d0e53236f5d52a4ec3acfcad564b1a47428ef2a9fce8ffe0f7bc1a66f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_exclamation.mat",
+      "sha256": "5d6150bcc173a8bc40883408cc1ee4ad505cb45482ee8f662ede02dedbdd733e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_shield.mat",
+      "sha256": "b7b421383885eafb1878e5cb6306564655488f9d3d3ed1e44d698996bc2a42b0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/Material #30.mat",
+      "sha256": "d57214764a3cf587f1950126e3764cd8acb0ef927181497a15af769929f98123"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/sphereshield.mat",
+      "sha256": "1de4d43706cd4390f394f9a017f97339a35b4bf4d6a27ea05be0595fc1e52dfa"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/DiPauseValidation.cs",
+      "sha256": "16f039342e15f30a54aa222719f273f73c379dbcff6ef2bf45ca92488f6a1107"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/DiPauseValidation.cs.meta",
+      "sha256": "a0f4c6fb95e8357cc164911f5faf4946dbab01797c6b8af4006577ff3da50b34"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/GameClockValidation.cs",
+      "sha256": "9de2897e30ff73201ff424266d0455f779891ea0c0f9a67cc394e77e9cc2dc55"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/GameClockValidation.cs.meta",
+      "sha256": "c3d068eeb96db3ea78caffc6037988b31455634bb5cba80e954abf606eeb1de7"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LoopValidation.cs",
+      "sha256": "4b3439e19941d65886c132316030abaa3b916ce6e13dc444f22691b7c702e3fc"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LoopValidation.cs.meta",
+      "sha256": "f93e5fa814d1d0f6debc96bbfa994162d3e2152df84fba84ba19052fd3e1519c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs",
+      "sha256": "2b5059ff3c869feff698b4fe55197f9345d665a4c0b48c7a0a4d43ef86930137"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObservableValidation.cs.meta",
+      "sha256": "ab424cc2243bb1b46056f06198029f32be85b30457fecf411a18178090895124"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/PoolValidation.cs",
+      "sha256": "00d80c3fd96bde43e94fa6cb0224551610fa4d152bf91a81401468056741f6d6"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/PoolValidation.cs.meta",
+      "sha256": "7eaf5309b8b7d50911a5d101144fa69867d41c132bdbac9e0a103c41f0a60058"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs.meta",
+      "sha256": "ec19f28a6db9ada4d51df7c6e0e3bc3d2bdfe8397061edb8e7bef5c1e2c07e7e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/So.meta",
+      "sha256": "e67c930b93952e23953de9d74b714ced1080f1b79839a7f105b63bcf8dce7df7"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity",
+      "sha256": "2f30a84cd17e75973d9e3289ce860dfb1a5060305d0f27aa11f2b0f364a5621f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity.meta",
+      "sha256": "b5815a6b12afaf810577bc89041c4ce46516c7cd6609693f8db616f8e5584d80"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI/GameLifetimeScope.cs",
+      "sha256": "ec24760212bbdac54a13e1705711a74eb2d788f60e3efe4d1868d74056471e28"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI/GameLifetimeScope.cs.meta",
+      "sha256": "fb2803e4a25537eddae0297b092e70e5f299f0361e8fb33618f8bf3347ad829f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/DI.meta",
+      "sha256": "129046f676be234e958fec847f295d6a427eaf8f95980ef57df0d688203707be"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow/GameFlow.cs",
+      "sha256": "0b61a7f41de1716e0e4fc649684a80d15c900e6f65418ec06e41e23e0f480b26"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow/GameFlow.cs.meta",
+      "sha256": "dcfcfcbdc3238445f593d0f79b27d4a1954e50912856af299ab61af3944e84db"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Flow.meta",
+      "sha256": "bf2d768f408c3b4a39df50767d36580a11e3c19616fdeefb206a8506a8763fe4"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log/GameLog.cs",
+      "sha256": "ef8dc5b76a4e8375f353feee97a39b7d018afec30700f30a6beb9c47492e7a0f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log/GameLog.cs.meta",
+      "sha256": "16e4396f4c4e6a74bfe0960677ad2c77cc04f10c25dbb93772c84dd598343425"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Log.meta",
+      "sha256": "1d04ee800854fb4454e14305b19d1d5b85cd4d8c9e027744e0096d6a56803117"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/GameClock.cs",
+      "sha256": "759aaf7cda11294e711113161132ff0cab71094bb6bea4d600d22de951965133"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/GameClock.cs.meta",
+      "sha256": "238c9c701cbf9e0ccc0ff28dc757698539db3e91e64586d0b34a6be6bb55f986"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/IGamePause.cs",
+      "sha256": "41848c29ffec1d24f53f320d41155a2404355d1525ae782071759cb4d0b7784f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/IGamePause.cs.meta",
+      "sha256": "e12ca923422aeb1bd9311d1bf9faae25d622b77cd2020aa58ab2c56990e34d65"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/ILoopEvents.cs",
+      "sha256": "442dcd62f5224dfaf4233fa3f91dc0780423f033da193b30d675ab546e479df2"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/ILoopEvents.cs.meta",
+      "sha256": "b0cb3cedb1d53633a1f9b255592083b76c037cac45028ac68346384cfeaf0feb"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/LoopDispatcher.cs",
+      "sha256": "412574c177fcb894754acc9305767c9e12cbafc717fc80f43f393560365b5782"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/LoopDispatcher.cs.meta",
+      "sha256": "c95b5711349d126ce67e42a2c91d20769d62e92b3e062e81f62757bdc029a09c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UnityGameTime.cs",
+      "sha256": "f625d54c552ab9ef8f286b7fd17e740f80e8e97441bdcc165dcebe11f65778d9"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UnityGameTime.cs.meta",
+      "sha256": "c7717666571d9cc266b186a68f42bb4e8582f6dd20b7dda89ae02b33f23ecb06"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UpdateLoop.cs",
+      "sha256": "a90b0717dbf9e0f87db0d651151c1f89095c997f1b3b09ec46738dacc496159b"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop/UpdateLoop.cs.meta",
+      "sha256": "ec8913003eee4fa2650948769b909197d0721fb008ad4419e93e5132be449ae9"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Loop.meta",
+      "sha256": "14dc3779926feba3818e4b9629234c4690a284871c1a32fa7dae38b4cf10aa24"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs",
+      "sha256": "c195d01d59e87ae12962fd579c2f88312f5f105ffd908b04430c4ed99abd40a8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs.meta",
+      "sha256": "3126a377864a24975c54d2a863bb33851a2f617c8c5fd5c350672e77ebeec577"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObModel.cs",
+      "sha256": "40a5d8b74fba014bc1017dee502bd6e9216826ea22b66d9fe2c0bd4cfb194d47"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObModel.cs.meta",
+      "sha256": "5f1cb23afe163634dd1ca15121563beb3c6f77e721445fad1cc985fc166d758a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs",
+      "sha256": "749e4cbbd0651f63112df35fe699122bdc8741398bd26e3340395838de420dba"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs.meta",
+      "sha256": "158662ae76c45464d2fac70f8665983449f886e8c99e9e20e000a6911aeb5369"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object.meta",
+      "sha256": "6fd85661b5a8debd0d9553c6251c242bfecbc6f2b691cb80fa1835bfd68839c5"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs",
+      "sha256": "9ea056df778aa41e2a525739b92459fdf137f3848a07252dc16c21eb0c85af7f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer/Observable.cs.meta",
+      "sha256": "05262b08b62b4b1b50e95b186f0d475b0253145b2d98c6ca1c6fec69924a1a07"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Observer.meta",
+      "sha256": "d3059e2f71af65223b0bae2c9b8a056d68fd8d4e527c03ebf9d9606dfb0bf60f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/PhysX.meta",
+      "sha256": "ce3fd189ee4c2e89f1a02543ef6f71e40ce04bbf536c00f3229abb5a0331a1b6"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPool.cs",
+      "sha256": "9931db393f78a96d65209c020c2dfe17b608c3c90efc640d67b17e7ce5421004"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPool.cs.meta",
+      "sha256": "1c1c50daa84b20135c9c9d1fa466897dfbef8f28dc3a572c2b96246a08083b00"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolLifecycle.cs",
+      "sha256": "d897379cf55851a36359f34a4c2f341b910b8b3e4e015c6a1ee8a09b36fadeec"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolLifecycle.cs.meta",
+      "sha256": "2bc49c05a99fa14bcead8bfbb7aa11a3da7a9145d07534897e6f3499c84c4131"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolable.cs",
+      "sha256": "0a043c5c025f3ca848b29c5559c46c4db19d3487f5fb0a77dce5fe11c67e523d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolable.cs.meta",
+      "sha256": "81656ee039c84ea579b29fe38041c743f13fd9e26f362638f76d5a365769b580"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs",
+      "sha256": "809f5391e8e03dc69f3f130f7b9c089acd5041dd0c53c2e63db3362406c5f1a8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs.meta",
+      "sha256": "9118aedc792e8ec74ab0a4a9923db72634d88229741f75ab097ef40702388b1c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolConfig.cs",
+      "sha256": "20e303de6b50ae4fb12af3a6b3939eb7be63ab8dab98545a58b48e02d1d105b3"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolConfig.cs.meta",
+      "sha256": "8cabca4988fc8f73a8bc19e62d9b7807270f15fbfc43b27701e6d808971561db"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolContainer.cs",
+      "sha256": "a239594ca9cd6846a0578ad8d6072534dee4664b841314c0f342e841a1163ef0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolContainer.cs.meta",
+      "sha256": "ede71c7c14f7a6f224a4b14fece912f872c4e23e7691dedb828f4c5d07d52d9b"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs",
+      "sha256": "d81f94aa0501f9444f85d85e1f2a77a683c92209c676f90d6be56b63eea81974"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs.meta",
+      "sha256": "6211bfc2e5fcbbd4a74b4ec2c81e834302b7f19cfffb63c751a7e61b1dc2278e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs",
+      "sha256": "9b42b92ae8032b66dbeee9233a021d2e7c1b659c2e070e6c0ac38c7b6541428a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs.meta",
+      "sha256": "0c4021c66a9243be0b39a774486825f0d390b4d6a413e4e22294c7020d63e2af"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs",
+      "sha256": "fa737a079457eea0229e201b937f2f20b3aa9e6cef5f8f14572675f6f97cce59"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs.meta",
+      "sha256": "ec375f0ce6d1af7bb74653bd2a190fd18e571c0411d7bafec99958558d6577b0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolSpawnArgs.cs",
+      "sha256": "828060ef3133219cb3ca6056d3d03ae567032eca374ef4405e6f270b9ab8b700"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolSpawnArgs.cs.meta",
+      "sha256": "d188b33f2b6e400fd90b42213b6dd39278857690472e3ae77e9b8985b79e2780"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool.meta",
+      "sha256": "756d4ea4699dbde9eaa6051e5be8b7dbb6a6fc4dd21bc583ab44d25f7d48dda5"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/SafeArea.cs",
+      "sha256": "31210edc69d75c49719201d8ccd0e5608dea5bed1be9b8faf912b9300d839371"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/SafeArea.cs.meta",
+      "sha256": "c04e5a74140bfd383325f1d632c2426f411b6bf594b49e6ec1d9be9dcb976c39"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenModel.cs",
+      "sha256": "f18ea48c926ef25db0b43eacaa3712a77854afdcc2b58341e1ddfa37ad524a57"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenModel.cs.meta",
+      "sha256": "e02ece2b70183e9ab230c00e95c2fc3e4fbd05bc38de399a7aaa61889cd766cd"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenNavi.cs",
+      "sha256": "bad46476c3101a4c498d30988da280686140602ddbf2adcc06cfbbaedcecf098"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenNavi.cs.meta",
+      "sha256": "271275f285ed61a7c9b62182b70981213cfb9b879d0e3c4e72cb395db35e0bc5"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPauseScope.cs",
+      "sha256": "15dc7bbd639cdf211211395748cc3f638119f2842152827cb61c60cf94d54fd1"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPauseScope.cs.meta",
+      "sha256": "7bb839b0c4e5dc4ba5fdf5336cf5169ce96e7ca65a63c7a1fee63f23518085c5"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPresenter.cs",
+      "sha256": "9203dd03bdfd40dd71a9628392335a81ceade89161046f40eba80a40793cb44e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenPresenter.cs.meta",
+      "sha256": "5a8124234d11d4ab0c62af00deb4c0e0f219388cf5a454304e642fe3206f2089"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenView.cs",
+      "sha256": "02ffe880f80dbbbab5f81dbcdad4bd95d2ebb02bf4b316ab1ef8261e24990817"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen/ScreenView.cs.meta",
+      "sha256": "187f675b1952d52d61459c3fbe1ed088b67a9ecff44309c42257a2fe9d73a765"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Screen.meta",
+      "sha256": "f77c789c93da7283b3465fa612d20f3cc219cb13b5e8da5576c2594133da9575"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework.meta",
+      "sha256": "f5d31d284e6e27be5dc909ef1149b584d48600f3a8c08a83a5d46475c69bbf28"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+      "sha256": "bc35c8873744bcfd05d3ca77d56f28a7088b8776c8aed7bf49a1d093cc465e7f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs.meta",
+      "sha256": "65199bd4d86307102577d73598fd641f7ad0f915890f12b87fe25866c1305151"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallModel.cs",
+      "sha256": "e7cf2d2bfa62c702f923bba1b1ffb955743111373ec61ff6206d414b398bc342"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallModel.cs.meta",
+      "sha256": "bb0d6524f91bf21bb9b0388ccde97098a577d1a459d0bdcea37d7c02c310c27e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+      "sha256": "9c8ab866fa67274646895ee5036485f70eee41cc72f91dd68500a3a1e040228e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs.meta",
+      "sha256": "d32fa75b1d0dcf9ca99c9ace2f8b0ec2b5752558c8a4642145310434ef69e741"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball.meta",
+      "sha256": "f171fb7a91027b23f69ce219619d004e88e7b5b3415d62fb3798ad7ea8c5beeb"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs",
+      "sha256": "b8c79ce67acdcd64e0a7d810b6c0734ae23c27b1f7d7252f0166cc89396d2ea8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs.meta",
+      "sha256": "533e398e7cd0813e5499978c7fa556c84a2783d69d1f6598357265f42d996dec"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonHead.cs",
+      "sha256": "5db878e2d3407ec79cfa42b9d391e6e35db967b1db07b5a3b207f250c6de5c16"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonHead.cs.meta",
+      "sha256": "31bff8ec35919284d63ff83063bcbb94cb790ba8ba62554366b9ab30836c851f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonModel.cs",
+      "sha256": "92ffe03519127301ecc8fbdaed6aab6bc929848f92bc0c9f07338178697cc03d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonModel.cs.meta",
+      "sha256": "ec671750213b4b7aefa62c0c6b95dbc37a4a7945445afbf4b2f9f278b4412a6d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonView.cs",
+      "sha256": "154dae955f4318b2526079b25854b2ecc6fcd7602071588b9dbaa4726926a8e8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonView.cs.meta",
+      "sha256": "e8e7dfc50761bbda8db988f4c67c02f0df179d88d2d344f4ec21d2f4bd2323c8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon.meta",
+      "sha256": "3efb61f6af40692556cb1528ef37720cd5320e32039f84ef1d2142a885358731"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
+      "sha256": "91fd76d464b08e2764d61bc37bbc40e99a7089f9e06284457325040ce38f7e75"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs.meta",
+      "sha256": "211e8ee29f07f490f426f4b88d3fb59e332a5a07194c06f92973ee1c4da52f03"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs",
+      "sha256": "a9b06d78fb77360aa5981dd8f45e391d3fb0cc25c568691e58059fbd2dd827e5"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs.meta",
+      "sha256": "82fb4cc9dab60bbadec708792a6b94eb7f14259e4ede644c7268db1a563be3ad"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs",
+      "sha256": "6ccb7059dff6d098028640f62e49de58d4c667fe063ed83b742af4331479bb97"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs.meta",
+      "sha256": "df3d3f0c595aeda9d1f31c22440d48b8d0d76c9e3e0aa2708398d25c07c65511"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle.meta",
+      "sha256": "fbbfbc9eb5a4558f523adcf187f9db2352b522855089602872d71f13e0ea4287"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Particles.meta",
+      "sha256": "b9cd34b2a817a3220b9e56078323f0a46020e45f3e6d111b5c3de62a174d44e3"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI/Clear.meta",
+      "sha256": "469e8052f9eae0290d84fe0fb1c88b61f8c6352ec929ddbef1a0948184d6e99b"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI/Failed.meta",
+      "sha256": "708b5db2557078ddf0cc6a5a90c7a9c20354c5e4d151f8b4e2ffe15e1693603c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/UI.meta",
+      "sha256": "ed709d9c80d5dc28a82b8a678659c41b3681777c1438522dcf8f1fc8d1ffdbec"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame.meta",
+      "sha256": "36ab80aedf0d73f5e919d804c5c4f927ce09c57ec3b56695bd3ab81d22f22b9f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/DiPauseProbe.cs",
+      "sha256": "212278bf0b0891a098750ae35fc25b9010920a4336d6ba040934ff3a12a13ce0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/DiPauseProbe.cs.meta",
+      "sha256": "846179a90d505f7d08dadbd4be2803ca8474956e9647466e366dc721b237c475"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PoolRuntimeProbe.cs",
+      "sha256": "b252d644c491582d2872ae2b86f45cfd240b71449a75184a44159f7ce759588a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PoolRuntimeProbe.cs.meta",
+      "sha256": "61af7d09581e1d14c359c506ba359f4f6674649851f259312c43351fdc6e81ff"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test.meta",
+      "sha256": "f843f0ee4fd22da1c20b435c20feaeb4cacee1286d90bb6501012ca21fca578c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+      "sha256": "b4252aa28e5afcde3551feb260e3594782dec2eb27924e800a1079be352b4c61"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Packages/manifest.json",
+      "sha256": "e480dc71402c6719414301d164f2a0f6fa270aaf677df4d852c6441caef282fd"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Packages/packages-lock.json",
+      "sha256": "1a643fd64cd5af78a947e44980ff4e7319c363f8fa9e1bff3a3fc2befe701fe1"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/AudioManager.asset",
+      "sha256": "aeedeb3243f07b61dbbe854aa08b5ef6f0b5274dd9852ad9f6129dde3e105a31"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ClusterInputManager.asset",
+      "sha256": "40e65dd214bf254955d2c8829ca8ce2130fd3510485560ce012e9a1ddd93e623"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/DynamicsManager.asset",
+      "sha256": "b7c9a9dc08b98990109d4346f68745e15e238de400f96c583e53e1c83c743a78"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/EditorBuildSettings.asset",
+      "sha256": "d1df6958092d8a4983649f37d3591d2765436a3a0cf9a7717cde176bc8f31c6d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/EditorSettings.asset",
+      "sha256": "32d6a9be4c9aa9795a96bd951820a2d9be1bfefab82ed05a5db111af0863938f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/GraphicsSettings.asset",
+      "sha256": "7fa8cab526fb3fd13db8594db44aa2fa445bcf8ec138c3b05039e5ea600fa333"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/InputManager.asset",
+      "sha256": "7a1bb836a1008d26d0860d143e9d9df7ca41731d30a72901b518063819c62df2"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/MemorySettings.asset",
+      "sha256": "1e8379a461b10ae09f3f696911088c16875d63e87ed5f2d95df9e1892703f9fd"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/MultiplayerManager.asset",
+      "sha256": "aba89fd1a1ddad182727ad82727e536d27372e90328a8196da2a4560398983dd"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/NavMeshAreas.asset",
+      "sha256": "80106cfa7e6181a1928b142c075f3e510d527441e3d79bc83590e4ac91e7cd66"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/PackageManagerSettings.asset",
+      "sha256": "82ad451d85c074049cec78c4c308ed7a5f5d74b92cd2420ba3cab0bfffcfbcd0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/Physics2DSettings.asset",
+      "sha256": "e3cbdbf0be15244b7b67d2f07bdb8e8981911c11a8c7fe8035f5261272fec658"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/PresetManager.asset",
+      "sha256": "29c125923fe6e29f90190d4fce1c82d660e7051546e2c9d02908d18c9cf2436c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ProjectSettings.asset",
+      "sha256": "823c5752198336d3092564f39307278dac7b3f0245857cde5bf6e53afe4330ce"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ProjectVersion.txt",
+      "sha256": "a606bb0b7a7fb3761cb9a8613e27fd904ca9d4ac9551aae20c224d707ad82c19"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/QualitySettings.asset",
+      "sha256": "2ed4eb0c55c3f2d2f917423848e2a6598a2821e9c90141182c839731bc61eeb0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/SceneTemplateSettings.json",
+      "sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ShaderGraphSettings.asset",
+      "sha256": "cdba1e5d65bcf6e3269d76ed3e60b6c21f98322002996642c9d74f1eb89f6b91"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/TagManager.asset",
+      "sha256": "23fc56b484aa3d7edf5914cd3591f7a823ccef5e3f3496f8a51f30388ead63dc"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/TimeManager.asset",
+      "sha256": "1a83e54adbbda7c9f4851103a0c6ab7f6448a3343d4ea5b7620452fa08416ecd"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/URPProjectSettings.asset",
+      "sha256": "c317fe22b9488785c0611f0642429922e5d324430d929bffb41648130f30c218"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/UnityConnectSettings.asset",
+      "sha256": "b7dd1e8290598f5ce86919ba1c98b42b766c8c42191a30fa2c4d12195c4ecd00"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/VFXManager.asset",
+      "sha256": "f066c6483919961332415ee64204f74fe52f38c02e82892eb02b7a5b2e381f0e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/VersionControlSettings.asset",
+      "sha256": "e7bda45bf7a394745fee1316e6c71fa676004d591ad1f3aa247fd3e4ceb86071"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/XRSettings.asset",
+      "sha256": "edd2beb4a2e388312b4b7da241aa51070434005d82c59363f1237dd2e567585f"
+    }
+  ],
+  "reference_files": [
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Config/MConfigContainer.cs",
+      "sha256": "bea0751686289686454f8d0c0b9dd2251dd5826220c92e949cfc3eddb8c574b4"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Config/ScriptableConfiguration.cs",
+      "sha256": "714a060452120bc17b88cbdf84d61d781f4037358a00a91a19efb043a1d596df"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/IModular.cs",
+      "sha256": "5b5f473ef6b2dbf2289c18d8fb275ea1c10e332053051fce343a5f3497360616"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/IVContainerConfigurable.cs",
+      "sha256": "47e3fba6996974c207099980da75ff95f8621953974dde4b842c2aef9091dabc"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/Modular.cs",
+      "sha256": "92321e9236366b7b0157191c7b9e3110f1882ac0e4119af502399f5e560c0f41"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModularAttribute.cs",
+      "sha256": "67a2ec93f15687fe870a6618e823468ecab2a2cb895ab64f95e95ef8dc32c604"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModuleComposition.cs",
+      "sha256": "1065c27aca66ab32b0a3897bea90792fb3aac4868945e26ad073d6f4bb283363"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/ModuleContainer.cs",
+      "sha256": "a245a9ee9e79c1bda2eaf110bef3f99a24718f105c92b4251908faed9b4748a9"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Core/StaticScriptable.cs",
+      "sha256": "e68cd695a93d60385e6ce5d4dbb3939c5c154d6f2c9a1f4d7b13331ad3ff5f7e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/BaseViewEditor.cs",
+      "sha256": "4079535d7ac1646f7f316c13265f12db176c6cfac9dd8037a57f6c1f1626650a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/FindBrokenReferences.cs",
+      "sha256": "a5e7472b24a597cf7e2b13b4347b16218adf304b2945b72415fb8cb33f18c1b2"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/ModuleCompositionValidator.cs",
+      "sha256": "0cb813db8beecc3d0a7bd7c04ee0687cbde58349c9cb314407a79b962fd23b74"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Editor/ModuleContainerEditor.cs",
+      "sha256": "53ab59a0f6af520aada623509b9c78a8b88dbdd33b5fb3179c183b464074388d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IConfigs.cs",
+      "sha256": "bbe98e62e9b081cb5ef5cf038d972b46c878c82aa251a24740cc3ea9c3fbf5ee"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IPool.cs",
+      "sha256": "dea66bbf28ac96d3f52c306daff537c6e9afcb2a0640b03ef3019b1739729d44"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/ITimeController.cs",
+      "sha256": "37e81921285545d438d67fd0e5f761a2a107a23512baa48914d0c93f9bed43da"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/ITimerHandle.cs",
+      "sha256": "ee7f385be66d3f6b67be7981034a8275245ee4ec2631cf1e3a1f3cd669eefcf4"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Interfaces/IUpdateLoop.cs",
+      "sha256": "eb86aaef372cc09618f20df2d887a3f0ce5c6efef1aef604b23b0035f906adef"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/IObservable.cs",
+      "sha256": "7372638cd65c62c18b569f67ded2c056ba3e3920fde1db4cfafba9806ada004d"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/IObserver.cs",
+      "sha256": "2be02a9446c335a7b9a9d034b77abef4e4df6fd3542d006f677b2011a4a20d23"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Observer/Observable.cs",
+      "sha256": "92eaab8c668edd8428b2cf06cd3cc7d92cbaca5e101c69a26ee7ce0de0e17f06"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/IPoolInternal.cs",
+      "sha256": "9d8a2b8d8ec286f3c581f5a2f5bee90d8690d7837f82a70151758f20c0e4faeb"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/IPoolable.cs",
+      "sha256": "ff87a533e9e5fdc9fd0d616f324dce907a553ebf6c311c4dbe42cc2323dfd57c"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/MPool.cs",
+      "sha256": "30a27788e005b5ca213731ec7018c3e601dd1a9bad4e11293608e979d7d480c9"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/Pool.cs",
+      "sha256": "a87fba68cdd9701614df3abf1782bc1ea82e358c3d0bf2a70be24ae737c4d7b3"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/PoolConfiguration.cs",
+      "sha256": "d1be0d943382b8e2d602096d422ae019d86468e928106b8faaf260c38ccd3a4f"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/Pool/PoolableView.cs",
+      "sha256": "bca82d80de126027bc8d94648f479b6bd8747d8ad97febb45d7f464c8bd5d39b"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/UpdateLoop/MTimeController.cs",
+      "sha256": "484622a85ed2656a153adf7986a197e945d0bce01007589fe5c161b1fb805ac8"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/UpdateLoop/MUpdateLoop.cs",
+      "sha256": "076d351307fdd9a9351734ec4c26addcdab83a60bd14be94719e22146c072ed0"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/Framework/MVC/View/BaseView.cs",
+      "sha256": "136afb226b6ce2674a0da5c5991b371178922af3e154e0d24415e3ba6a64a042"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Cell/CellModel.cs",
+      "sha256": "d6a80c8a9e33889faa59a4a31dee64481547cca4decc4dad4ebdc891981fd11e"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Cell/CellView.cs",
+      "sha256": "cc68f08f4997426e74726b9d366768704ccf3b98ca135a9f16434021e37780a4"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/Board/BoardBuilder.cs",
+      "sha256": "9ce186004048b74799448240081c91835cb94969f94db37d2c23cba0e2a1274a"
+    },
+    {
+      "path": "/Volumes/Dock_SSD/Projects/ProjectTemplate/Assets/_Game/UserInterface/HUD/Lives/LivesView.cs",
+      "sha256": "26cef813e81e67486e620f8a394b11edbbc2ba414b187be14031a2d77641f099"
+    }
+  ],
+  "git_status": " M .idea/.idea.Smesh-Fest-PhysX/.idea/workspace.xml\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Portals/portal_stripes_yellow_ADD.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bomb.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_boxingglove.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_bullet.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_exclamation.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Materials/Misc/Powerbox/Metal/power_metal_shield.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/Material #30.mat\"\n M \"Assets/AssetPackage/Particle/Epic Toon FX/Models/Materials/sphereshield.mat\"\n M Assets/Scenes/Game.unity\n M Docs/README.md\n M Packages/manifest.json\n M Packages/packages-lock.json\n M ProjectSettings/PackageManagerSettings.asset\n?? AGENTS.md\n?? Assets/Editor.meta\n?? Assets/Editor/\n?? Assets/Project.meta\n?? Assets/Project/\n?? Assets/Scripts/Framework/DI.meta\n?? Assets/Scripts/Framework/DI/\n?? Assets/Scripts/Framework/Flow/\n?? Assets/Scripts/Framework/Log.meta\n?? Assets/Scripts/Framework/Log/\n?? Assets/Scripts/Framework/Loop.meta\n?? Assets/Scripts/Framework/Loop/\n?? Assets/Scripts/Framework/Object.meta\n?? Assets/Scripts/Framework/Object/\n?? Assets/Scripts/Framework/Observer.meta\n?? Assets/Scripts/Framework/Observer/\n?? Assets/Scripts/Framework/Pool/\n?? Assets/Scripts/Framework/Screen.meta\n?? Assets/Scripts/Framework/Screen/\n?? Assets/Scripts/InGame/Ball/\n?? Assets/Scripts/InGame/Cannon.meta\n?? Assets/Scripts/InGame/Cannon/\n?? Assets/Scripts/InGame/Obstacle/\n?? Assets/Scripts/InGame/UI/\n?? Assets/Scripts/Test/\n?? \"Assets/TextMesh Pro.meta\"\n?? \"Assets/TextMesh Pro/\"\n?? Docs/HANDOFF.md\n?? Docs/Prototype/\n"
+}

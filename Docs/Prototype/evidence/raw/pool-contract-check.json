@@ -1,0 +1,27 @@
+{
+  "recorded_at_utc": "2026-09-08T14:09:52.649018+00:00",
+  "task_id": "W-000-POOL-CONTRACT-001",
+  "baseline_files": 129,
+  "unchanged_count": 129,
+  "changed_since_baseline": [],
+  "missing_since_baseline": [],
+  "ai_code_scene_package_mutations": false,
+  "runtime_tests_run": false,
+  "documentation_local_links": 91,
+  "manifest_paths": 43,
+  "architecture_criteria": [
+    "A-01",
+    "A-02",
+    "A-03",
+    "A-04",
+    "A-05",
+    "A-06",
+    "A-07",
+    "A-08",
+    "A-09",
+    "A-10"
+  ],
+  "document_errors": [],
+  "documents_valid": true,
+  "note": "Any non-document drift reflects concurrent workspace edits; this unit only changed Docs."
+}
