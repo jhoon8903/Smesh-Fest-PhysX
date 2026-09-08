@@ -1,0 +1,16 @@
+{
+  "task_id": "W-000-MVC-001",
+  "checked_at": "2026-09-08T16:06:16.451027+00:00",
+  "documents": 6,
+  "local_links": 120,
+  "manifest_paths": 75,
+  "missing_links": [],
+  "missing_manifest": [],
+  "trailing_whitespace": [],
+  "checks": {
+    "binding_implemented": true,
+    "ball_still_pending": true,
+    "assertions_match_evidence": true
+  },
+  "passed": true
+}

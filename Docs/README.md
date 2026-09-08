@@ -50,7 +50,7 @@ Docs/
 - [첫 목표와 분담](Prototype/PLAN.md) · [실제 확인 결과](Prototype/REVIEW.md)
 - [자동 제작 기록](Prototype/evidence/REPORT.md) · [다음 작업 인계](HANDOFF.md)
 
-2026-09-09 업데이트: R-019에 따라 Daniel의 ProjectTemplate MVC를 비교하고 **현재 필요한 책임부터 간소화해 연결**하는 기준을 [ARCHITECTURE](Prototype/ARCHITECTURE.md)에 기록했다. 이번 비교는 문서·설계 작업이며 MVC 코드는 아직 골격이다. 다음 단위는 Model 변경 → View 갱신 → 구독 해제 연결이다. 참고의 Pool 상속·모듈 부팅 구조를 그대로 복제하지 않는다.
+2026-09-09 최신 업데이트: R-021·R-022에 따라 **풀 Ball별 View·Model·Controller 묶음 재사용**을 구현했다. 첫 BallModel은 대여 상태·사용 세대만 소유하며 물리 상태는 미리 넣지 않았다. 정상/오래된 반환, 같은 묶음 재대여, 활성 풀 종료와 씬 계층 선파괴 정리를 포함한 임시 객체 Play Mode 19개 검사를 통과했다. Daniel의 Game 씬·Ball/Cube Prefab·PoolConfig 저장 파일은 검사 전후 동일하다. 다음 컨텍스트는 Obstacle MVC, 그 다음은 물리 구현이다. [구현 계약](Prototype/ARCHITECTURE.md) · [검증 결과](Prototype/REVIEW.md).
 
 기본 협업 순서는 **이번 목표 → 사람·AI 분담 → 작은 결과 제작 → 함께 확인 → 다음 작업 조정**이다. 사용자는 원하는 제작을 직접 맡고 AI는 합의된 범위와 자동 기록을 지원한다.
 

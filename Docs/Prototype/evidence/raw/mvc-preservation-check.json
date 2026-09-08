@@ -1,0 +1,23 @@
+{
+  "task_id": "W-000-MVC-001",
+  "checked_at": "2026-09-08T15:58:53.325534+00:00",
+  "baseline_files": 140,
+  "unchanged": 139,
+  "changed": [
+    "Assets/Scripts/Framework/Object/ObModel.cs"
+  ],
+  "missing": [],
+  "expected_modified": [
+    "Assets/Scripts/Framework/Object/ObModel.cs"
+  ],
+  "unexpected_changes": [],
+  "new_source_files": [
+    "Assets/Scripts/Framework/Object/ObViewOfT.cs",
+    "Assets/Scripts/Framework/Object/ObViewOfT.cs.meta",
+    "Assets/Scripts/Test/MvcRuntimeProbe.cs",
+    "Assets/Scripts/Test/MvcRuntimeProbe.cs.meta",
+    "Assets/Editor/Validation/MvcValidation.cs",
+    "Assets/Editor/Validation/MvcValidation.cs.meta"
+  ],
+  "note": "Saved files; no scene/prefab rebuild or save performed. Unity imports created metadata for new test files."
+}
