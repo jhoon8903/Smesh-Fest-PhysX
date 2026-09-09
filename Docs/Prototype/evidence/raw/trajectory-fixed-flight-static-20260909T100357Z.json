@@ -1,0 +1,33 @@
+{
+  "recordedAtUtc": "2026-09-09T10:03:57Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "scope": "Ball trajectory calculation and explicit Config call sites; no saved Scene wiring or collision behavior",
+  "trajectoryModes": {
+    "Straight": "normalized target displacement multiplied by launchSpeed",
+    "Curve": "displacement divided by curveFlightSeconds minus one half gravity multiplied by curveFlightSeconds"
+  },
+  "curveFlightSecondsDefault": 0.75,
+  "launchOrigin": "Cannon Head Muzzle",
+  "cannonAim": "One target-direction aim before reading the final Muzzle position",
+  "removedLegacyCalculator": "BallisticLaunch",
+  "replacementCalculator": "BallLaunchVelocity",
+  "legacyOverloadRetained": false,
+  "worldPointerDirectShotValuesRemoved": true,
+  "worldPointerRequiredConfigs": [
+    "BallConfig",
+    "PhysXConfig"
+  ],
+  "compilerErrors": 0,
+  "validatedScriptWarnings": 0,
+  "validatedScriptErrors": 0,
+  "gitDiffCheckPassed": true,
+  "sceneEditedByThisUnit": false,
+  "sceneSha256BeforeAndAfter": "c3bf38a191de3e2b59e5fb341fa6526aab29981c1b1db1e3b35e7070852d53b1",
+  "runtimeValidationRun": false,
+  "pending": [
+    "Assign Config assets to the saved World object",
+    "Replace Block-plane projection with eligible Obstacle raycast",
+    "Implement Straight gravity-off-until-first-collision and Curve gravity-on-from-launch"
+  ]
+}

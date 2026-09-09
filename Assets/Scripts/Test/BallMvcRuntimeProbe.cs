@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using Framework.Pool;
 using InGame.Ball;
+using InGame.Config;
 using UnityEngine;
 using VContainer;
 
@@ -34,6 +35,7 @@ namespace Framework.Test
         private GameObject fixtureRoot;
         private PoolFactory factory;
         private IObjectResolver resolver;
+        private BallConfig ballSettings;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -50,7 +52,9 @@ namespace Framework.Test
             result.unityVersion = Application.unityVersion;
             try
             {
+                ballSettings = ScriptableObject.CreateInstance<BallConfig>();
                 ContainerBuilder builder = new ContainerBuilder();
+                builder.RegisterInstance(ballSettings);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -124,7 +128,7 @@ namespace Framework.Test
                        hierarchyModel.ObserverCount == 0,
                     "Hierarchy-first destruction left the Ball MVC bundle active before pool disposal.");
                 Assert(!hierarchyLease.IsValid && !hierarchyLease.Return() &&
-                       !hierarchyController.TryLaunch(hierarchyEpoch, Vector3.right),
+                       !hierarchyController.TryLaunch(hierarchyEpoch, Vector3.right, BallTrajectoryMode.Straight),
                     "A destroyed Ball remained reachable through its lease or controller before pool disposal.");
 
                 hierarchyFirstPool.Dispose();
@@ -152,6 +156,7 @@ namespace Framework.Test
                 if (fixtureRoot != null) Destroy(fixtureRoot);
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
+                if (ballSettings != null) Destroy(ballSettings);
             }
 
             yield return null;

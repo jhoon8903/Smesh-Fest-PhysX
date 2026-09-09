@@ -1,0 +1,38 @@
+{
+  "id": "ball-gravity-collision-or-z-finish-20260909T134900Z",
+  "stage": "build",
+  "kind": "finish",
+  "actor": "Daniel + Main + prototype_builder + prototype_reader",
+  "task_id": "ball-gravity-collision-or-z-004",
+  "status": "static_complete_runtime_pending",
+  "summary": "Straight Ball은 직접 Obstacle 충돌 또는 world Z 경계 중 먼저 발생한 조건에서 중력을 켜고, Curve는 발사부터 중력을 유지하도록 수정했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PhysXRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "contract": "Straight: direct same-GameObject ObstacleView collision OR strict world Z > Config threshold; Curve: gravity from launch",
+    "fallback": false,
+    "scene_prefab_config_changed": false,
+    "builder": {
+      "assigned_model": "gpt-5.6-terra",
+      "reasoning_effort": "medium",
+      "outcome": "production code, two probes, and current docs updated",
+      "rework_required": "one lifecycle-token review finding corrected"
+    },
+    "reviewer": {
+      "assigned_model": "gpt-5.6-luna",
+      "reasoning_effort": "low",
+      "outcome": "final diff review: no findings"
+    },
+    "unity_script_diagnostics": "4 scripts, 0 warnings, 0 errors",
+    "unity_console_errors": 0,
+    "git_diff_check": "passed",
+    "play_mode_run": false
+  }
+}

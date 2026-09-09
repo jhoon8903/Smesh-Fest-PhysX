@@ -3,9 +3,11 @@ using System;
 using System.Collections;
 using System.IO;
 using Framework.Pool;
+using InGame.Config;
 using InGame.Obstacle;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Framework.Test
 {
@@ -34,6 +36,7 @@ namespace Framework.Test
         private GameObject fixtureRoot;
         private PoolFactory factory;
         private IObjectResolver resolver;
+        private ObstacleConfig obstacleSettings;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -50,7 +53,9 @@ namespace Framework.Test
             result.unityVersion = Application.unityVersion;
             try
             {
+                obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
                 ContainerBuilder builder = new ContainerBuilder();
+                builder.RegisterInstance(obstacleSettings);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -137,6 +142,7 @@ namespace Framework.Test
                 invalidLeaseBody.useGravity = false;
                 invalidLeaseObject.AddComponent<BoxCollider>();
                 ObstacleView invalidLeaseView = invalidLeaseObject.AddComponent<ObstacleView>();
+                resolver.InjectGameObject(invalidLeaseObject);
                 invalidLeaseView.OnPoolCreated(invalidLeaseView);
                 ObstacleModel invalidLeaseModel = invalidLeaseView.OwnedModel;
                 ObstacleController invalidLeaseController = invalidLeaseView.Controller;
@@ -157,6 +163,7 @@ namespace Framework.Test
                 neverRentedBody.useGravity = false;
                 neverRentedObject.AddComponent<BoxCollider>();
                 ObstacleView neverRentedView = neverRentedObject.AddComponent<ObstacleView>();
+                resolver.InjectGameObject(neverRentedObject);
                 neverRentedView.OnPoolCreated(neverRentedView);
                 Assert(neverRentedView != null && neverRentedView.OwnedModel != null &&
                        neverRentedView.Controller != null && !neverRentedView.OwnedModel.IsRented &&
@@ -186,6 +193,7 @@ namespace Framework.Test
                 if (fixtureRoot != null) Destroy(fixtureRoot);
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
+                if (obstacleSettings != null) Destroy(obstacleSettings);
             }
 
             yield return null;

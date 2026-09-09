@@ -1,0 +1,61 @@
+{
+  "recorded_at_utc": "2026-09-09T07:10:59Z",
+  "unity_version": "6000.3.10f1",
+  "branch": "PhysX",
+  "head": "4f84c080864e76f9e001200da1d36dc6963cc5e7",
+  "success": true,
+  "validation_level": "static",
+  "unity_compile": {
+    "compiler_errors": 0,
+    "final_console_errors": 0
+  },
+  "script_diagnostics": {
+    "files": 11,
+    "warnings": 0,
+    "errors": 0
+  },
+  "rework": {
+    "required": true,
+    "first_compile_error": "WorldPointerInput referenced a PointerEventData.eventSystem member that is not available in the installed UGUI API.",
+    "correction": "The adapter now retains the EventSystem reference separately and the next Unity compile passed."
+  },
+  "scene_connection": {
+    "path": "Assets/Scenes/Game.unity",
+    "before_sha256": "b00cdcf6acb4b9242b00a6a6688c827f22cff34184ea437ae1be5d2fda8cc321",
+    "after_sha256": "7d1a1873236d51f1e7b514d4f78d8c14e77a6550a3cb9bc97f6311e937297cb6",
+    "recovery_source": "The before file exactly matched tracked HEAD before the edit.",
+    "expected_diff": "40 added YAML lines only: CannonView on GameObjects/Cannon and WorldPointerInput on WorldObjects with explicit references.",
+    "root_count": 4,
+    "is_dirty_after_save": false,
+    "cannon_view": {
+      "yaw_root": "GameObjects/Cannon",
+      "pitch_pivot": "GameObjects/Cannon/Body",
+      "barrel_reference": "GameObjects/Cannon/Body/Head",
+      "muzzle_offset_world_units_in_reference_direction": [0.0, 0.16, 0.0]
+    },
+    "world_pointer_input": {
+      "camera": "WorldObjects/Main Camera",
+      "block_plane": "GameObjects/Blocks",
+      "ball_pool": "Assets/Project/So/Ball.asset",
+      "target_bounds_center_local_xy": [0.0, 0.225],
+      "target_bounds_extents_local_xy": [0.225, 0.3],
+      "launch_speed": 10.0,
+      "max_flight_seconds": 4.0,
+      "recycle_below_y": -1.0
+    }
+  },
+  "preserved_asset_hashes": {
+    "Assets/Project/Prefabs/Ball.prefab": "c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff",
+    "Assets/Project/Prefabs/Cube.prefab": "a584b305abfcd3efa8a174300c1b0f5de3ac27f3fa80462ec10e2343a51503a0",
+    "Assets/Project/So/Ball.asset": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+    "Assets/Project/So/Cube.asset": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+  },
+  "scope": "Compilation, per-script diagnostics, live component references and serialized scene diff only.",
+  "not_run": [
+    "Click Launch Runtime Play Mode probe",
+    "actual Game scene click, flight, collision or feel",
+    "UI pointer blocking at runtime",
+    "Managed Stripping Level High Player build",
+    "IL2CPP/AOT or device"
+  ]
+}

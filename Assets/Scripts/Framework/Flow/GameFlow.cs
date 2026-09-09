@@ -1,4 +1,5 @@
 using System;
+using InGame.Level;
 using Framework.Loop;
 using UnityEngine;
 using VContainer;
@@ -10,12 +11,14 @@ namespace Framework.Flow
     {
         [SerializeField] private GameLogLevel logLevel = GameLogLevel.Debug;
         private UpdateLoop _loop;
+        private LevelSession _levelSession;
         private bool _started;
 
         [Inject, UnityEngine.Scripting.Preserve]
-        private void Construct(UpdateLoop loop)
+        private void Construct(UpdateLoop loop, LevelSession levelSession)
         {
             _loop = loop ?? throw new ArgumentNullException(nameof(loop));
+            _levelSession = levelSession ?? throw new ArgumentNullException(nameof(levelSession));
         }
 
         private void Awake()
@@ -25,7 +28,13 @@ namespace Framework.Flow
 
         private void Start()
         {
-            if (_loop == null) throw new InvalidOperationException("GameFlow requires GameLifetimeScope injection before starting.");
+            if (_loop == null || _levelSession == null)
+                throw new InvalidOperationException("GameFlow requires GameLifetimeScope injection before starting.");
+            if (!_levelSession.TryStart(out string failure))
+            {
+                Debug.LogError("[GameFlow] Level start failed: " + failure, this);
+                return;
+            }
             _started = true;
             _loop.StartLoop();
         }

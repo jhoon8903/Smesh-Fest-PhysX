@@ -1,0 +1,52 @@
+{
+  "taskId": "W-001-GROUND-TARGETABILITY-LAYER-001",
+  "recordedAtUtc": "2026-09-09T11:02:02Z",
+  "validationLevel": "Unity compile and static scene inspection; Play Mode not run",
+  "success": true,
+  "layer": {
+    "name": "Obstacle",
+    "index": 8,
+    "pointerCollisionMask": 256,
+    "liveObstacleLayerCount": 24,
+    "liveObstacleViewCount": 24,
+    "sceneExplicitObjects": 23,
+    "scenePrefabOverrides": 1
+  },
+  "ground": {
+    "name": "Ground",
+    "layer": "Default",
+    "sceneGameObjectFileId": 1046626800,
+    "sceneComponentFileId": 1046626805,
+    "component": "InGame.Obstacle.GroundSurface",
+    "scriptGuid": "f42fcef3c058745c99cfd3e229c3f6fe",
+    "liveComponentConfirmed": true
+  },
+  "contract": {
+    "raycastAcceptsExactObstacleColliderOnly": true,
+    "groundCollisionDisablesOnlyThatObstacle": true,
+    "sceneObstacleStartsTargetable": true,
+    "poolRentRestoresTargetable": true,
+    "poolReturnClearsTargetable": true,
+    "usesNameTagParentOrFallback": false,
+    "ballGravityChangedInThisTask": false
+  },
+  "scenePreservation": {
+    "beforeSha256": "80b21c35804146823c68a3025bfdb6bb7899d1f5b69031940808580803fe5922",
+    "afterSha256": "b1eb93e9c48b1cee95cba0c6f390dab0ef6dced30b27f59bf3346ba4d56e6621",
+    "trackedDiffBefore": { "insertions": 38, "deletions": 65 },
+    "trackedDiffAfter": { "insertions": 78, "deletions": 88 },
+    "taskDelta": { "insertions": 40, "deletions": 23 },
+    "existingUserAndConcurrentChangesPreserved": true,
+    "sceneRegenerated": false
+  },
+  "validation": {
+    "dotnetStaticBuildBeforeFollowingBallTask": { "warnings": 0, "errors": 0 },
+    "unityScriptDiagnostics": { "scripts": 5, "warnings": 0, "errors": 0 },
+    "unityVersion": "6000.3.10f1",
+    "unityAssetRefreshCompleted": true,
+    "unityDomainReloadObserved": true,
+    "groundSurfaceTypeLoaded": true,
+    "unityConsoleErrorsAfterRefresh": 0,
+    "playModeRun": false
+  }
+}

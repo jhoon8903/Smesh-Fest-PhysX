@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using Framework.Pool;
 using InGame.Ball;
+using InGame.Config;
 using InGame.Obstacle;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,13 +33,15 @@ namespace Framework.Test
             public float obstacleDisplacement;
             public bool initialBallSleeping;
             public bool initialObstacleSleeping;
+            public bool collisionEnabledGravity;
+            public bool worldZEnabledGravity;
             public string error;
             public string scope;
         }
 
         private readonly Result result = new Result
         {
-            scope = "Temporary inactive sources plus in-memory PoolConfig instances in an isolated LocalPhysicsMode.Physics3D scene. No saved Scene, Prefab, PoolConfig, or ScriptableObject asset is edited."
+            scope = "Temporary inactive sources plus in-memory PoolConfig, BallConfig, and ObstacleConfig instances in an isolated LocalPhysicsMode.Physics3D scene. No saved Scene, Prefab, PoolConfig, or ScriptableObject asset is edited."
         };
 
         private GameObject fixtureRoot;
@@ -60,6 +63,8 @@ namespace Framework.Test
         {
             result.recordedAtUtc = DateTime.UtcNow.ToString("O");
             result.unityVersion = Application.unityVersion;
+            BallConfig ballSettings = null;
+            ObstacleConfig obstacleSettings = null;
             try
             {
                 Assert(physicsScene.IsValid(), "The local Physics3D scene did not provide a valid PhysicsScene.");
@@ -75,13 +80,18 @@ namespace Framework.Test
                 RigidbodyState ballInspector = new RigidbodyState(ballSourceBody);
                 RigidbodyState obstacleInspector = new RigidbodyState(obstacleSourceBody);
 
-                resolver = new ContainerBuilder().Build();
+                ballSettings = ScriptableObject.CreateInstance<BallConfig>();
+                obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
+                ContainerBuilder builder = new ContainerBuilder();
+                builder.RegisterInstance(ballSettings);
+                builder.RegisterInstance(obstacleSettings);
+                resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
 
-                Assert(factory.TryRent(ballConfig, new PoolSpawnArgs(new Vector3(-3f, 0f, 0f), Quaternion.identity), out PoolLease ballLease),
+                Assert(factory.TryRent(ballConfig, new PoolSpawnArgs(new Vector3(-3f, 0f, -0.25f), Quaternion.identity), out PoolLease ballLease),
                     "Ball rent failed.");
-                Assert(factory.TryRent(obstacleConfig, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease obstacleLease),
+                Assert(factory.TryRent(obstacleConfig, new PoolSpawnArgs(new Vector3(0f, 0f, -0.25f), Quaternion.identity), out PoolLease obstacleLease),
                     "Obstacle rent failed.");
 
                 BallView ball = ballLease.Value as BallView;
@@ -91,8 +101,10 @@ namespace Framework.Test
                 Rigidbody obstacleBody = obstacle.GetComponent<Rigidbody>();
                 Assert(ballBody != null && obstacleBody != null && ball.GetComponent<Collider>() != null && obstacle.GetComponent<Collider>() != null,
                     "Production views did not retain required root Rigidbody and Collider components.");
-                ballInspector.AssertUnchanged(ballBody, Assert, "Ball first rent");
-                obstacleInspector.AssertUnchanged(obstacleBody, Assert, "Obstacle first rent");
+                AssertConfiguredPhysics(ballBody, ballSettings, "Ball first rent");
+                AssertConfiguredPhysics(obstacleBody, obstacleSettings, "Obstacle first rent");
+                ballInspector.AssertNonConfigUnchanged(ballBody, Assert, "Ball first rent");
+                obstacleInspector.AssertNonConfigUnchanged(obstacleBody, Assert, "Obstacle first rent");
                 Assert(ball.Controller.IsCurrentRental(ball.Controller.RentalEpoch) && obstacle.Controller.IsCurrentRental(obstacle.Controller.RentalEpoch),
                     "The initial rental epochs are not current.");
                 Assert(!ballBody.isKinematic && !obstacleBody.isKinematic,
@@ -109,14 +121,20 @@ namespace Framework.Test
 
                 uint ballEpoch = ball.Controller.RentalEpoch;
                 uint obstacleEpoch = obstacle.Controller.RentalEpoch;
-                Assert(!ball.Controller.TryLaunch(ballEpoch - 1u, Vector3.right), "Ball accepted a stale epoch launch.");
-                Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.zero), "Ball accepted a zero launch velocity.");
-                Assert(!ball.Controller.TryLaunch(ballEpoch, new Vector3(float.NaN, 0f, 0f)), "Ball accepted a non-finite launch velocity.");
+                Assert(!ball.Controller.TryLaunch(ballEpoch - 1u, Vector3.right, BallTrajectoryMode.Straight),
+                    "Ball accepted a stale epoch launch.");
+                Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.zero, BallTrajectoryMode.Straight),
+                    "Ball accepted a zero launch velocity.");
+                Assert(!ball.Controller.TryLaunch(ballEpoch, new Vector3(float.NaN, 0f, 0f), BallTrajectoryMode.Straight),
+                    "Ball accepted a non-finite launch velocity.");
+                Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.right, (BallTrajectoryMode)(-1)),
+                    "Ball accepted an unknown trajectory mode.");
                 bool originalKinematic = ballBody.isKinematic;
                 try
                 {
                     ballBody.isKinematic = true;
-                    Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.right), "Ball accepted a kinematic launch.");
+                    Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.right, BallTrajectoryMode.Straight),
+                        "Ball accepted a kinematic launch.");
                 }
                 finally
                 {
@@ -125,9 +143,12 @@ namespace Framework.Test
                 }
 
                 Vector3 obstacleStart = obstacleBody.position;
-                Assert(ball.Controller.TryLaunch(ballEpoch, new Vector3(12f, 0f, 0f)), "Ball rejected a valid launch.");
-                Assert(ball.Controller.HasLaunched && !ballBody.IsSleeping(), "Valid Ball launch did not mark launched and wake the body.");
-                Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.right), "Ball accepted a duplicate launch in the same epoch.");
+                Assert(ball.Controller.TryLaunch(ballEpoch, new Vector3(12f, 0f, 0f), BallTrajectoryMode.Straight),
+                    "Ball rejected a valid Straight launch.");
+                Assert(ball.Controller.HasLaunched && !ballBody.IsSleeping() && !ballBody.useGravity,
+                    "Straight Ball launch did not wake the body with gravity disabled.");
+                Assert(!ball.Controller.TryLaunch(ballEpoch, Vector3.right, BallTrajectoryMode.Straight),
+                    "Ball accepted a duplicate launch in the same epoch.");
 
                 PhysXCollisionRecorder contact = obstacle.GetComponent<PhysXCollisionRecorder>();
                 Assert(contact != null, "Obstacle source did not provide its temporary collision recorder.");
@@ -144,6 +165,9 @@ namespace Framework.Test
                 }
                 result.collisionContacts = contact.contacts;
                 result.obstacleDisplacement = Vector3.Distance(obstacleBody.position, obstacleStart);
+                Assert(ballBody.useGravity,
+                    "A direct Obstacle collision did not enable Straight Ball gravity.");
+                result.collisionEnabledGravity = true;
                 Assert(result.obstacleDisplacement > 0.01f,
                     "Collision did not physically move the dynamic Obstacle.");
 
@@ -153,8 +177,8 @@ namespace Framework.Test
                        IsZero(obstacleBody.linearVelocity) && IsZero(obstacleBody.angularVelocity) &&
                        ballBody.IsSleeping() && obstacleBody.IsSleeping(),
                     "Return did not deactivate, clear velocity, and sleep both bodies.");
-                ballInspector.AssertUnchanged(ballBody, Assert, "Ball");
-                obstacleInspector.AssertUnchanged(obstacleBody, Assert, "Obstacle");
+                ballInspector.AssertNonConfigUnchanged(ballBody, Assert, "Ball");
+                obstacleInspector.AssertNonConfigUnchanged(obstacleBody, Assert, "Obstacle");
 
                 Assert(factory.TryRent(ballConfig, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease nextBallLease),
                     "Ball re-rent failed.");
@@ -169,9 +193,38 @@ namespace Framework.Test
                        ballBody.IsSleeping() && IsZero(obstacleBody.linearVelocity) && IsZero(obstacleBody.angularVelocity) &&
                        !obstacleBody.IsSleeping(),
                     "Re-rent did not restore cleared velocity, Ball sleep, and Obstacle wake state.");
-                Assert(!ballLease.Return() && !obstacleLease.Return() && !nextBall.Controller.TryLaunch(ballEpoch, Vector3.right) &&
+                AssertConfiguredPhysics(ballBody, ballSettings, "Ball re-rent");
+                AssertConfiguredPhysics(obstacleBody, obstacleSettings, "Obstacle re-rent");
+                Assert(!ballLease.Return() && !obstacleLease.Return() &&
+                       !nextBall.Controller.TryLaunch(ballEpoch, Vector3.right, BallTrajectoryMode.Straight) &&
                        nextBallLease.IsValid && nextObstacleLease.IsValid,
                     "An old lease or epoch disturbed the newer rental.");
+
+                BallController fallbackBallController = nextBall.Controller;
+                uint fallbackBallEpoch = fallbackBallController.RentalEpoch;
+                Assert(fallbackBallController.TryLaunch(fallbackBallEpoch, Vector3.right, BallTrajectoryMode.Straight)
+                       && !ballBody.useGravity,
+                    "Separate Straight rental did not begin with gravity disabled.");
+                ballBody.position = new Vector3(ballBody.position.x, ballBody.position.y, ballSettings.GravityActivationWorldZ);
+                fallbackBallController.TickPhysics(fallbackBallEpoch, ballSettings.GravityActivationWorldZ);
+                Assert(!ballBody.useGravity,
+                    "Straight Ball enabled gravity at world Z equal to the configured threshold.");
+                Assert(!fallbackBallController.TryActivateGravityFromObstacleCollision(ballEpoch) && !ballBody.useGravity,
+                    "A stale collision epoch enabled gravity for the current rental.");
+                ballBody.position = new Vector3(ballBody.position.x, ballBody.position.y, ballSettings.GravityActivationWorldZ + 0.01f);
+                fallbackBallController.TickPhysics(fallbackBallEpoch, ballSettings.GravityActivationWorldZ);
+                Assert(ballBody.useGravity,
+                    "Straight Ball did not enable gravity after world Z crossed the configured threshold.");
+                result.worldZEnabledGravity = true;
+
+                Assert(nextBall.Controller.TryReturn(fallbackBallEpoch) && nextObstacle.Controller.TryReturn(nextObstacle.Controller.RentalEpoch),
+                    "Separate Straight fallback rental return failed.");
+                Assert(factory.TryRent(ballConfig, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out nextBallLease)
+                       && factory.TryRent(obstacleConfig, new PoolSpawnArgs(new Vector3(4f, 0f, 0f), Quaternion.identity), out nextObstacleLease),
+                    "Curve verification re-rent failed.");
+                nextBall = nextBallLease.Value as BallView;
+                nextObstacle = nextObstacleLease.Value as ObstacleView;
+                Assert(nextBall != null && nextObstacle != null, "Curve verification re-rent returned an unexpected view.");
 
                 BallController activeBallController = nextBall.Controller;
                 ObstacleController activeObstacleController = nextObstacle.Controller;
@@ -179,8 +232,9 @@ namespace Framework.Test
                 ObstacleModel activeObstacleModel = nextObstacle.OwnedModel;
                 uint activeBallEpoch = activeBallController.RentalEpoch;
                 uint activeObstacleEpoch = activeObstacleController.RentalEpoch;
-                Assert(activeBallController.TryLaunch(activeBallEpoch, new Vector3(3f, 1f, 0f)),
-                    "Ball launch before active PoolFactory disposal failed.");
+                Assert(activeBallController.TryLaunch(activeBallEpoch, new Vector3(3f, 1f, 0f), BallTrajectoryMode.Curve)
+                       && ballBody.useGravity,
+                    "Curve Ball launch before active PoolFactory disposal did not enable gravity.");
                 obstacleBody.linearVelocity = new Vector3(-2f, 0.5f, 0f);
                 obstacleBody.angularVelocity = new Vector3(0f, 1f, 0f);
                 obstacleBody.WakeUp();
@@ -199,8 +253,8 @@ namespace Framework.Test
                        IsZero(obstacleBody.linearVelocity) && IsZero(obstacleBody.angularVelocity) &&
                        ballBody.IsSleeping() && obstacleBody.IsSleeping(),
                     "Active PoolFactory disposal did not deactivate, clear, and sleep both bodies.");
-                ballInspector.AssertUnchanged(ballBody, Assert, "Ball");
-                obstacleInspector.AssertUnchanged(obstacleBody, Assert, "Obstacle");
+                ballInspector.AssertNonConfigUnchanged(ballBody, Assert, "Ball");
+                obstacleInspector.AssertNonConfigUnchanged(obstacleBody, Assert, "Obstacle");
                 result.success = true;
             }
             catch (Exception exception)
@@ -214,6 +268,10 @@ namespace Framework.Test
                 catch (Exception exception) { RecordCleanupFailure("PoolFactory", exception); }
                 try { resolver?.Dispose(); }
                 catch (Exception exception) { RecordCleanupFailure("Resolver", exception); }
+                try { if (ballSettings != null) Destroy(ballSettings); }
+                catch (Exception exception) { RecordCleanupFailure("BallConfig", exception); }
+                try { if (obstacleSettings != null) Destroy(obstacleSettings); }
+                catch (Exception exception) { RecordCleanupFailure("ObstacleConfig", exception); }
                 try { if (fixtureRoot != null) Destroy(fixtureRoot); }
                 catch (Exception exception) { RecordCleanupFailure("Fixture root", exception); }
                 try { if (ballConfig != null) Destroy(ballConfig); }
@@ -261,6 +319,26 @@ namespace Framework.Test
             result.error = (result.error ?? string.Empty) + "\nCleanup " + label + ": " + exception;
         }
 
+        private void AssertConfiguredPhysics(Rigidbody body, BallConfig settings, string label)
+        {
+            Assert(Mathf.Approximately(body.mass, settings.Mass) &&
+                   Mathf.Approximately(body.linearDamping, settings.LinearDamping) &&
+                   Mathf.Approximately(body.angularDamping, settings.AngularDamping) &&
+                   body.interpolation == settings.Interpolation &&
+                   body.collisionDetectionMode == CollisionDetectionMode.ContinuousDynamic,
+                label + " did not apply BallConfig-owned Rigidbody settings, including ContinuousDynamic collision detection.");
+        }
+
+        private void AssertConfiguredPhysics(Rigidbody body, ObstacleConfig settings, string label)
+        {
+            Assert(Mathf.Approximately(body.mass, settings.Mass) &&
+                   Mathf.Approximately(body.linearDamping, settings.LinearDamping) &&
+                   Mathf.Approximately(body.angularDamping, settings.AngularDamping) &&
+                   body.interpolation == settings.Interpolation &&
+                   body.collisionDetectionMode == CollisionDetectionMode.Continuous,
+                label + " did not apply ObstacleConfig-owned Rigidbody settings, including Continuous collision detection.");
+        }
+
         private void AssertKinematicSourceContracts()
         {
             GameObject ballSource = new GameObject("__PhysXValidation_KinematicBall");
@@ -294,36 +372,24 @@ namespace Framework.Test
 
         private readonly struct RigidbodyState
         {
-            public readonly float mass;
             public readonly bool useGravity;
             public readonly bool isKinematic;
             public readonly RigidbodyConstraints constraints;
-            public readonly CollisionDetectionMode collisionDetection;
-            public readonly RigidbodyInterpolation interpolation;
-            public readonly float linearDamping;
-            public readonly float angularDamping;
             public readonly bool detectCollisions;
 
             public RigidbodyState(Rigidbody body)
             {
-                mass = body.mass;
                 useGravity = body.useGravity;
                 isKinematic = body.isKinematic;
                 constraints = body.constraints;
-                collisionDetection = body.collisionDetectionMode;
-                interpolation = body.interpolation;
-                linearDamping = body.linearDamping;
-                angularDamping = body.angularDamping;
                 detectCollisions = body.detectCollisions;
             }
 
-            public void AssertUnchanged(Rigidbody body, Action<bool, string> assert, string label)
+            public void AssertNonConfigUnchanged(Rigidbody body, Action<bool, string> assert, string label)
             {
-                assert(Mathf.Approximately(mass, body.mass) && useGravity == body.useGravity && isKinematic == body.isKinematic &&
-                       constraints == body.constraints && collisionDetection == body.collisionDetectionMode && interpolation == body.interpolation &&
-                       Mathf.Approximately(linearDamping, body.linearDamping) && Mathf.Approximately(angularDamping, body.angularDamping) &&
-                       detectCollisions == body.detectCollisions,
-                    label + " Rigidbody Inspector-authored properties changed during its pool lifecycle.");
+                assert(useGravity == body.useGravity && isKinematic == body.isKinematic &&
+                       constraints == body.constraints && detectCollisions == body.detectCollisions,
+                    label + " Rigidbody non-Config properties changed during its pool lifecycle.");
             }
         }
     }

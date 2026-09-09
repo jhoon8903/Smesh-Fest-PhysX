@@ -1,6 +1,8 @@
 # 기본 아키텍처 — 확정 기준
 
-상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View와 Ball/Obstacle 객체별 MVC에 이어 첫 Unity PhysX 수명 연결을 구현했다. 2026-09-09 Play Mode의 이전 Ball 19개·Obstacle 25개는 과거 수명 결과다. 새 PhysX 충돌 Probe의 1차 사용자 실행은 시뮬레이션 전 Sleep/Wake 검사에서 실패했고 활성화 순서 수정·컴파일 뒤 재실행 대기다. MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
+> **2026-09-09 최신 사용자 정정:** 발사는 실제 **targetable Obstacle Collider**를 맞힌 Raycast에서만 시작하고 Ball은 **Cannon Head Muzzle**에서 생성한다. Cannon은 수동 child 회전을 보존한 채 world Yaw만 바꾼다. `Straight` Ball은 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick의 월드 Z가 `BallConfig.GravityActivationWorldZ`(기본 0)를 **엄격히 초과**한 첫 순간 중 먼저 발생한 조건에서 중력을 켠다. `Curve`는 고정 비행시간 공식과 같은 중력을 발사부터 사용한다. tag·name·parent 검색 fallback과 legacy 경로는 두지 않는다. Ball/Obstacle Rigidbody 고정값은 기능별 Config SO가 적용하고, CCD는 Ball `ContinuousDynamic`·Obstacle `Continuous`다. 물리 Layer는 Obstacle 8·Ball 9·Ground 10이며 필요한 gameplay 조합만 충돌한다. 최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이며 최신 Play Mode 재확인은 아직이다.
+
+상태: **사용자 기준 확정 / 첫 플레이 수직 슬라이스 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View와 Ball/Obstacle 객체별 MVC에 이어 Unity PhysX 수명 연결을 구현했고, 수정본 격리 Probe를 Daniel이 42개 assertion으로 통과시켰다. 다음 W-001은 클릭 목표 투영·Ball 풀 대여/포물선 발사·Cannon 정렬을 코드와 현재 씬에 부분 연결했으며 Unity 컴파일과 정적 진단을 통과했다. 격리 Click Launch Runtime과 실제 Game 조작 확인, HP/파괴·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
 
 출처: Daniel이 “내가 만드는 게임들은 대부분 아래 설명한 아키텍처 기반으로 작동해”라고 제시한 1–8번과 “문서에 기록하여 다음부터 질문하지 않도록” 요청한 메시지, 이후 “추가로 나는 DI 의존성 주입으로 코드 작성을 해”라는 추가 기준과 “Code Stripping을 High로 하기 때문에 관리도 해야해”라는 후속 기준. 이 문서는 해당 기준의 단일 원본이다.
 
@@ -222,19 +224,31 @@ Unity 6000.3.10f1의 임시 PoolFactory/ObstacleView 검사에서 같은 묶음 
 | 책임 | 현재 계약 |
 |---|---|
 | 런타임 물리 권위 | Rigidbody가 위치·회전·선속도·각속도를 소유한다. BallModel/ObstacleModel에는 이를 복제하지 않고 대여 상태·세대만 둔다. |
-| 컴포넌트 계약 | 풀 소스의 BallView/ObstacleView와 같은 루트에 Collider와 **dynamic Rigidbody**가 있어야 한다. 코드는 `AddComponent`하거나 `isKinematic`, mass, gravity, constraints, collision detection, interpolation, damping을 덮어쓰지 않는다. |
-| Ball 대여 | 비활성 `OnPoolRent`에서 속도·각속도를 0으로 만들고, 활성화 `OnEnable`에서 현재 lease·epoch를 확인해 발사 전 Sleep을 재적용한다. finite·0이 아닌 초기속도를 현재 대여에 한 번만 적용하고 WakeUp한다. |
-| Obstacle 대여 | 비활성 `OnPoolRent`에서 속도·각속도를 0으로 만들고, 활성화 `OnEnable`에서 현재 lease·epoch를 확인해 충돌 대기 상태로 WakeUp한다. |
-| 반환·활성 풀 종료 | 두 Rigidbody의 속도·각속도를 0으로 만들고 Sleep한다. Controller의 lease/epoch와 View/Model 연결도 같은 수명 경계에서 해제한다. |
+| 컴포넌트 계약 | BallView/ObstacleView와 같은 루트에 Collider와 **dynamic Rigidbody**가 있어야 한다. 코드는 컴포넌트를 만들거나 `isKinematic`·constraints·detectCollisions를 바꾸지 않는다. Config SO가 mass·linear/angular damping·interpolation·collision detection을 주입 시점과 매 대여에 적용한다. |
+| Ball 대여 | 속도·각속도와 중력을 끄고 Sleep한 뒤 현재 대여에 초기속도를 한 번만 적용한다. Straight는 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick의 `Rigidbody.position.z > GravityActivationWorldZ`가 처음 성립할 때 중력을 한 번 켠다. Curve는 발사부터 켠다. |
+| Obstacle 대여 | Config 값을 적용하고 속도·각속도를 0으로 만든 뒤 활성화 때 WakeUp한다. 씬 배치 Obstacle도 같은 Config를 DI로 주입받으며 `TargetableAtStart`를 사용한다. |
+| 반환·활성 풀 종료 | 두 Rigidbody의 속도·각속도를 0으로 만들고 Sleep한다. Ball 중력과 Z 대기 상태를 끄고 Controller lease/epoch와 View/Model 연결도 해제한다. |
 | 충돌 결과 | 현재 단위는 PhysX 접촉과 Obstacle의 물리 이동만 다룬다. 피해·HP·파괴·점수·결과·연출은 뒤의 게임 규칙 계층이다. |
 
 Ball 발사는 Controller가 Rigidbody에 명령하지만, 충돌 후의 Transform/velocity를 Controller가 다시 계산해 덮어쓰지 않는다. 따라서 현재 권위는 “Controller가 명령, PhysX Rigidbody가 상태 소유”다. 직접 구현 물리를 붙일 때는 이 구현과 동시에 같은 Transform을 쓰게 하지 않고, 별도의 물리 백엔드가 권위를 넘겨받는 경계를 문서와 동일 조건 Probe로 정의한다.
 
 계층이 Factory보다 먼저 파괴되는 경로에서는 Unity의 파괴된 객체가 CLR 참조로 남아 있어도 PoolLease가 즉시 무효다. 해당 lease의 Return은 false이고 죽은 객체를 비활성 재고로 넣지 않는다. Pool의 Count는 최종 Dispose 때 정리되므로 계층 선파괴는 정상 재사용 흐름이 아니라 씬 종료용 방어 경로다.
 
-격리 검증은 별도 local PhysicsScene에서 임시 dynamic Ball/Obstacle을 대여하고 발사 → `PhysicsScene.Simulate` → `OnCollisionEnter` → Obstacle 변위를 확인한다. 정상 반환·동일 body 재대여·오래된 lease/epoch 거절·활성 Factory Dispose와 Inspector 물리값 보존도 함께 검사한다. 1차 사용자 실행은 충돌 시뮬레이션 전 대여 직후 Sleep/Wake 복합 검사에서 실패했다. Pool은 비활성 clone의 `OnPoolRent` 뒤 활성화하므로, 활성화 시점에 두 View가 의도한 Sleep/Wake를 재적용하도록 수정했다. 검증은 이제 두 상태를 분리하고 임시 원본의 Rigidbody 설정을 Factory 초기화 전부터 비교한다. 이 Probe는 실제 Game Prefab의 질량·중력·배치·조작감을 대표하지 않으며 수정본 Play Mode 재실행 대기다. [검증 코드](../../Assets/Scripts/Test/PhysXRuntimeProbe.cs) · [1차 실패](evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json) · [수정 컴파일](evidence/raw/physx-activation-fix-editor-compile.json).
+기존 local PhysicsScene Probe의 수명 검사는 Daniel 실행으로 **42 assertions, 15 simulated steps, contact 1회, Obstacle displacement 0.6153807**을 통과했다. 최신 Probe는 여기에 Config 물성 적용, CCD 모드, 직접 Obstacle 충돌, Z=0 유지·Z>0 전환, stale epoch, Curve 즉시 중력을 추가했으며 아직 Play Mode 재실행 전이다. Config 소유값은 SO와의 일치를, 그 외 Rigidbody 값은 보존을 따로 검사한다. [검증 코드](../../Assets/Scripts/Test/PhysXRuntimeProbe.cs) · [이전 통과](evidence/raw/physx-lifecycle-runtime-passed-20260909T064144Z.json).
 
 향후 `PHYSICS_AUTHORITY.md`는 대표 플레이 뒤 작성한다. 최소 내용은 권위 전환 표, PhysX/직접 구현 각각의 입력·fixed step·초기 상태·충돌 처리, 비교 지표(재현성·오차·CPU·GC·조작감), 혼합 금지 규칙과 Player/기기 검증 범위다. 문서 계획은 직접 구현 방식 채택이나 비교 통과를 뜻하지 않는다.
+
+## 클릭 목표 → PhysX 발사 → Cannon 정렬 — W-001-CLICK-LAUNCH-001
+
+`WorldPointerInput`은 중앙 `UpdateTick`에서 포인터를 받고 UI/safe-area 입력을 거른 뒤, `PhysXConfig.PointerCollisionMask`에 포함된 targetable `ObstacleView` Collider를 직접 Raycast한다. 중앙 `FixedTick`에서는 활성 Straight Ball의 Z 경계를 검사하고, Ball의 직접 충돌은 같은 GameObject의 `ObstacleView`만 인정한다. 평면 투영·tag·name·parent 검색 fallback은 사용하지 않는다.
+
+`BallLaunchVelocity`는 Cannon Head Muzzle에서 시작한다. Straight는 목표점 방향의 직선 초기속도, Curve는 `CurveFlightSeconds`에 목표점에 도착하는 고정 비행시간 초기속도를 계산한다. 발사 뒤 Transform·속도·충돌은 Rigidbody/PhysX가 소유하고 활성 shot은 고정 배열에서 lifetime/y 경계로 반환한다.
+
+`CannonHead`는 시작 시 저장한 yawRoot 회전을 기준으로 목표 방향의 수평 성분만 world Y 회전한다. Body/Head를 포함한 child의 저작 local rotation은 바꾸지 않는다. Muzzle 위치는 `barrelReference + muzzleOffset`이며 발사 궤적의 수직 성분과 Cannon 표시 회전은 분리한다.
+
+Ball·Ground·Obstacle을 별도 레이어로 분리하고 Ball↔Obstacle, Ball↔Ground, Obstacle↔Ground, Obstacle↔Obstacle만 gameplay 충돌로 유지한다. Ball↔Ball과 Ground↔Ground, gameplay↔Default/UI 등은 끈다. Ball은 `ContinuousDynamic`, Obstacle은 `Continuous`를 Config에서 적용해 빠른 Ball의 터널링을 줄인다. 씬 배치와 Pool clone 모두 같은 Config를 사용한다.
+
+최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이다. 격리 `Click Launch Runtime`과 `PhysX Lifecycle Runtime`, 실제 Game의 yaw·CCD·충돌 또는 Z 경계 중 먼저 중력이 켜지는지는 Daniel의 Play Mode 확인 대기다. 이전 Probe 결과는 최신 계약의 런타임 증거로 재사용하지 않는다.
 
 ## 성능 근거를 기록하는 방법
 
@@ -269,3 +283,11 @@ AI가 기존 빈 `Observable.cs`를 `Observable<T>`로 구현했다. 등록·해
 패키지 확인: UniTask는 manifest에 있고 DOTween 플러그인 파일도 있다. Addressables는 현재 manifest/lock에 없다. 이는 A-08의 채택이 미정이라는 뜻이 아니며, 이 기록 작업에서는 패키지를 설치하지 않았다.
 
 작업 순서와 소유 범위는 [PLAN](PLAN.md), 요구 출처는 [BRIEF](BRIEF.md), 재개 지점은 [HANDOFF](../HANDOFF.md)에 둔다. 다른 문서에는 이 10개 기준을 복제하지 않고 이 원본을 연결한다.
+
+## Level 저작 데이터와 명시적 전환 — W-002-LEVEL-EDITOR-001
+
+`LevelConfig`은 순서가 있는 `PoolConfig + level root 기준 local position/rotation/scale`만 저장한다. 누락·비정상 transform·PoolConfig 오류와 PoolConfig별 필요 수가 `MaxPool`을 넘는 상태는 fallback 없이 거절한다.
+
+`Smesh Fest/Level Editor`는 지정 authoring root의 **직접 자식 `ObstacleView`**를 hierarchy 순서대로 Capture 미리보기로 읽고, 명시 Bake에서만 지정 SO에 쓴다. 선택이 바뀌면 미리보기를 비운다. 자동 Capture/Bake, Scene 저장·삭제·비활성화, Prefab 생성, 기존 Blocks 제거는 하지 않는다.
+
+`LevelSpawner`는 기존 `PoolFactory`에서 명시 `TrySpawn`할 때만 대여하며, 실패 시 보유 lease를 `ReturnAll`로 원자적으로 되돌린다. 현재 Blocks 기대 Capture=24지만 Cube MaxPool=8·Factory catalog 미등록이므로 Bake/spawn 거절은 의도된 상태다. 다음 사용자 승인 통합에서 capacity와 authored Blocks→runtime 전환 시점을 정한다.

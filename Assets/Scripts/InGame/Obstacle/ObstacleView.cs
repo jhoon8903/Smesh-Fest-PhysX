@@ -2,7 +2,9 @@ using System;
 using System.Runtime.ExceptionServices;
 using Framework.Object;
 using Framework.Pool;
+using InGame.Config;
 using UnityEngine;
+using VContainer;
 
 namespace InGame.Obstacle
 {
@@ -14,10 +16,24 @@ namespace InGame.Obstacle
     {
         private ObstacleModel ownedModel;
         private ObstacleController controller;
+        private ObstacleConfig settings;
+        private bool targetable = true;
 
         public GameObject PoolObject => gameObject;
         public ObstacleModel OwnedModel => ownedModel;
         public ObstacleController Controller => controller;
+        public bool IsTargetable => targetable && isActiveAndEnabled;
+
+        [Inject, UnityEngine.Scripting.Preserve]
+        private void Construct(ObstacleConfig obstacleSettings)
+        {
+            if (settings != null) throw new InvalidOperationException("ObstacleView was already configured.");
+            settings = obstacleSettings != null
+                ? obstacleSettings
+                : throw new ArgumentNullException(nameof(obstacleSettings));
+            ApplyPhysicsSettings();
+            targetable = settings.TargetableAtStart;
+        }
 
         public void OnPoolCreated(IPoolable owner)
         {
@@ -31,7 +47,10 @@ namespace InGame.Obstacle
                 throw new InvalidOperationException("ObstacleView requires a Collider on the same GameObject.");
             if (body.isKinematic)
                 throw new InvalidOperationException("ObstacleView requires a dynamic Rigidbody; it does not override Inspector physics settings.");
+            if (settings == null)
+                throw new InvalidOperationException("ObstacleView requires ObstacleConfig injection before pool creation.");
 
+            targetable = false;
             ownedModel = new ObstacleModel();
             controller = new ObstacleController(ownedModel, body);
         }
@@ -42,9 +61,11 @@ namespace InGame.Obstacle
             try
             {
                 // The clone is inactive here. Reset first, retain the Model, then expose it.
+                ApplyPhysicsSettings();
                 ownedModel.BeginRental();
                 Bind(ownedModel);
                 controller.BeginRental(lease);
+                targetable = settings.TargetableAtStart;
             }
             catch
             {
@@ -65,6 +86,12 @@ namespace InGame.Obstacle
             controller?.OnRentalActivated();
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (targetable && collision.collider.TryGetComponent(out GroundSurface _))
+                targetable = false;
+        }
+
         protected override void OnDestroy()
         {
             Exception failure = null;
@@ -80,6 +107,7 @@ namespace InGame.Obstacle
 
         private void DestroyBundle()
         {
+            targetable = false;
             Exception failure = null;
             try { ResetRental(); }
             catch (Exception exception) { failure = exception; }
@@ -89,6 +117,7 @@ namespace InGame.Obstacle
 
             controller = null;
             ownedModel = null;
+            settings = null;
             if (failure != null)
                 ExceptionDispatchInfo.Capture(failure).Throw();
         }
@@ -101,6 +130,7 @@ namespace InGame.Obstacle
 
         private void ResetRental()
         {
+            targetable = false;
             Exception failure = null;
             try { controller?.EndRental(); }
             catch (Exception exception) { failure = exception; }
@@ -119,6 +149,20 @@ namespace InGame.Obstacle
         {
             if (ownedModel == null || controller == null)
                 throw new InvalidOperationException("Obstacle MVC bundle must be created before rental.");
+        }
+
+        private void ApplyPhysicsSettings()
+        {
+            if (settings == null || !TryGetComponent(out Rigidbody body))
+                throw new InvalidOperationException("ObstacleView requires ObstacleConfig and a Rigidbody on the same GameObject.");
+            if (body.isKinematic)
+                throw new InvalidOperationException("ObstacleView requires a dynamic Rigidbody.");
+
+            body.mass = settings.Mass;
+            body.linearDamping = settings.LinearDamping;
+            body.angularDamping = settings.AngularDamping;
+            body.interpolation = settings.Interpolation;
+            body.collisionDetectionMode = settings.CollisionDetection;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using Framework.Pool;
 using Framework.Test;
 using InGame.Ball;
+using InGame.Config;
 using InGame.Obstacle;
 using UnityEditor;
 using UnityEngine;
@@ -72,11 +73,14 @@ namespace Framework.EditorValidation
         {
             GameObject source = new GameObject("Temporary_Ball_PhysX_Source");
             source.transform.SetParent(parent, false);
+            source.layer = RequireLayer("Ball");
             Rigidbody body = source.AddComponent<Rigidbody>();
             body.mass = 1.25f;
             body.useGravity = false;
             body.constraints = RigidbodyConstraints.FreezeRotationZ;
-            body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            body.linearDamping = 0.4f;
+            body.angularDamping = 0.8f;
+            body.collisionDetectionMode = CollisionDetectionMode.Discrete;
             body.interpolation = RigidbodyInterpolation.Interpolate;
             source.AddComponent<SphereCollider>().radius = 0.5f;
             return source.AddComponent<BallView>();
@@ -86,11 +90,14 @@ namespace Framework.EditorValidation
         {
             GameObject source = new GameObject("Temporary_Obstacle_PhysX_Source");
             source.transform.SetParent(parent, false);
+            source.layer = RequireLayer("Obstacle");
             Rigidbody body = source.AddComponent<Rigidbody>();
             body.mass = 2f;
             body.useGravity = false;
             body.constraints = RigidbodyConstraints.FreezeRotationZ;
-            body.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            body.linearDamping = 0.6f;
+            body.angularDamping = 1.2f;
+            body.collisionDetectionMode = CollisionDetectionMode.Discrete;
             body.interpolation = RigidbodyInterpolation.Extrapolate;
             source.AddComponent<BoxCollider>().size = Vector3.one;
             source.AddComponent<PhysXCollisionRecorder>();
@@ -108,6 +115,14 @@ namespace Framework.EditorValidation
             settings.FindProperty("returnDelaySeconds").floatValue = 0f;
             settings.ApplyModifiedPropertiesWithoutUndo();
             return config;
+        }
+
+        private static int RequireLayer(string layerName)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            if (layer < 0)
+                throw new InvalidOperationException("Required physics layer is missing: " + layerName + ".");
+            return layer;
         }
     }
 }

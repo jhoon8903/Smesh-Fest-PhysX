@@ -1,0 +1,40 @@
+{
+  "taskId": "W-001-BALL-GRAVITY-TRANSITION-001",
+  "recordedAtUtc": "2026-09-09T11:02:02Z",
+  "trigger": "Daniel observed that the Straight Ball travelled well below the Obstacle hit point in the Game scene.",
+  "validationLevel": "Unity compile and static diagnostics; post-fix Play Mode not run",
+  "success": true,
+  "diagnosis": {
+    "ballConfigTrajectoryMode": "Straight",
+    "ballConfigLaunchSpeed": 20,
+    "ballPrefabUseGravityBeforeFix": true,
+    "straightVelocityInitiallyPointedAtRaycastHit": true,
+    "gravityWasNotDisabledBeforeFix": true,
+    "coordinateMismatchWasPrimaryCause": false
+  },
+  "contract": {
+    "straightUsesGravityBeforeFirstCollision": false,
+    "curveUsesGravityFromLaunch": true,
+    "firstCollisionEnablesGravity": true,
+    "poolResetRestoresAuthoredUseGravity": true,
+    "unknownTrajectoryModeRejected": true,
+    "legacyTryLaunchOverloadRetained": false,
+    "scenePrefabOrConfigAssetChanged": false
+  },
+  "validation": {
+    "dotnetStaticBuild": { "warnings": 26, "errors": 0, "note": "Warnings are serialized-field CS0649 diagnostics from the generated project." },
+    "unityScriptDiagnostics": { "scripts": 6, "warnings": 0, "errors": 0 },
+    "unityVersion": "6000.3.10f1",
+    "unityAssetRefreshCompleted": true,
+    "unityDomainReloadObserved": true,
+    "ballControllerTryLaunchOverloads": 1,
+    "unityConsoleErrorsAfterRefresh": 0,
+    "playModeRun": false
+  },
+  "hashes": {
+    "ballControllerSha256": "00d296bc6f20c77aa2b2f02d60fcf90a3c1508a070da7298124dcb0eb0884526",
+    "ballViewSha256": "a6d93ba707bffb2a75404ddb2455652cf4ac9ccc656ba5c8f60ddede73c89e60",
+    "shotDirectorSha256": "59b7ce7f213c23b96dd64e41fa3c77e421fbee946b84fed0e28cb72377971380",
+    "clickLaunchRuntimeProbeSha256": "d75c777c362579e3ba2a77b531ea502dd536c060249f0cee0e12afcfb1e09ce9"
+  }
+}

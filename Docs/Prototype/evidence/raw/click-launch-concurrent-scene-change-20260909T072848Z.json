@@ -1,0 +1,38 @@
+{
+  "observed_at_utc": "2026-09-09T07:38:00Z",
+  "scene_file_modified_at": "2026-09-09T07:28:48Z",
+  "branch": "PhysX",
+  "head": "4f84c080864e76f9e001200da1d36dc6963cc5e7",
+  "classification": "concurrent_or_external_scene_change_after_initial_W-001_hookup",
+  "attribution": "unknown; not attributed to Daniel or AI",
+  "scene": {
+    "path": "Assets/Scenes/Game.unity",
+    "tracked_head_sha256": "b00cdcf6acb4b9242b00a6a6688c827f22cff34184ea437ae1be5d2fda8cc321",
+    "initial_W-001_hookup_sha256": "7d1a1873236d51f1e7b514d4f78d8c14e77a6550a3cb9bc97f6311e937297cb6",
+    "current_sha256": "6dbcdba39983d9efca119d4f3685b6bc8ba937741f03901a299ab3c523ed98e6",
+    "current_bytes": 192311,
+    "current_git_diff_insertions": 40,
+    "current_git_diff_deletions": 63,
+    "is_dirty_in_unity": false,
+    "root_count": 4
+  },
+  "retained_W-001_changes": [
+    "CannonView component and authored Cannon root, Body, Head references",
+    "WorldPointerInput component and Camera, Blocks, CannonView, Ball PoolConfig references"
+  ],
+  "later_removed_scene_content": {
+    "path_before_removal": "GameObjects/Ball",
+    "kind": "Ball Prefab instance",
+    "prefab_guid": "f31f53f3b7c1b4f27a5bcf323442d28a",
+    "prior_position": [0.0, 0.35, -2.0],
+    "live_name_search_count": 0
+  },
+  "preserved_asset_hashes": {
+    "Assets/Project/Prefabs/Ball.prefab": "c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff",
+    "Assets/Project/Prefabs/Cube.prefab": "a584b305abfcd3efa8a174300c1b0f5de3ac27f3fa80462ec10e2343a51503a0",
+    "Assets/Project/So/Ball.asset": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+    "Assets/Project/So/Cube.asset": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+  },
+  "action": "Preserved the current scene and did not restore or recreate the removed Ball. Documentation was corrected to separate the initial W-001 hookup from the later scene change.",
+  "runtime_validation_impact": "The removed object was an unpooled scene Ball. W-001 rents Ball.prefab through Ball.asset, so the prepared click-launch path does not require this scene instance. Actual Play Mode remains unverified."
+}

@@ -1,0 +1,71 @@
+{
+  "id": "flight-ccd-yaw-zgravity-finish-20260909T131925Z",
+  "stage": "build",
+  "kind": "finish",
+  "actor": "Daniel + Main",
+  "task_id": "flight-ccd-yaw-zgravity-001",
+  "status": "static_complete_runtime_pending",
+  "summary": "선택적 CCD와 물리 Layer Matrix, Cannon world-Yaw-only, Straight Ball의 world-Z 경계 중력을 연결하고 재시작 후 정적 상태를 확인했다. 최신 Play Mode 검증은 대기 중이다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonHead.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Shot/ShotDirector.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Shot/WorldPointerInput.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Config/BallConfig.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Config/ObstacleConfig.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/DynamicsManager.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/TagManager.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PhysXRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "human_role": "씬과 Inspector 수동값을 소유하고 Fatal 종료 뒤 Unity를 재실행했으며, 다음 Play Mode에서 최종 체감을 확인한다.",
+    "ai_role": "Config-Rigidbody 연결, FixedTick world-Z 경계, yaw-only 계산, Layer/CCD, 회귀 Probe, 문서와 증거를 갱신했다.",
+    "contracts": {
+      "ball_collision_detection": "ContinuousDynamic",
+      "obstacle_collision_detection": "Continuous",
+      "cannon_rotation": "world Y yaw only; authored child local rotations preserved",
+      "straight_gravity": "off at launch and while world Z <= threshold; on at first FixedTick with world Z > threshold",
+      "curve_gravity": "on from launch",
+      "fallback": false
+    },
+    "layers": {
+      "Obstacle": 8,
+      "Ball": 9,
+      "Ground": 10,
+      "gameplay_pairs": [
+        "Ball-Obstacle",
+        "Ball-Ground",
+        "Obstacle-Ground",
+        "Obstacle-Obstacle"
+      ]
+    },
+    "post_restart_observation": {
+      "unity_version": "6000.3.10f1",
+      "game_scene_dirty": false,
+      "game_scene_root_count": 4,
+      "compilation_idle": true,
+      "console_errors": 0,
+      "named_layers_and_matrix_persisted": true,
+      "temporary_codex_editor_scripts_present": false
+    },
+    "incident": {
+      "cause": "AI temporary Editor cleanup code misidentified the internal PhysicsManager type and released too many loaded Editor objects.",
+      "effect": "Unity terminated with a Fatal Error.",
+      "recovery": "Daniel restarted Unity; the post-restart scene, compile, layers, matrix, and Console state were rechecked.",
+      "prevention": "Do not use temporary scripts that directly load or clean internal Project Settings objects. Do not repeat this bypass path."
+    },
+    "static_checks": {
+      "unity_script_diagnostics": "16 changed scripts, 0 warnings, 0 errors",
+      "git_diff_check": "passed",
+      "legacy_or_fallback_added": false,
+      "latest_play_mode_run": false
+    },
+    "next_validation": "Daniel runs PhysX Lifecycle Runtime, Click Launch Runtime, then actual Game for tunneling, yaw-only, Straight Z-threshold gravity, and Curve launch gravity."
+  }
+}

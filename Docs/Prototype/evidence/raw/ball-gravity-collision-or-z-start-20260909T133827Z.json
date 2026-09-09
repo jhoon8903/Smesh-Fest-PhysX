@@ -1,0 +1,35 @@
+{
+  "id": "ball-gravity-collision-or-z-start-20260909T133827Z",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "ball-gravity-collision-or-z-004",
+  "status": "in_progress",
+  "summary": "Straight Ball 중력을 Obstacle 직접 충돌 또는 world Z 경계 중 먼저 발생한 조건에서 켜도록 최소 수정을 시작했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "human_role": "충돌 OR Z 경계 계약 승인과 Play Mode 확인",
+    "ai_role": "하위 모델이 생산 코드와 Probe를 수정·검토하고 Main은 범위 및 결과를 통합",
+    "scope": "BallController, BallView, PhysXRuntimeProbe, ClickLaunchRuntimeProbe only; no scene, prefab, config, or layer edits",
+    "assistant_assignments": [
+      {
+        "role": "prototype_builder",
+        "assigned_model": "gpt-5.6-terra",
+        "reasoning_effort": "medium",
+        "task_scope": "collision OR world-Z gravity implementation and probes",
+        "context_mode": "none; only contract and owned paths"
+      },
+      {
+        "role": "prototype_reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "task_scope": "direct Obstacle collision, idempotence, stale epoch review",
+        "context_mode": "none; only contract and review paths"
+      }
+    ]
+  }
+}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cube
   m_EditorClassIdentifier: Assembly-CSharp::Framework.Pool.PoolConfig
   poolRootName: Pool
-  prefab: {fileID: 0}
+  prefab: {fileID: 169956456086000130, guid: 4baadfec578794de0916e9e5e429b0b2, type: 3}
   minPool: 1
-  maxPool: 8
+  maxPool: 100
   returnDelaySeconds: 300

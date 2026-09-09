@@ -1,0 +1,11 @@
+{
+  "recorded_at_utc": "2026-09-09T07:42:16Z",
+  "source": "Current Codex conversation",
+  "user_statement": "해당 작업은 내가 한거야",
+  "interpreted_subject": "Removal of the existing unpooled GameObjects/Ball Prefab instance from Assets/Scenes/Game.unity, which was the immediately preceding preservation question.",
+  "actor": "Daniel",
+  "attribution_confirmed": true,
+  "intent_beyond_ownership": "not inferred",
+  "preservation_action": "Keep Daniel's current scene edit; do not restore or recreate the removed scene Ball.",
+  "implementation_impact": "W-001 rents Ball.prefab through Ball.asset, so the click-launch implementation remains valid without the removed scene instance. Runtime validation is still pending."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "sf-ball-gravity-mode-document-checkpoint-20260909-001",
+  "stage": "document",
+  "kind": "checkpoint",
+  "actor": "Main",
+  "task_id": "W-001-BALL-GRAVITY-TRANSITION-002",
+  "status": "done",
+  "summary": "과거의 아무 첫 충돌 중력 전환 기록을 대체됨으로 표시하고 현재 Obstacle 직접 충돌 계약을 문서의 재개 기준으로 고정했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "superseded_contract": "any first collision",
+    "current_contract": "direct ObstacleView collision",
+    "fallback": false
+  }
+}

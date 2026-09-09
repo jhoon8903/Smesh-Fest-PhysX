@@ -1,6 +1,9 @@
 using Framework.Flow;
 using Framework.Loop;
 using Framework.Pool;
+using InGame.Config;
+using InGame.Level;
+using InGame.Shot;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -12,6 +15,12 @@ public class GameLifetimeScope : LifetimeScope
 {
     [SerializeField] private GameObject uiRoot;
     [SerializeField] private PoolContainer poolContainer;
+    [SerializeField] private Transform obstacleRoot;
+    [SerializeField] private BallConfig ballSettings;
+    [SerializeField] private ObstacleConfig obstacleSettings;
+    [SerializeField] private PhysXConfig physXSettings;
+    [SerializeField] private LevelSpawner levelSpawner;
+    [SerializeField] private LevelSession levelSession;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -24,9 +33,26 @@ public class GameLifetimeScope : LifetimeScope
             retainMinimum: true), Lifetime.Scoped);
         builder.RegisterComponent(GetComponent<UpdateLoop>());
         builder.RegisterComponent(GetComponent<GameFlow>());
+        if (levelSpawner == null || levelSession == null)
+            throw new System.InvalidOperationException(
+                "The gameplay WorldObjects scope requires explicit LevelSpawner and LevelSession references.");
+        builder.RegisterComponent(levelSpawner);
+        builder.RegisterComponent(levelSession);
+        WorldPointerInput pointerInput = GetComponent<WorldPointerInput>();
+        if (pointerInput != null)
+        {
+            if (obstacleRoot == null || ballSettings == null || obstacleSettings == null || physXSettings == null)
+                throw new System.InvalidOperationException(
+                    "The gameplay WorldObjects scope requires Obstacle Root, Ball Config, Obstacle Config, and PhysX Config.");
+            builder.RegisterInstance<BallConfig>(ballSettings);
+            builder.RegisterInstance<ObstacleConfig>(obstacleSettings);
+            builder.RegisterInstance<PhysXConfig>(physXSettings);
+            builder.RegisterComponent(pointerInput);
+        }
         builder.RegisterBuildCallback(resolver =>
         {
             resolver.Resolve<UnityGameTime>();
+            if (pointerInput != null) resolver.InjectGameObject(obstacleRoot.gameObject);
             resolver.Resolve<PoolFactory>().Initialize();
             if (uiRoot != null) resolver.InjectGameObject(uiRoot);
         });
