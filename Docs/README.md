@@ -50,7 +50,7 @@ Docs/
 - [첫 목표와 분담](Prototype/PLAN.md) · [실제 확인 결과](Prototype/REVIEW.md)
 - [자동 제작 기록](Prototype/evidence/REPORT.md) · [다음 작업 인계](HANDOFF.md)
 
-2026-09-09 최신 업데이트: R-021·R-022에 따라 **풀 Ball별 View·Model·Controller 묶음 재사용**을 구현했다. 첫 BallModel은 대여 상태·사용 세대만 소유하며 물리 상태는 미리 넣지 않았다. 정상/오래된 반환, 같은 묶음 재대여, 활성 풀 종료와 씬 계층 선파괴 정리를 포함한 임시 객체 Play Mode 19개 검사를 통과했다. Daniel의 Game 씬·Ball/Cube Prefab·PoolConfig 저장 파일은 검사 전후 동일하다. 다음 컨텍스트는 Obstacle MVC, 그 다음은 물리 구현이다. [구현 계약](Prototype/ARCHITECTURE.md) · [검증 결과](Prototype/REVIEW.md).
+2026-09-09 최신 업데이트: Ball에 이어 **풀 Obstacle별 View·Model·Controller 묶음 재사용**을 구현했다. 첫 ObstacleModel도 대여 상태·사용 세대만 소유하며 물리·HP·파괴 상태는 미리 넣지 않았다. 정상/오래된 반환, 같은 묶음 재대여, 활성 풀 종료, 계층 선파괴, 잘못된 lease 준비 실패 롤백과 파괴 오류 로그 감지를 포함한 임시 객체 Play Mode 25개 검사를 통과했다. Game 씬과 PoolConfig는 보존했고, 작업 중 외부에서 Ball/Cube Prefab에 추가된 Rigidbody 저장 변경은 되돌리지 않았다. 다음은 물리 권위와 Unity Physics/직접 구현 Physics 비교 조건이다. [구현 계약](Prototype/ARCHITECTURE.md) · [검증 결과](Prototype/REVIEW.md).
 
 기본 협업 순서는 **이번 목표 → 사람·AI 분담 → 작은 결과 제작 → 함께 확인 → 다음 작업 조정**이다. 사용자는 원하는 제작을 직접 맡고 AI는 합의된 범위와 자동 기록을 지원한다.
 

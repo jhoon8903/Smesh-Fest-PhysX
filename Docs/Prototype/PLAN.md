@@ -1,6 +1,6 @@
 # 제작 계획
 
-현재 단계: **W-000-BALL-MVC-001 완료, 다음 컨텍스트는 W-000-OBSTACLE-MVC-001**. Ball은 R-021·R-022에 따라 풀 객체별 View·Model·Controller 묶음을 유지하고, 물리 비종속 대여 상태와 사용 세대만 소유한다. Unity Play Mode 격리 검사 19개를 통과했다. 다음은 Obstacle을 같은 원칙으로 연결한 뒤 위치·속도·충돌 권위를 정하는 물리 단위로 진행한다.
+현재 단계: **W-000-OBSTACLE-MVC-001 완료, 다음은 물리 권위 계약과 구현 단위**. Ball과 Obstacle은 풀 객체별 View·Model·Controller 묶음을 유지하고, 현재는 물리 비종속 대여 상태와 사용 세대만 소유한다. Unity Play Mode 격리 검사는 Ball 19개, Obstacle 25개를 통과했다. 다음은 위치·속도·충돌·Rigidbody의 권위와 Unity Physics/직접 구현 Physics 비교 조건을 정한 뒤 작은 구현으로 진행한다.
 
 ## 현재 순서 — 사용자 정정 반영
 
@@ -42,7 +42,7 @@
 | W-000-MVC-REFERENCE-001 | Main: Core·Observer·View와 적용 기준 / Terra Medium: Pool·DI·실제 호출 비교 | R-019 참고 비교·간소화 기준 문서화. 코드 변경·Unity 실행 없음 |
 | W-000-MVC-001 | Terra Medium: Model/View 제작 / Main: 통합·검사·기록 / Sol High: 수명 읽기 검토 | 공통 연결·Play Mode 58개 검사·두 반복 구간 0바이트 확인. 실제 Ball 연결·High Player 미실행 |
 | W-000-BALL-MVC-001 | Main: 계약·통합·기록 / Terra Medium: 수명 조사·검사 코드 / Sol High: 수명·파괴 순서 검토 / Daniel: Prefab·PoolConfig·씬 값 | 완료. Play Mode 19개 검사, 씬·Ball/Cube Prefab·PoolConfig 저장 파일 보존. 물리/입력 제외 |
-| W-000-OBSTACLE-MVC-001 | 다음 컨텍스트: Obstacle별 MVC 조립·초기화 | Cube 최신 상태를 재확인하고 같은 객체별 원칙으로 구현한 뒤 물리 단위로 인계 |
+| W-000-OBSTACLE-MVC-001 | Main: 계약·통합·실행·기록 / Luna Low: 수명 조사 / Terra Medium: 검사 코드 / Sol High: 독립 검토 / Daniel: 자산·씬 값 | 완료. Play Mode 25개 검사. 씬·SO는 동일하며 작업 중 외부에서 Ball/Cube Prefab에 추가된 Rigidbody는 보존. 물리/HP/파괴 제외 |
 | W-001-AI | 발사 기능 구현의 사전 시작 기록 | 구현 전 철회; 코드 수정 없음 |
 | W-001 | Block 영역 클릭 발사·충돌 + Cannon 방향 회전 | 아키텍처 마련 후 진행; 별도 조준 단계 없음 |
 | W-002 | 파괴·결과·재도전 | 후속 |
@@ -60,7 +60,7 @@ Daniel은 현재 씬·카메라·Block/Ball/Cannon 배치와 조작감을 맡고
 
 Main은 실제 실행 메타데이터에서 Astra·Ultra를 확인했다. 초기 코드 조사, 최신 조사·검토, 이번 작은 제작에 Terra·Medium을 사용했다. 보조는 명시 배정과 fork_turns: none으로 시작했고 기존 보조를 재사용했다. 단순 확인 Luna·Low, 합의된 작은 제작 Terra·Medium, 복잡한 검토 Sol·High 정책을 유지한다. 보조 최대 2개, 재위임 없음. 실제 사용량·비용은 미제공이다.
 
-GameFlow·UpdateLoop·Pool과 최소 Model–View 연결을 마련했다. 다음 행동은 이 기반을 실제 객체별 MVC 조립·초기화에 적용하는 것이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
+GameFlow·UpdateLoop·Pool과 최소 Model–View 연결, Ball/Obstacle 객체별 MVC 수명을 마련했다. 다음 행동은 물리 상태와 Rigidbody의 권위·비교 조건을 정해 이 묶음에 연결하는 것이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
 
 ## W-000-CORE-001 — 첫 기반 단위의 당시 계획
 
@@ -187,4 +187,14 @@ Unity 6000.3.10f1 컴파일 및 Play Mode 58개 검사 통과. 최초/같은 Mod
 
 구현 결과: `BallView.OnPoolCreated`가 묶음을 한 번 만들고, 대여에서 Model 세대·View Bind·Controller lease를 연결한다. 반환은 Controller → View → Model 순서로 정리한다. 풀 종료뿐 아니라 씬 계층이 먼저 파괴되는 경우도 Unity `OnDestroy`에서 즉시 같은 정리를 수행한다. 정상 Controller 반환과 PoolLease 반환, 재대여 동일성, 오래된 세대 거절, 활성 풀 종료, 계층 선파괴를 임시 객체로 검사해 19개 assertion을 통과했다. 실제 Ball Prefab·씬·PoolConfig와 물리/입력은 건드리지 않았다.
 
-다음 컨텍스트 시작점: `InGame/Obstacle` 골격과 Daniel의 최신 Cube Prefab/Cube PoolConfig/Game PoolContainer를 다시 읽는다. 현재 저장 근거로 Cube Prefab에는 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 목록은 Ball 하나다. Obstacle의 대여 상태·세대를 Ball과 동일하게 둘 수 있는지 확인하되, 공통 베이스로 성급히 추출하지 않는다. Obstacle MVC 검사 후 W-003 물리 권위와 비교 조건으로 진행한다.
+Ball 단위 종료 당시의 다음 컨텍스트 시작점: `InGame/Obstacle` 골격과 Daniel의 Cube Prefab/Cube PoolConfig/Game PoolContainer를 다시 읽는다. 당시 저장 근거로 Cube Prefab에는 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 목록은 Ball 하나였다. Obstacle의 대여 상태·세대를 Ball과 동일하게 둘 수 있는지 확인하되, 공통 베이스로 성급히 추출하지 않는다. 이 작업은 아래 W-000-OBSTACLE-MVC-001에서 완료했고 다음은 W-003 물리 권위와 비교 조건이다.
+
+## W-000-OBSTACLE-MVC-001 — Obstacle 묶음 재사용과 초기화
+
+Ball에서 확인한 객체별 원칙을 Obstacle에 필요한 만큼만 적용했다. 공통 베이스를 새로 추출하지 않았고, `ObstacleModel`에는 물리와 무관한 `IsRented`·`RentalEpoch`만 두었다. `ObstacleView`가 생성 시 Model/Controller를 한 번 조립하고, 대여·반환·풀 종료·Unity 계층 선파괴에서 같은 묶음을 안전하게 재사용·정리한다. `ObstacleController.TryReturn(epoch)`는 현재 Model 세대와 PoolLease가 모두 유효할 때만 반환한다.
+
+격리된 임시 ObstacleView와 PoolFactory로 prewarm, 정상 Controller/lease 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 계층 선파괴, 생성 후 미대여 파괴를 확인했다. Sol High 검토 뒤 유효하지 않은 lease로 대여 준비가 중간 실패할 때의 롤백과 `OnDestroy` 오류 로그 감지를 추가해 Unity 6000.3.10f1 Play Mode **25개 assertion**을 통과했다. [실행 결과](evidence/raw/obstacle-mvc-runtime-validation.json).
+
+AI는 Scene·Prefab·PoolConfig를 편집하지 않았다. 검사 전후 Game 씬과 Ball/Cube PoolConfig는 동일하다. 작업 도중 AI/보조의 소유 범위 밖에서 Ball/Cube Prefab에 Rigidbody가 추가된 저장 변경을 발견했고, 출처를 추정하거나 되돌리지 않고 최신 사용자 소유 상태로 보존했다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
+
+다음 단위는 실제 위치·속도·충돌·Rigidbody 권위와 Unity Physics/직접 구현 Physics의 동일 비교 조건이다. 현재 Obstacle MVC의 대여 상태는 실제 HP·파괴·충돌·렌더 동작을 뜻하지 않는다. Cube Prefab의 ObstacleView 연결, Cube PoolConfig Prefab/목록 연결, Inspector·배치·게임 감각은 Daniel 소유이며 이번 격리 검사에서 자동 완성하지 않았다.

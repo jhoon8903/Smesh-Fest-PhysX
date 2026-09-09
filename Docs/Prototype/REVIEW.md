@@ -1,6 +1,6 @@
 # 확인·검증 기록
 
-초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-000-BALL-MVC-001은 Ball별 묶음 재사용의 Play Mode 19개 검사 결과다. 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개와 조건을 구분하며 High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
+초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-000-OBSTACLE-MVC-001은 Obstacle별 묶음 재사용의 Play Mode 25개 검사 결과다. Ball 19개, 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개와 조건을 구분하며 High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
 
 | 검증 ID / 관련 요구·작업 | 실제 확인 방법·담당 | 관측 결과 | 상태·한계 |
 |---|---|---|---|
@@ -233,6 +233,25 @@ Unity 6000.3.10f1 일반 스크립트 컴파일 후 `Tools/Smesh Fest/Validation
 
 검사 전후 Game 씬, Ball/Cube Prefab, Ball/Cube PoolConfig의 SHA256이 각각 동일하다. 저장된 Game 씬은 dirty=false·루트 4개였고 자동 저장·씬/Prefab 재생성은 하지 않았다. [보존 결과](evidence/raw/ball-mvc-preservation-check.json).
 
-Daniel이 만든 현재 Ball Prefab은 MeshRenderer·SphereCollider·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이며 Game PoolContainer에 등록돼 있다. Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 목록에 등록되지 않았다. 이는 다음 작업의 시작 상태이지 오류 판정이나 AI 수정 결과가 아니다.
+Ball 단위 종료 당시 Daniel이 만든 Ball Prefab은 MeshRenderer·SphereCollider·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이며 Game PoolContainer에 등록돼 있었다. Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 목록에 등록되지 않았다. 이는 당시 다음 작업의 시작 상태이지 오류 판정이나 AI 수정 결과가 아니다.
 
-실제 Ball 발사·이동·충돌·Cannon 회전, Obstacle MVC, Unity Physics/직접 구현 Physics, 화면 MVP, SO/Addressables, High 설정 빌드·IL2CPP/AOT·기기 실행은 미실행이다. 이번 19개는 객체 수명 격리 검사이며 실제 게임 플레이 검증이 아니다. 기존 공통 MVC 58개·Pool 66개·DI/UI Pause 25개 전체를 다시 실행한 결과도 아니다. 브랜치 전환·커밋·푸시는 하지 않았다.
+Ball 단위 종료 당시 실제 Ball 발사·이동·충돌·Cannon 회전, Obstacle MVC, Unity Physics/직접 구현 Physics, 화면 MVP, SO/Addressables, High 설정 빌드·IL2CPP/AOT·기기 실행은 미실행이었다. 이 중 Obstacle MVC는 아래 후속 단위에서 완료했다. Ball의 19개는 객체 수명 격리 검사이며 실제 게임 플레이 검증이 아니다. 기존 공통 MVC 58개·Pool 66개·DI/UI Pause 25개 전체를 다시 실행한 결과도 아니다. 브랜치 전환·커밋·푸시는 하지 않았다.
+
+## W-000-OBSTACLE-MVC-001 — Obstacle별 묶음 재사용
+
+2026-09-09 KST. Main은 `InGame/Obstacle`의 빈 골격을 물리 비종속 대여 수명으로 연결했다. Luna Low는 Ball/Pool 계약과 최소 검사 범위를 읽었고, Terra Medium은 임시 검사 두 파일만 작성했다. Sol High의 읽기 전용 검토에서 생산 코드 결함은 찾지 못했지만 대여 준비 중 실패 롤백과 Unity 파괴 오류 로그가 검사에 잡히지 않는 두 사각지대를 발견했다. Main이 검사를 보완하고 다시 실행했다.
+
+### 구현·실행 결과
+
+- `ObstacleModel`: `IsRented`, 0이 아닌 `RentalEpoch`, 현재 세대 확인. HP·파괴·위치·속도·충돌 상태는 없음.
+- `ObstacleController`: 현재 Model 세대와 PoolLease를 함께 확인하는 `TryReturn`. 반환·폐기 시 lease/세대 해제.
+- `ObstacleView`: 생성 때 Model/Controller 한 번 조립, 대여 때 Model → Bind → Controller, 반환·풀 종료·Unity 파괴 때 Controller → Unbind → Model 순서의 idempotent 정리.
+- 5개 스크립트 Unity 정적 검사 결과 오류·경고 0건. `Tools/Smesh Fest/Validation/Obstacle MVC Runtime`의 최종 [결과](evidence/raw/obstacle-mvc-runtime-validation.json)는 `2026-09-08T18:03:37.9402350Z`, success=true, **25 assertions**다.
+- prewarm, Controller/PoolLease 정상 반환, 같은 View/Model/Controller 재대여, epoch 전진과 오래된 lease/Controller 거절, 활성 Pool Dispose, 계층 선파괴, 생성 후 미대여 파괴를 확인했다. 보완 뒤에는 default lease의 준비 실패가 Model·Controller·View를 완전히 되돌리는지와 세 파괴 경로가 Error/Exception/Assert 로그를 내지 않는지도 검사했다.
+- Play Mode를 종료했고 Game 씬은 dirty=false·루트 4개, 컴파일/도메인 reload 대기 없음, 종료 후 Console 항목 0개였다. [Editor 종료 기록](evidence/raw/obstacle-mvc-editor-final.json).
+
+### 보존과 한계
+
+AI 검증은 임시 GameObject·메모리상 PoolConfig만 사용했고 Scene·Prefab·PoolConfig를 저장하지 않았다. Game.unity와 Ball/Cube PoolConfig는 시작·종료 해시가 같다. 작업 도중 Ball/Cube Prefab에 Rigidbody가 추가된 외부 저장 변경이 나타났으며 Main과 보조의 파일 소유 범위 밖이었다. 저자를 추정하거나 되돌리지 않고 사용자 소유 최신 상태로 보존했다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
+
+이 25개는 Obstacle의 대여/반환 수명 격리 검사다. Cube Prefab의 ObstacleView 연결, Cube PoolConfig와 Game 목록 연결, 실제 Rigidbody 초기화, HP·파괴·충돌·렌더·입력·게임 플레이는 확인하지 않았다. Ball 19개와 공통 MVC/Pool/DI 검사를 이번 최종 실행에서 함께 재실행한 것도 아니다. High 설정 Player 빌드·Android IL2CPP/AOT·기기 실행은 계속 미실행이다. 커밋·푸시·브랜치 전환도 하지 않았다.

@@ -1,7 +1,7 @@
 <!-- prototype-workflow:generated:v1 -->
 # Smesh-Fest-PhysX 협업 제작 기록
 
-초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 48개
+초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 52개
 
 이 문서는 기록 명령을 호출할 때 자동 갱신됩니다. 모든 시각은 기록기가 관측한 UTC입니다. 호출하지 않은 작업은 수집하지 않습니다.
 
@@ -11,9 +11,9 @@
 
 | 수준 | 이벤트 수 | 의미 |
 |---|---:|---|
-| 미검증 | 17 | 미실행·계획·근거 미제출 |
-| 정적 확인 | 23 | 코드·설정·문서 등 정적 확인 |
-| 실행 확인 | 8 | 실제로 실행한 테스트·플레이 확인 |
+| 미검증 | 18 | 미실행·계획·근거 미제출 |
+| 정적 확인 | 25 | 코드·설정·문서 등 정적 확인 |
+| 실행 확인 | 9 | 실제로 실행한 테스트·플레이 확인 |
 | 실기기 확인 | 0 | 실기기에서 실행한 확인 |
 
 ## 관측된 작업 구간
@@ -33,6 +33,7 @@
 | W-000-MVC-REFERENCE-001 | 2026-09-08T15:39:10.329851Z | 2026-09-08T15:45:16.961652Z | 366.632 |
 | W-000-MVC-001 | 2026-09-08T15:47:39.940006Z | 2026-09-08T16:06:16.664526Z | 1116.725 |
 | W-000-BALL-MVC-001 | 2026-09-08T16:43:30.954954Z | 2026-09-08T17:16:01.256633Z | 1950.302 |
+| W-000-OBSTACLE-MVC-001 | 2026-09-08T17:50:37.761053Z | 2026-09-08T18:16:17.370550Z | 1539.609 |
 
 시작·종료 짝이 없거나 중복되어 시간 계산에서 제외한 이벤트: 1개.
 
@@ -318,6 +319,31 @@
   - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `a4137e418755ef9a293d4edac66cb87378f59951467e92d1787aab52c2807162` · 40231 bytes
   - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `c7a2391745cd0b10424fb50451e6d7541561c36a65d5374302aa46ae41415666` · 17749 bytes
   - 추가 기록: {"ai_role":"Ball lifecycle contract, production C# integration, isolated validation, review fixes and documentation","assigned_model":"gpt-6-astra","auxiliaries":[{"agent":"ball_mvc_contract","assigned_model":"gpt-5.6-terra","context_mode":"none; bounded Pool, ObView and Ball lifecycle paths","outcome":"Read-only lifecycle order, cleanup risks and validation cases returned","reasoning_effort":"medium","usage":null},{"agent":"build_ball_mvc_validation","assigned_model":"gpt-5.6-terra","context_mode":"none; two owned validation files and exact Ball public API","outcome":"Temporary PoolFactory Ball lifecycle probe and menu created; Main compiled and executed it","reasoning_effort":"medium","usage":null},{"agent":"review_ball_mvc","assigned_model":"gpt-5.6-sol","context_mode":"none; bounded Ball production and validation files","outcome":"Found hierarchy-first cleanup and current controller-return coverage gaps; after rework found no remaining lifecycle or reentrancy defects","reasoning_effort":"high","usage":null}],"covered":["current controller return","current pool lease return","same View Model Controller bundle reuse","rental epoch advance and stale rejection","observer 1-0-1-0 lifecycle","active pool disposal","hierarchy-first Unity destruction before pool disposal"],"git_committed_by_agent":false,"human_role":"Own Game scene, Ball/Cube Prefabs, PoolConfig values, Inspector values and layout","next_task":"W-000-OBSTACLE-MVC-001, then physics authority and Unity Physics versus direct implementation comparison","not_run":["Player build with Managed Stripping Level High","IL2CPP/AOT","device","actual Ball physics, input or gameplay","Obstacle MVC"],"observed_assertions":19,"preserved_user_assets":["Assets/Scenes/Game.unity","Assets/Project/Prefabs/Ball.prefab","Assets/Project/Prefabs/Cube.prefab","Assets/Project/So/Ball.asset","Assets/Project/So/Cube.asset"],"reasoning_effort":"ultra","rework_details":"Qualified UnityEngine.Object after CS0118; added Unity OnDestroy bundle cleanup and normal Controller.TryReturn plus hierarchy-first regression coverage after Sol review; final 19 assertions passed.","rework_required":true,"runtime_scope":"Unity 6000.3.10f1 Editor Play Mode, isolated temporary BallView and PoolFactory; not NUnit, Player, device, physics, input or gameplay","usage":null}
+- **Obstacle별 View-Model-Controller 묶음 재사용과 대여 상태 초기화 구현 및 격리 검증 시작.**
+  - 기록: 2026-09-08T17:50:37.761053Z · 담당: Main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `sf-obstacle-mvc-start-20260909-001` · 작업: `W-000-OBSTACLE-MVC-001`
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `481cf37ffed55d3e04f4bb9047bdac99f63c679371b675fa4448a7660e6aaef3` · 18312 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `ef6a3e8d393614cf4d3fb660650688ef1d670c9647be178c02e32fbda9b4212e` · 27557 bytes
+  - [ObstacleModel.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs>): SHA256 `a9b06d78fb77360aa5981dd8f45e391d3fb0cc25c568691e58059fbd2dd827e5` · 81 bytes
+  - [ObstacleController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs>): SHA256 `91fd76d464b08e2764d61bc37bbc40e99a7089f9e06284457325040ce38f7e75` · 86 bytes
+  - [ObstacleView.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs>): SHA256 `6ccb7059dff6d098028640f62e49de58d4c667fe063ed83b742af4331479bb97` · 80 bytes
+  - 추가 기록: {"ai_role":"Obstacle lifecycle contract, C# MVC integration, isolated validation and documentation","assigned_model":"gpt-6-astra","human_role":"Scene, Cube Prefab, Cube PoolConfig, PoolContainer, Inspector values and gameplay feel","observed_model":null,"observed_reasoning_effort":null,"reader":{"assigned_model":"gpt-5.6-luna","context_mode":"none; bounded Handoff, Plan, Ball, Obstacle and Pool lifecycle paths","outcome":"Current Obstacle is an empty skeleton; Ball lifecycle pattern and minimum isolation cases confirmed","reasoning_effort":"low","usage":null},"reasoning_effort":"ultra","scope":"Physics-independent rental state and epoch, one reusable MVC bundle per pooled Obstacle instance","scope_exclusions":["Scene, Prefab and PoolConfig edits","HP, destruction state, Rigidbody, position, velocity and collision authority","input, Cannon rotation and Physics comparison"],"usage":null}
+- **Obstacle별 View-Model-Controller 묶음 재사용 구현과 Unity Play Mode 25개 검사 완료. Game 씬과 PoolConfig를 보존하고 병행 Rigidbody 변경은 분리 기록했다.**
+  - 기록: 2026-09-08T18:16:17.370550Z · 담당: Main · 종류: finish · 상태: done · 검증: 실행 확인
+  - 이벤트 ID: `sf-obstacle-mvc-finish-20260909-001` · 작업: `W-000-OBSTACLE-MVC-001`
+  - [ObstacleModel.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleModel.cs>): SHA256 `88fa944a375e0443ce39c81ff020286416f16677bcb702d85752e55744d5685d` · 1253 bytes
+  - [ObstacleController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs>): SHA256 `b7c18f36ab431e66841054130779869cf47dcadc184ce3892213373c75f5255d` · 2221 bytes
+  - [ObstacleView.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleView.cs>): SHA256 `fffea1fb7c1bdb52fce91f98a370efe2aa1d63ac9a6eddab75d954f87b168341` · 3729 bytes
+  - [ObstacleMvcRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ObstacleMvcRuntimeProbe.cs>): SHA256 `8852401ab8d211972eedc42567dc4384d0f2fe259dc6094787c8a7ed690cc599` · 11671 bytes
+  - [ObstacleMvcValidation.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/ObstacleMvcValidation.cs>): SHA256 `f60d05d500b850c34920da9ae4a70e0ec504937f6e9dc769510a86998de9b906` · 2959 bytes
+  - [obstacle-mvc-runtime-validation.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-runtime-validation.json>): SHA256 `9724c1cc870845bd6f7bf2d5760e153a416777ab5c00921d8fe28f8997c2c0bd` · 310 bytes
+  - [obstacle-mvc-editor-final.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-editor-final.json>): SHA256 `bc7a034de09b5265108b211275c67d721f22635cd5c6ef46b2242940c5eb056a` · 1170 bytes
+  - [obstacle-mvc-preservation-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-preservation-check.json>): SHA256 `270411c3e00c69c12d9c1f64475861be9dc5baad71cf7c786a4344966e5bee31` · 2122 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `f71fc7259dbfb9d616afae84d6d32b7f2220eccfff91278ff1970469b46e8dda` · 37854 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `9368a509b7d2714011f57bab6ef2b29333d0bdee8b6621d21a62f022ba90599f` · 29797 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `a008bc15a5aa924858ca6f858424650f0e1e89429ef926b5b155c60d8f68efd7` · 43349 bytes
+  - [README.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md>): SHA256 `134b2dd095edefa58f96fde3b6c31b389391e025e6a922df8915014a1a237c4a` · 6168 bytes
+  - 추가 기록: {"ai_role":"Obstacle lifecycle contract, production C# integration, isolated validation, review fixes and documentation","assigned_model":"gpt-6-astra","auxiliaries":[{"agent":"obstacle_reader","assigned_model":"gpt-5.6-luna","context_mode":"none; bounded Handoff, Plan, Ball, Obstacle and Pool lifecycle paths","outcome":"Read-only Ball-compatible lifecycle order and minimum isolation cases returned","reasoning_effort":"low","usage":null},{"agent":"obstacle_validation_builder","assigned_model":"gpt-5.6-terra","context_mode":"none; two owned Obstacle validation files and exact public lifecycle API","outcome":"Temporary PoolFactory Obstacle lifecycle probe and menu created; Main compiled, reviewed and executed it","reasoning_effort":"medium","usage":null},{"agent":"obstacle_reviewer","assigned_model":"gpt-5.6-sol","context_mode":"none; bounded Obstacle production, validation and directly referenced Pool/Ball files","outcome":"No production defect found; identified invalid-lease rollback and Unity destruction-log test gaps, both added and rerun","reasoning_effort":"high","usage":null}],"concurrent_external_changes_preserved":["Assets/Project/Prefabs/Ball.prefab: Rigidbody added outside assigned files","Assets/Project/Prefabs/Cube.prefab: Rigidbody added outside assigned files"],"covered":["prewarm and first observation","current Controller and PoolLease return","same View Model Controller bundle reuse","rental epoch advance and stale lease or Controller rejection","active pool disposal","hierarchy-first Unity destruction","created-never-rented destruction","invalid lease preparation rollback","destruction error log detection"],"git_committed_by_agent":false,"human_role":"Own Scene, Ball/Cube Prefabs, PoolConfig values, Inspector values and gameplay feel","next_task":"Define Ball/Obstacle physics authority and equal conditions for Unity Physics versus direct implementation before coding","not_run":["Player build with Managed Stripping Level High","Android IL2CPP/AOT","device","Cube Prefab or PoolConfig wiring","actual Rigidbody initialization, physics, HP, destruction, input or gameplay","prior Ball, MVC, Pool and DI validation suites"],"observed_assertions":25,"reasoning_effort":"ultra","rework_details":"Sol review found validation gaps only; added invalid lease rollback and error-log-aware destruction coverage, then final 25 assertions passed.","rework_required":true,"runtime_scope":"Unity 6000.3.10f1 Editor Play Mode, isolated temporary ObstacleView and PoolFactory; not NUnit, Player, device, physics, HP, destruction gameplay, input or gameplay","scene_after":{"dirty":false,"path":"Assets/Scenes/Game.unity","root_count":4},"script_validation":{"errors":0,"files":5,"warnings":0},"usage":null}
 
 ### 5. 리뷰
 
@@ -497,6 +523,22 @@
   - [ball-mvc-preservation-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-mvc-preservation-check.json>): SHA256 `021dd63a19327d10c43abba1c79083afced578fc6409c5a5950b8b18eee2066f` · 1590 bytes
   - [ball-mvc-document-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-mvc-document-check.json>): SHA256 `1ce6c2502fc80331eb571729acec301173c064c470569466a6d4792fb7bec228` · 327 bytes
   - 추가 기록: {"assigned_model":"gpt-6-astra","branch":"MVC","checks":{"diff_whitespace_errors":0,"documents":7,"handoff_ignored":false,"handoff_tracked":true,"link_missing":0,"local_links":125,"manifest_blocks":1,"manifest_missing":0,"manifest_paths":63},"git_committed_by_agent":false,"head":"21567e50fab4","next_task":"W-000-OBSTACLE-MVC-001, then physics implementation","reasoning_effort":"ultra","scope":"Existing HANDOFF update and manifest validation after completed Ball MVC runtime work; no commit, push, Player build or additional gameplay implementation.","upstream_local_tracking_ahead":0,"upstream_local_tracking_behind":0,"usage":null}
+- **context-save: Ball MVC 병합 뒤 MVC-Obstacle 브랜치의 현재 상태와 다음 Obstacle MVC 후 물리 구현 순서를 HANDOFF에 저장. manifest 63개 경로와 문서 로컬 링크 125개 누락 없음.**
+  - 기록: 2026-09-08T17:32:15.070927Z · 담당: Main · 종류: handoff · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `sf-context-save-20260909-172921` · 작업: `W-CONTEXT-SAVE-20260909-003`
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `481cf37ffed55d3e04f4bb9047bdac99f63c679371b675fa4448a7660e6aaef3` · 18312 bytes
+  - [ball-mvc-runtime-validation.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-mvc-runtime-validation.json>): SHA256 `ba833f497d1541aa4d00a0501a74fe966621a64bb1bfea230df5c713a837e274` · 300 bytes
+  - [ball-mvc-preservation-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-mvc-preservation-check.json>): SHA256 `021dd63a19327d10c43abba1c79083afced578fc6409c5a5950b8b18eee2066f` · 1590 bytes
+  - [ball-mvc-document-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-mvc-document-check.json>): SHA256 `1ce6c2502fc80331eb571729acec301173c064c470569466a6d4792fb7bec228` · 327 bytes
+  - 추가 기록: {"assigned_model":"gpt-6-astra","branch":"MVC-Obstacle","checks":{"diff_whitespace_errors":0,"documents":7,"handoff_ignored":false,"handoff_tracked":true,"link_missing":0,"local_links":125,"manifest_blocks":1,"manifest_missing":0,"manifest_paths":63},"git_committed_by_agent":false,"head":"fc8b0baafa77eac32fcfe51823f3d95bae3e4eb8","next_task":"W-000-OBSTACLE-MVC-001, then physics implementation","prior_ball_mvc_assertions_reviewed":19,"prior_runtime_validation_reexecuted":false,"reasoning_effort":"ultra","scope":"Documentation snapshot on the merged MVC-Obstacle branch; no game code or user asset changes, Unity execution, tests, build, device run, commit, push, or branch switch.","upstream_local_tracking_ahead":0,"upstream_local_tracking_behind":0,"usage":null,"worktree_clean_before_context_save":true}
+- **context-save: Obstacle MVC 25개 검사, 병행 Rigidbody 변경 보존과 다음 물리 권위 단위를 HANDOFF에 저장. manifest 71개 경로와 문서 로컬 링크 136개 누락 없음.**
+  - 기록: 2026-09-08T18:16:17.486395Z · 담당: Main · 종류: handoff · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `sf-context-save-20260909-obstacle-001` · 작업: `W-CONTEXT-SAVE-20260909-004`
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `bf48530e127149e4827908c18b3f44498788a0c0af8b07653270297375c9a903` · 21508 bytes
+  - [obstacle-mvc-runtime-validation.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-runtime-validation.json>): SHA256 `9724c1cc870845bd6f7bf2d5760e153a416777ab5c00921d8fe28f8997c2c0bd` · 310 bytes
+  - [obstacle-mvc-preservation-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-preservation-check.json>): SHA256 `270411c3e00c69c12d9c1f64475861be9dc5baad71cf7c786a4344966e5bee31` · 2122 bytes
+  - [obstacle-mvc-document-check.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/obstacle-mvc-document-check.json>): SHA256 `9387e58c701c6031f8a9eb283982c2a89c25fdc93dc07d0e1d5ad3df6179ed63` · 331 bytes
+  - 추가 기록: {"assigned_model":"gpt-6-astra","branch":"MVC-Obstacle","checks":{"diff_whitespace_errors":0,"documents":7,"handoff_ignored":false,"handoff_tracked":true,"link_missing":0,"local_links":136,"manifest_blocks":1,"manifest_missing":0,"manifest_paths":71},"git_committed_by_agent":false,"head":"fc8b0baafa77eac32fcfe51823f3d95bae3e4eb8","next_task":"Physics authority and Unity Physics versus direct implementation comparison contract","obstacle_mvc_assertions":25,"reasoning_effort":"ultra","scope":"Existing HANDOFF update after current Obstacle MVC runtime work; no commit, push, Player build, device run, asset wiring or additional gameplay implementation.","upstream_local_tracking_ahead":0,"upstream_local_tracking_behind":0,"usage":null}
 
 ## 기록의 한계
 

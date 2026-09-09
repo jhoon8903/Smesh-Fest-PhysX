@@ -1,0 +1,8 @@
+{
+    "recordedAtUtc": "2026-09-08T18:03:37.9402350Z",
+    "unityVersion": "6000.3.10f1",
+    "success": true,
+    "assertions": 25,
+    "error": "",
+    "scope": "Isolated PoolFactory + temporary ObstacleView source only; does not edit a Scene, Prefab, PoolConfig asset, physics, HP, destruction, or input."
+}

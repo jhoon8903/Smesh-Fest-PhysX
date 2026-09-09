@@ -1,6 +1,6 @@
 # 기본 아키텍처 — 확정 기준
 
-상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View 기반에 이어 R-021·R-022의 Ball별 MVC 묶음을 구현했다. 2026-09-09 W-000-BALL-MVC-001 Play Mode 19개 검사 통과. Obstacle MVC, 물리 권위·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
+상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View 기반에 이어 Ball과 Obstacle의 객체별 MVC 묶음을 구현했다. 2026-09-09 Play Mode 격리 검사 Ball 19개·Obstacle 25개 통과. 물리 권위·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
 
 출처: Daniel이 “내가 만드는 게임들은 대부분 아래 설명한 아키텍처 기반으로 작동해”라고 제시한 1–8번과 “문서에 기록하여 다음부터 질문하지 않도록” 요청한 메시지, 이후 “추가로 나는 DI 의존성 주입으로 코드 작성을 해”라는 추가 기준과 “Code Stripping을 High로 하기 때문에 관리도 해야해”라는 후속 기준. 이 문서는 해당 기준의 단일 원본이다.
 
@@ -186,7 +186,7 @@ W-000-MVC-REFERENCE-001은 비교·설계만 수행했다. 후속 진행 요청(
 
 OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므로, 파생 View의 추가 모델 이벤트도 여기서 쌍으로 관리한다. 단순 비활성화를 풀 반환으로 취급하지 않는다. 실제 반환 시 Controller의 Loop 구독을 끊고 View.Unbind 후 객체별 상태를 초기화한다. Model/Controller 묶음 유지와 재생성 두 방식은 임시 객체로 모두 검사했으며 공통부에서 하나를 강제하지 않았다.
 
-현재 공통 ObController는 빈 기반이고 Cannon/Obstacle별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball의 객체별 수명 계약은 다음 절에서 실제 코드로 연결했다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
+현재 공통 ObController는 빈 기반이고 Cannon별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball과 Obstacle의 객체별 수명 계약은 아래 절에서 실제 코드로 연결했다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
 
 ### Ball 객체별 MVC 묶음 계약 — W-000-BALL-MVC-001
 
@@ -203,9 +203,17 @@ OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므�
 
 BallController에는 실제 입력·Loop·물리 구독을 넣지 않았다. 구독할 권위가 정해지기 전에 빈 Tick을 등록하면 구현 완료처럼 보이면서 반환 누수만 늘기 때문이다. 물리 단위에서 구독을 추가할 때는 대여 세대를 캡처하고 모든 늦은 충돌·Tween·UniTask 완료가 `IsCurrentRental(epoch)`를 확인해야 한다.
 
-현재 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지며 Rigidbody는 없다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있다. 이 값들은 이번 코드/검사에서 수정하지 않았다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
+Ball MVC 단위 종료 당시 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지고 Rigidbody는 없었다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있었다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [당시 사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
 
-다음 컨텍스트는 같은 원칙으로 Obstacle MVC를 구현한다. 현재 Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 씬 목록에도 등록되지 않았다. 이를 과거 설정으로 되돌리거나 자동 완성하지 않고, 최신 사용자 값과 Obstacle 코드 상태를 다시 확인한 뒤 필요한 참조만 부분 연결한다. 그 다음 물리 구현에서 Ball/Obstacle의 상태 권위와 Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 확정한다.
+### Obstacle 객체별 MVC 묶음 계약 — W-000-OBSTACLE-MVC-001
+
+[IMPLEMENTED:agent / R-019·R-021 원칙 적용 / 2026-09-09 KST] Obstacle도 풀 인스턴스마다 View·Model·Controller를 한 번 조립해 재사용한다. Ball과 코드가 닮았다는 이유만으로 공통 베이스를 먼저 추출하지 않았고, 첫 상태는 `IsRented`와 0이 아닌 `RentalEpoch`로 제한했다.
+
+수명 순서와 이전 세대 거절은 Ball 계약과 같되 구체 타입이 직접 소유한다. `ObstacleView.OnPoolCreated`가 묶음을 만들고, 대여에서 Model 시작 → View Bind → Controller lease 연결, 반환에서 Controller → View → Model 순서로 정리한다. 준비 중 유효하지 않은 lease가 들어오면 이미 시작한 Model과 View 연결까지 되돌린다. 풀 종료와 Unity `OnDestroy`는 같은 idempotent 정리를 사용한다. 물리·HP·파괴·위치·속도·충돌·시각 표현은 아직 권위가 정해지지 않아 넣지 않았다.
+
+Unity 6000.3.10f1의 임시 PoolFactory/ObstacleView 검사에서 같은 묶음 재대여, 세대 전진, 오래된 lease/Controller 거절, 정상 반환, 활성 Pool Dispose, 계층 선파괴, 생성 후 미대여 파괴, 잘못된 lease 준비 실패 롤백과 파괴 오류 로그 부재를 포함해 25개 assertion을 통과했다. [Obstacle 코드](../../Assets/Scripts/InGame/Obstacle/ObstacleView.cs), [실행 결과](evidence/raw/obstacle-mvc-runtime-validation.json).
+
+이 작업은 Cube Prefab·PoolConfig·Game 목록을 연결하지 않았다. 작업 중 외부에서 Ball/Cube Prefab에 Rigidbody가 추가된 저장 변경을 감지했지만 AI/보조가 만든 것으로 귀속하지 않고 사용자 소유 최신 상태로 보존했다. 다음 물리 단위에서는 이 실제 Rigidbody 구성과 Daniel의 의도를 다시 읽고, 상태 권위·초기화 책임·Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 정한다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
 
 ## 성능 근거를 기록하는 방법
 
