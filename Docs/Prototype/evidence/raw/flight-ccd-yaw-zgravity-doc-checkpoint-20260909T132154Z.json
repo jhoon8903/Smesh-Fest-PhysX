@@ -1,0 +1,22 @@
+{
+  "id": "flight-ccd-yaw-zgravity-doc-checkpoint-20260909T132154Z",
+  "stage": "document",
+  "kind": "checkpoint",
+  "actor": "Main",
+  "task_id": "flight-ccd-yaw-zgravity-001",
+  "status": "static_complete_runtime_pending",
+  "summary": "최신 yaw-only와 world-Z 중력 계약이 과거 pitch·충돌 기반 기록과 혼동되지 않도록 문서를 구분하고 Fatal 종료 원인과 재시작 복구 상태를 인계에 기록했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "current_contract": "Ball ContinuousDynamic, Obstacle Continuous, Cannon world-Yaw-only, Straight gravity at world Z > Config threshold, Curve gravity from launch",
+    "historical_sections_labeled": true,
+    "incident_and_recovery_recorded": true,
+    "latest_play_mode_run": false
+  }
+}

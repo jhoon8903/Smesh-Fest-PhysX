@@ -1,0 +1,14 @@
+{
+  "recordedAtUtc": "2026-09-09T06:41:44.7800080Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "assertions": 42,
+  "simulatedSteps": 15,
+  "collisionContacts": 1,
+  "obstacleDisplacement": 0.6153807044029236,
+  "initialBallSleeping": true,
+  "initialObstacleSleeping": false,
+  "error": "",
+  "scope": "Temporary inactive sources plus in-memory PoolConfig instances in an isolated LocalPhysicsMode.Physics3D scene. No saved Scene, Prefab, PoolConfig, or ScriptableObject asset is edited.",
+  "classification": "User-executed fixed PhysX lifecycle probe pass. This validates the isolated temporary scene contract, not the actual Game scene click loop or gameplay feel."
+}

@@ -1,0 +1,36 @@
+{
+  "id": "flight-ccd-yaw-zgravity-start-20260909T120732Z",
+  "stage": "build",
+  "kind": "start",
+  "actor": "main",
+  "task_id": "flight-ccd-yaw-zgravity-001",
+  "status": "in_progress",
+  "summary": "선택적 CCD, Cannon Y축 회전, Ball의 월드 Z=0 통과 후 중력 전환 구현을 시작했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "scope": "Ball ContinuousDynamic, Obstacle Continuous, 필요한 물리 레이어 조합, Cannon yaw-only, world Z threshold gravity",
+    "human_role": "현재 씬과 Inspector 수동값 소유, Unity Play Mode 감각 및 런타임 확인",
+    "ai_role": "기존 계약 조사, 최소 코드와 Config 연결, 정적 검사, 문서와 증거 갱신",
+    "preservation": "씬 재생성, Prefab 재생성, Material/Particle/Importer 변경 없음; legacy/fallback 추가 없음",
+    "assistant_assignments": [
+      {
+        "role": "prototype_reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "task_scope": "Cannon 회전 책임과 최소 수정 지점 읽기 전용 감사",
+        "context_mode": "none; 지정 파일과 질문만 전달"
+      },
+      {
+        "role": "prototype_reviewer",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "task_scope": "CCD Config 연결과 Z=0 중력 상태 전이의 상호작용 읽기 전용 감사",
+        "context_mode": "none; 지정 파일과 결정 요약만 전달"
+      }
+    ]
+  }
+}

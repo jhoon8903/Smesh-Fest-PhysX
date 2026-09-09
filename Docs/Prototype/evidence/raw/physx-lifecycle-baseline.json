@@ -1,0 +1,37 @@
+{
+  "observedAtUtc": "2026-09-09T05:10:41Z",
+  "gitBranch": "MVC-Obstacle",
+  "gitHead": "ca1c6914da43ff094c47ab8dc8275521b5dfd3cd",
+  "userOwnedDirtyPaths": [
+    "Assets/Scenes/Game.unity"
+  ],
+  "preservationBaseline": {
+    "Assets/Scenes/Game.unity": "b00cdcf6acb4b9242b00a6a6688c827f22cff34184ea437ae1be5d2fda8cc321",
+    "Assets/Project/Prefabs/Ball.prefab": "c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff",
+    "Assets/Project/Prefabs/Cube.prefab": "a584b305abfcd3efa8a174300c1b0f5de3ac27f3fa80462ec10e2343a51503a0",
+    "Assets/Project/So/Ball.asset": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+    "Assets/Project/So/Cube.asset": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+  },
+  "observedUnity": {
+    "version": "6000.3.10f1",
+    "instance": "Smesh-Fest-PhysX@7702caed",
+    "activeScene": "Assets/Scenes/Game.unity",
+    "activeSceneDirty": false,
+    "activeSceneRootCount": 4
+  },
+  "observedBindings": {
+    "gameSceneRigidbodyCount": 23,
+    "gameSceneObstacleViewCount": 23,
+    "ballPrefab": [
+      "Rigidbody",
+      "SphereCollider",
+      "BallView"
+    ],
+    "cubePrefab": [
+      "Rigidbody",
+      "BoxCollider",
+      "ObstacleView"
+    ]
+  },
+  "ownership": "Daniel owns the current Scene, Prefab, PoolConfig, Rigidbody, Collider and Inspector values. This task must not save, regenerate or overwrite those assets."
+}

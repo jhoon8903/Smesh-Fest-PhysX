@@ -1,0 +1,33 @@
+{
+  "task_id": "W-000-OBSTACLE-MVC-001",
+  "checked_at_utc": "2026-09-08T18:05:04Z",
+  "unity_version": "6000.3.10f1",
+  "script_validation": {
+    "files": 5,
+    "warnings": 0,
+    "errors": 0
+  },
+  "play_mode": {
+    "result": "passed",
+    "assertions": 25,
+    "result_path": "Docs/Prototype/evidence/raw/obstacle-mvc-runtime-validation.json",
+    "stopped_after_validation": true
+  },
+  "editor_after_validation": {
+    "is_playing": false,
+    "is_paused": false,
+    "is_changing": false,
+    "is_compiling": false,
+    "is_domain_reload_pending": false
+  },
+  "scene_after_validation": {
+    "name": "Game",
+    "path": "Assets/Scenes/Game.unity",
+    "is_dirty": false,
+    "is_loaded": true,
+    "root_count": 4
+  },
+  "console_entries_after_stop": 0,
+  "transport_note": "The stdio bridge reloaded during script import and Play Mode transitions. The final scene query and console read succeeded after Play Mode stopped.",
+  "scope": "Editor script validation plus an isolated temporary PoolFactory/ObstacleView Play Mode probe. No Player build, device run, scene or prefab wiring, physics, HP, destruction gameplay, input, or actual gameplay validation."
+}

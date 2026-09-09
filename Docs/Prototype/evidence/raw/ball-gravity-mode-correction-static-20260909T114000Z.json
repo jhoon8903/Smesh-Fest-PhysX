@@ -1,0 +1,64 @@
+{
+  "taskId": "W-001-BALL-GRAVITY-TRANSITION-002",
+  "recordedAtUtc": "2026-09-09T11:44:33Z",
+  "validationLevel": "static",
+  "userObservation": {
+    "cannonCollidersRemovedByUser": true,
+    "ballPrefabUseGravity": false,
+    "straightReachedDesiredPositionWithGravityDisabled": true
+  },
+  "contract": {
+    "straightGravityFromLaunch": false,
+    "curveGravityFromLaunch": true,
+    "gravityEnabledAfterDirectObstacleCollision": true,
+    "collisionLookup": "collision.collider.TryGetComponent<ObstacleView>",
+    "tagNameParentOrChildFallback": false,
+    "authoredGravityRestoredOnPoolReset": true,
+    "legacyTryLaunchOverloadRetained": false
+  },
+  "curveReasoning": {
+    "velocityFormula": "displacement / flightSeconds - 0.5 * gravity * flightSeconds",
+    "physicsGravityUsesSamePhysXConfigValue": true,
+    "ballPrefabLinearDamping": 0,
+    "runtimeArrivalStillPending": true
+  },
+  "validation": {
+    "unityVersion": "6000.3.10f1",
+    "unityRefreshCompleted": true,
+    "unityConsoleErrors": 0,
+    "unityScriptDiagnostics": {
+      "scripts": 6,
+      "warnings": 0,
+      "errors": 0
+    },
+    "liveTryLaunchOverloadCount": 1,
+    "dotnetBuild": {
+      "errors": 0,
+      "warnings": 4,
+      "warningScope": "Unity and MCP assembly reference version conflicts"
+    },
+    "diffCheckPassed": true,
+    "playModeProbeRun": false,
+    "actualStraightAndCurveArrivalRun": false
+  },
+  "before": {
+    "BallController.cs": "ec285ca5307c7e0ceb5624289c625c460a39fb6f08572459fa5d29678ffbaf49",
+    "BallView.cs": "eae74a342f3cf53c098b54502bb7785a90655a4487206da8ec0163dafb24691f",
+    "ShotDirector.cs": "8077758243e64f3b18ba647f007f6084dce07f8f5e944805ddf97fad053f9139",
+    "PhysXRuntimeProbe.cs": "68693455585ed3b6fa38d983894094560bc3cc8c9183c1d31b13324707f7f55a",
+    "ClickLaunchRuntimeProbe.cs": "a9785c420668f81fcee370cd2b58728327a5e34b2e77fe1fa2a20f72e503480d",
+    "Ball.prefab": "7ef4bdb8e611e0fb660c4e6c1c8e8fbad949bcb24b5830442fd155e7909eab46",
+    "Game.unity": "d06f6c7ff08033dd57ebd3a573ad72c7fb6099dd7c3ed4b3899ebae858f1d797"
+  },
+  "after": {
+    "BallController.cs": "32e912b91fffaf9ecdb1f298418b107e09fdc074e064f8735a45e25b6be5e76f",
+    "BallView.cs": "120b5e370bbcb1f9df6665f10852ac9fed0c7b31014cebf0169bc25f64c11932",
+    "ShotDirector.cs": "59b7ce7f213c23b96dd64e41fa3c77e421fbee946b84fed0e28cb72377971380",
+    "BallMvcRuntimeProbe.cs": "b17829be580ffefa31df5bae640a42d8e38d269b70fcdc93bbb9f73c12b08df2",
+    "PhysXRuntimeProbe.cs": "db03d8561d047ab4c5316e4930155177ce3906534e33502a46847705b437d2a6",
+    "ClickLaunchRuntimeProbe.cs": "f0758a4eda359593270cb8e2fbd3f7df497728f50527a7e56d1ea609b54abf53",
+    "Ball.prefab": "7ef4bdb8e611e0fb660c4e6c1c8e8fbad949bcb24b5830442fd155e7909eab46",
+    "BallConfig.asset": "338dc95fa65ebf818da8ddcae55d7f508a64c1531d3ac9b7ad7239df286c6160",
+    "Game.unity": "d06f6c7ff08033dd57ebd3a573ad72c7fb6099dd7c3ed4b3899ebae858f1d797"
+  }
+}

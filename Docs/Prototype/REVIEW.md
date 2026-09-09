@@ -1,6 +1,8 @@
 # 확인·검증 기록
 
-초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-000-BALL-MVC-001은 Ball별 묶음 재사용의 Play Mode 19개 검사 결과다. 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개와 조건을 구분하며 High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
+> **2026-09-09 최신 계약:** targetable Obstacle 직접 Raycast, Muzzle 발사, Cannon world-Yaw-only, Straight의 같은 GameObject `ObstacleView` 직접 충돌 **또는** `world Z > Config 경계` 중 먼저 발생한 중력 전환, Curve의 발사 즉시 중력, Config 기반 CCD와 물리 Layer Matrix를 사용한다. tag·name·parent 검색 fallback과 legacy 경로는 남기지 않는다.
+
+초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 과거 PhysX 수명 Probe 42개 통과는 유지되지만 최신 CCD/Yaw/충돌 또는 Z 경계 계약은 Probe 코드만 갱신됐고 아직 Play Mode 재실행 전이다. 최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이다. 기존 실행 수치는 범위가 다르므로 합산하지 않으며 High 설정 빌드도 미실행이다.
 
 | 검증 ID / 관련 요구·작업 | 실제 확인 방법·담당 | 관측 결과 | 상태·한계 |
 |---|---|---|---|
@@ -8,9 +10,19 @@
 | V-002 / R-001, SF-START-001 | Main: ProjectVersion·manifest·렌더 설정·저장 Game 씬 | Unity 6000.3.10f1, URP 17.3.0, Luna 없음. Game 씬에 카메라·조명·Volume·EventSystem, 빈 GameObjects/UI(HUD) 영역. | 일부 확인: 직렬화 파일 읽기. Editor 미저장 상태·실제 렌더 미확인. |
 | V-003 / R-005, SF-START-001 | Main: 현재 작업의 실행 메타데이터와 배정 도구 | Main `gpt-6-astra`·`ultra` 실제 기록 확인. 보조 `gpt-5.6-terra`·`medium`, `fork_turns: none` 명시 호출 수락·결과 반환. | 통과: Main 설정 및 보조 명시 배정. 보조의 별도 실행 모델 확인값·토큰·비용은 미제공. Docs 템플릿은 비활성 그대로이며 프로젝트 `.codex/config.toml` 없음. |
 | V-004 / R-002, SF-START-001-CODE | 보조: Assets/Scripts의 실제 C# 읽기 | GameFlow는 MonoBehaviour와 빈 Awake. 나머지 Ball/Obstacle·Object·Screen·Pool·Navigator·UpdateLoop는 빈 선언. A안 기능과 물리 비교 코드 없음. | 통과: 코드 조사. Unity 컴파일/실행 미검증. |
-| V-101 / W-001 | Unity 현재 소스 컴파일 | 실행하지 않음. 기존 Editor.log에는 옛 ObjectView/TView 파일명의 CS8773 이력이 있음. | 미실행: 과거 오류를 현재 실패로 단정하지 않음. |
-| V-102 / W-001 | Unity Play Mode에서 조준·발사·충돌 | 첫 목표·역할 답변 후 구현·확인 예정 | 미실행 |
-| V-103 / W-003 | 물리 비교 측정 | 비교 대상·조건이 미정 | 미실행 |
+| V-101 / W-001 | Unity 현재 소스 컴파일과 스크립트 진단 | Unity 6000.3.10f1 compiler error 0, 관련 11개 스크립트 warning 0·error 0. 첫 compile의 `PointerEventData.eventSystem` 접근 오류를 별도 EventSystem 참조로 수정 | 통과: 정적 범위. Play Mode 아님 |
+| V-102 / W-001 | Unity Play Mode에서 클릭·발사·정렬·충돌 | 1차 Probe는 assertion 5에서 fixture 가정 실패, simulatedSteps 0. test-only 수정·컴파일 완료 | 수정본 재실행과 실제 Game 확인 대기 |
+| V-103 / W-003 | 물리 비교 측정 | PhysX 수명 수정본 42개·15 step·contact 1회·Obstacle 이동 0.6153807 통과. 직접 구현 비교 조건은 대표 플레이 뒤 별도 문서화 | PhysX 격리 수명 통과; 실제 플레이와 직접 구현 비교는 미완료 |
+| V-104 / W-001-FLIGHT-PHYSICS-003 | Unity 컴파일·스크립트 진단·Layer Matrix 조회 | Ball/Obstacle Config 적용, Ball `ContinuousDynamic`, Obstacle `Continuous`, Cannon Yaw-only, Straight 직접 Obstacle 충돌·Z=0 유지·Z>0 경계 회귀를 코드와 disposable Probe에 연결. Obstacle 8·Ball 9·Ground 10, 필요한 네 gameplay 충돌만 활성 | 최신 스크립트 4개 warning/error 0, Console error 0. Click/PhysX Probe와 실제 Game Play Mode는 Daniel 확인 대기 |
+| V-105 / Editor 복구 | 재시작 뒤 씬·컴파일·Project Settings 재조회 | Game 씬 dirty=false·루트 4개, Console error 0, Obstacle/Ball/Ground 레이어와 Layer Matrix 유지, 임시 `__Codex` Editor 스크립트 없음 | 복구 확인. Play Mode 검증과는 별도 |
+
+## W-001-FLIGHT-PHYSICS-003 — CCD·Yaw-only·world-Z 중력
+
+- 코드 권위: Ball/Obstacle SO가 mass·damping·interpolation·collision mode를 적용한다. `BallController`는 Straight의 중력 대기 상태를 대여 epoch와 함께 소유하고, 같은 GameObject의 `ObstacleView` 직접 충돌 또는 중앙 FixedTick의 엄격한 `position.z > GravityActivationWorldZ` 중 먼저 발생한 조건에서 한 번 전환한다.
+- Cannon: yawRoot의 초기 회전을 기준으로 수평 방향의 world Y 회전만 적용하며 child local rotation은 수정하지 않는다.
+- 최적화: Ball/Obstacle/Ground를 분리하고 Ball↔Obstacle, Ball↔Ground, Obstacle↔Ground, Obstacle↔Obstacle만 gameplay 충돌로 유지했다. Ball↔Ball·Ground↔Ground와 gameplay↔Default/UI 등은 비활성이다.
+- 검증 상태: 최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이다. 최신 Probe는 얇은 Obstacle CCD, Config 적용, 직접 Obstacle 충돌 전환, Z=0 유지, Z>0 전환, stale epoch, Curve 즉시 중력과 authored Cannon child 회전 보존을 검사하지만 아직 Play Mode 결과는 없다.
+- 작업 중 AI가 Physics 설정 저장 확인을 위해 만든 임시 Editor 정리 코드에서 내부 `PhysicsManager` 타입을 잘못 판별해 로드된 Editor 객체를 과도하게 해제했고 Unity가 Fatal Error로 종료됐다. Daniel이 Editor를 다시 실행한 뒤 위 V-105 상태를 확인했다. 임시 스크립트는 제거했으며 같은 내부 설정 객체 로드·정리 경로는 다시 사용하지 않는다.
 
 ## 코드 근거
 
@@ -233,6 +245,139 @@ Unity 6000.3.10f1 일반 스크립트 컴파일 후 `Tools/Smesh Fest/Validation
 
 검사 전후 Game 씬, Ball/Cube Prefab, Ball/Cube PoolConfig의 SHA256이 각각 동일하다. 저장된 Game 씬은 dirty=false·루트 4개였고 자동 저장·씬/Prefab 재생성은 하지 않았다. [보존 결과](evidence/raw/ball-mvc-preservation-check.json).
 
-Daniel이 만든 현재 Ball Prefab은 MeshRenderer·SphereCollider·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이며 Game PoolContainer에 등록돼 있다. Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 목록에 등록되지 않았다. 이는 다음 작업의 시작 상태이지 오류 판정이나 AI 수정 결과가 아니다.
+Ball 단위 종료 당시 Daniel이 만든 Ball Prefab은 MeshRenderer·SphereCollider·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이며 Game PoolContainer에 등록돼 있었다. Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 목록에 등록되지 않았다. 이는 당시 다음 작업의 시작 상태이지 오류 판정이나 AI 수정 결과가 아니다.
 
-실제 Ball 발사·이동·충돌·Cannon 회전, Obstacle MVC, Unity Physics/직접 구현 Physics, 화면 MVP, SO/Addressables, High 설정 빌드·IL2CPP/AOT·기기 실행은 미실행이다. 이번 19개는 객체 수명 격리 검사이며 실제 게임 플레이 검증이 아니다. 기존 공통 MVC 58개·Pool 66개·DI/UI Pause 25개 전체를 다시 실행한 결과도 아니다. 브랜치 전환·커밋·푸시는 하지 않았다.
+Ball 단위 종료 당시 실제 Ball 발사·이동·충돌·Cannon 회전, Obstacle MVC, Unity Physics/직접 구현 Physics, 화면 MVP, SO/Addressables, High 설정 빌드·IL2CPP/AOT·기기 실행은 미실행이었다. 이 중 Obstacle MVC는 아래 후속 단위에서 완료했다. Ball의 19개는 객체 수명 격리 검사이며 실제 게임 플레이 검증이 아니다. 기존 공통 MVC 58개·Pool 66개·DI/UI Pause 25개 전체를 다시 실행한 결과도 아니다. 브랜치 전환·커밋·푸시는 하지 않았다.
+
+## W-000-OBSTACLE-MVC-001 — Obstacle별 묶음 재사용
+
+2026-09-09 KST. Main은 `InGame/Obstacle`의 빈 골격을 물리 비종속 대여 수명으로 연결했다. Luna Low는 Ball/Pool 계약과 최소 검사 범위를 읽었고, Terra Medium은 임시 검사 두 파일만 작성했다. Sol High의 읽기 전용 검토에서 생산 코드 결함은 찾지 못했지만 대여 준비 중 실패 롤백과 Unity 파괴 오류 로그가 검사에 잡히지 않는 두 사각지대를 발견했다. Main이 검사를 보완하고 다시 실행했다.
+
+### 구현·실행 결과
+
+- `ObstacleModel`: `IsRented`, 0이 아닌 `RentalEpoch`, 현재 세대 확인. HP·파괴·위치·속도·충돌 상태는 없음.
+- `ObstacleController`: 현재 Model 세대와 PoolLease를 함께 확인하는 `TryReturn`. 반환·폐기 시 lease/세대 해제.
+- `ObstacleView`: 생성 때 Model/Controller 한 번 조립, 대여 때 Model → Bind → Controller, 반환·풀 종료·Unity 파괴 때 Controller → Unbind → Model 순서의 idempotent 정리.
+- 5개 스크립트 Unity 정적 검사 결과 오류·경고 0건. `Tools/Smesh Fest/Validation/Obstacle MVC Runtime`의 최종 [결과](evidence/raw/obstacle-mvc-runtime-validation.json)는 `2026-09-08T18:03:37.9402350Z`, success=true, **25 assertions**다.
+- prewarm, Controller/PoolLease 정상 반환, 같은 View/Model/Controller 재대여, epoch 전진과 오래된 lease/Controller 거절, 활성 Pool Dispose, 계층 선파괴, 생성 후 미대여 파괴를 확인했다. 보완 뒤에는 default lease의 준비 실패가 Model·Controller·View를 완전히 되돌리는지와 세 파괴 경로가 Error/Exception/Assert 로그를 내지 않는지도 검사했다.
+- Play Mode를 종료했고 Game 씬은 dirty=false·루트 4개, 컴파일/도메인 reload 대기 없음, 종료 후 Console 항목 0개였다. [Editor 종료 기록](evidence/raw/obstacle-mvc-editor-final.json).
+
+### 보존과 한계
+
+AI 검증은 임시 GameObject·메모리상 PoolConfig만 사용했고 Scene·Prefab·PoolConfig를 저장하지 않았다. Game.unity와 Ball/Cube PoolConfig는 시작·종료 해시가 같다. 작업 도중 Ball/Cube Prefab에 Rigidbody가 추가된 외부 저장 변경이 나타났으며 Main과 보조의 파일 소유 범위 밖이었다. 저자를 추정하거나 되돌리지 않고 사용자 소유 최신 상태로 보존했다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
+
+이 25개는 Obstacle의 대여/반환 수명 격리 검사다. Cube Prefab의 ObstacleView 연결, Cube PoolConfig와 Game 목록 연결, 실제 Rigidbody 초기화, HP·파괴·충돌·렌더·입력·게임 플레이는 확인하지 않았다. Ball 19개와 공통 MVC/Pool/DI 검사를 이번 최종 실행에서 함께 재실행한 것도 아니다. High 설정 Player 빌드·Android IL2CPP/AOT·기기 실행은 계속 미실행이다. 커밋·푸시·브랜치 전환도 하지 않았다.
+
+## W-003-PHYSX-LIFECYCLE-001 — Rigidbody 권위와 격리 충돌 Probe
+
+2026-09-09 KST / R-023. Daniel이 Ball과 Obstacle에 Rigidbody/Collider를 연결했고, 채용 공고의 PhysX 요구를 따라 첫 구현을 Unity PhysX로 진행하도록 결정했다. Main은 최신 씬·Prefab·PoolConfig와 코드를 읽고 사용자 Inspector 값 보존 기준을 잡았다. Luna Low는 Pool callback/활성화 순서를, Terra Medium은 격리 검증 파일을, Sol High는 물리·풀 파괴 수명을 읽기 전용으로 검토했다. ControlBox/MenuPresenter는 이 프로젝트 코드로 사용하지 않았다.
+
+### 구현과 정적 확인
+
+- BallController는 현재 Model epoch와 PoolLease가 모두 유효하고 아직 발사하지 않은 경우에만 finite·0이 아닌 초기 `linearVelocity`를 한 번 적용한다. 각속도를 지우고 WakeUp하며, 오래된/중복/kinematic 명령은 거절한다.
+- Ball은 대여와 반환/폐기에서 선속도·각속도를 지우고 Sleep한다. Obstacle은 대여 때 지우고 WakeUp, 반환/폐기 때 지우고 Sleep한다. 위치·회전·속도는 Model에 복제하지 않아 Rigidbody가 유일한 런타임 물리 권위다.
+- BallView/ObstacleView는 같은 루트의 Collider와 dynamic Rigidbody를 요구한다. 빠져 있거나 kinematic이면 묶음 생성 전에 실패하며, 코드는 `AddComponent` 또는 Inspector의 mass/gravity/constraints/collision detection/interpolation/damping 변경으로 숨기지 않는다.
+- PoolLease는 Unity 파괴 객체를 즉시 무효로 본다. Sol High 1차 검토가 계층 선파괴 뒤 lease가 raw CLR 참조로 유효하던 결함을 찾았고, 2차 검토가 OnPoolRent/OnPoolReturn callback 중 파괴된 객체가 성공 또는 inactive로 확정될 수 있는 전이 사각지대를 찾았다. Main은 조회와 생성/대여/반환/return-pending 완료 경계를 보완하고 Pool Runtime 회귀를 추가했다. 최종 재검토에서는 합의 범위의 추가 correctness 결함을 찾지 못했다.
+- PhysX Probe는 별도 `LocalPhysicsMode.Physics3D` 씬에서 임시 Ball/Obstacle과 메모리 PoolConfig를 만든다. kinematic source 거절, 초기 Sleep/Wake, 유효·무효 발사, `PhysicsScene.Simulate`의 `OnCollisionEnter`, Obstacle 변위, 정상 반환, 같은 body 재대여, 오래된 lease/epoch, 활성 Factory Dispose, 속도/Sleep과 Inspector 속성 보존을 검사한다. setup 실패·개별 cleanup·증거 쓰기 실패에도 임시 scene 정리를 시도한다.
+
+Unity 6000.3.10f1에서 최종 일반 컴파일이 완료됐고 compiler error 0개다. 변경 스크립트 14개의 정적 진단도 warnings 0, errors 0이다. 컴파일 보완 이력은 누락된 Probe assertion helper/definite assignment, `UnityEngine.Object` namespace 명시이며 최종본에는 모두 반영됐다. Console의 경고 3개는 MCP bridge 포트 reload 재시도와 6401 fallback뿐이다. Game 씬은 Play Mode가 아닌 상태로 dirty=false·루트 4개다. [컴파일 원자료](evidence/raw/physx-lifecycle-editor-compile.json).
+
+### 사용자 Play Mode 1차 실패와 활성화 순서 수정
+
+Daniel이 2026-09-09T06:11:36Z에 실행한 첫 Probe는 assertion 10에서 `Rent did not leave the Ball asleep until launch or wake the reset Obstacle.`로 실패했다. `simulatedSteps=0`, 접촉과 변위도 0이므로 이는 충돌 실패가 아니라 **충돌 시뮬레이션 전에 발견된 대여 활성화 계약 실패**다. 당시 하나의 복합식이어서 Ball Sleep과 Obstacle Wake 중 어느 항이 실패했는지는 결과만으로 분리할 수 없다. [보존한 1차 실패](evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json).
+
+코드 순서는 비활성 clone에서 `OnPoolRent` → Controller의 속도 초기화와 Sleep/Wake → `SetActive(true)`였다. 비활성 Rigidbody에 내린 Sleep/Wake 의도가 활성화 뒤에도 그대로 유지된다고 전제하지 않도록, BallView/ObstacleView의 `OnEnable`에서 현재 PoolLease·epoch를 확인한 뒤 Ball은 발사 전 Sleep, Obstacle은 Wake를 재적용했다. 씬 배치형 View처럼 Controller가 아직 없는 경우에는 아무 작업도 하지 않는다. Inspector 값은 변경하지 않는다.
+
+검증기도 Ball Sleep, Ball 속도, Obstacle Wake, Obstacle 속도를 별도 assertion으로 나눴다. Sol High 재검토가 Inspector 보존 기준을 첫 대여 뒤에 잡던 사각지대를 발견해, 임시 원본 Rigidbody 값을 Factory 초기화 전에 저장하고 첫 대여 직후부터 비교하도록 보완했다. 최종 재검토에서 이 수정 범위의 추가 correctness 문제는 발견되지 않았다. 수정된 5개 스크립트 정적 진단 warning 0·error 0, 프로젝트 compiler error 0을 확인했다. 현재 Console의 reload 경고는 MCP 연결에만 해당하며 정리 후 항목 0개다. [수정 컴파일 근거](evidence/raw/physx-activation-fix-editor-compile.json).
+
+### 수정본 사용자 실행 통과와 보존 범위
+
+시작·종료 시 Game.unity, Ball/Cube Prefab, Ball/Cube PoolConfig SO의 SHA256은 각각 동일하다. 기존 Git dirty인 Game.unity는 Daniel이 23개 명시 블록에 Rigidbody/ObstacleView를 추가한 저장 변경이며 AI는 되돌리거나 다시 저장하지 않았다. live Unity 해석 결과는 ObstacleView 24개, Rigidbody 25개로 prefab-backed Obstacle와 Ball을 포함한다. [보존 원자료](evidence/raw/physx-lifecycle-preservation-check.json) · [시작 기준](evidence/raw/physx-lifecycle-baseline.json).
+
+Daniel이 활성화 순서 수정본을 Play Mode에서 다시 실행했다. [불변 통과 스냅샷](evidence/raw/physx-lifecycle-runtime-passed-20260909T064144Z.json)은 success=true, **42 assertions, 15 simulated steps, collision contact 1회, Obstacle displacement 0.6153807**, initialBallSleeping=true, initialObstacleSleeping=false를 기록한다. 이로써 임시 local PhysicsScene의 대여·발사·접촉·반환·재대여·폐기 수명은 통과로 승격한다.
+
+이 통과는 실제 Game Prefab의 질량·중력·배치·조작감, 현재 Game 씬 클릭 입력, HP/파괴/결과의 증거가 아니다. 새 Pool callback 파괴 회귀도 아직 재실행하지 않았다. 기존 Pool 66개·Ball MVC 19개·Obstacle MVC 25개 결과는 변경 전의 과거 근거다. High 설정 Player 빌드·IL2CPP/AOT·기기 실행도 미실행이다.
+
+현재 Game 씬의 ObstacleView는 씬 배치 컴포넌트라 Pool의 `OnPoolCreated`가 자동 호출되지 않는다. native Rigidbody는 PhysX에 참여할 수 있지만 MVC Controller/Model은 아직 게임 흐름에서 초기화되지 않는다. 이후 별도 저장 변경으로 Cube PoolConfig의 prefab 참조는 연결됐지만 Game PoolContainer 목록은 아직 Ball만 가진다. 이 상태를 오류로 자동 수정하거나 씬을 풀 생성 구조로 바꾸지 않았다. W-001은 아래와 같이 현재 Blocks를 첫 고정 충돌 대상으로 유지했다.
+
+## W-001-CLICK-LAUNCH-001 — 클릭·포물선 발사·Cannon 정렬
+
+2026-09-09 KST. Daniel의 PhysX 수정본 통과 뒤 Main은 최신 Game 씬·Cannon 계층·Ball PoolConfig와 Input System 구성을 읽어 첫 실제 플레이 연결을 구현했다. 두 읽기 보조는 각각 Pool/DI/Ball API와 씬 카메라·Cannon 축·Blocks 배치를 확인했고, 제작 보조는 격리 Click Launch Runtime Probe 두 파일만 맡았다. Main은 생산 코드·씬 부분 연결·컴파일·정적 검토와 기록을 맡았다. 사용자 오브젝트를 재생성하는 Builder나 다른 프로젝트의 ControlBox/MenuPresenter는 사용하지 않았다.
+
+### 구현 계약
+
+- `WorldPointerInput`: WorldObjects에서 VContainer로 PoolFactory와 중앙 ILoopEvents를 주입받고 UpdateTick 한 곳에서 pointer press를 읽는다. safe area 밖 또는 GraphicRaycaster UI 위 입력을 거절한 뒤 `WorldTargetProjector`에 전달한다.
+- `WorldTargetProjector`: Main Camera ray를 명시적으로 연결한 Blocks Transform 평면에 투영하고 Inspector 로컬 XY 경계 안만 허용한다. 현재 모든 월드 Collider가 Default layer여서 Ground/Cannon을 오인할 수 있는 broad Physics.Raycast는 사용하지 않는다.
+- `BallisticLaunch`·`ShotDirector`: Physics.gravity 아래 도달 가능한 낮은 궤도의 초기속도를 계산한다. Cannon 회전으로 머즐이 이동하는 값을 보정하고 Ball Pool에서 대여한 뒤 현재 epoch에 `TryLaunch`한다. Rigidbody가 이후 운동과 충돌 권위를 계속 가진다. 고정 배열로 최대 MaxPool shot을 추적하고 4초 또는 y=-1 아래에서 현재 대여만 반환한다.
+- [당시 계약] `CannonModel/Controller/View/Head`: 발사 초기속도 방향을 Model 명령으로 두고, View가 기존 Cannon 루트 yaw·Body pitch·Head local +Y 발사관을 정렬했다. 현재는 위 `W-001-FLIGHT-PHYSICS-003`의 world-Yaw-only가 대체한다. 머즐은 Head에서 local +Y 방향 0.16 world unit이며, Awake에서 한 번 조립하고 실행 중 하이어라키나 컴포넌트를 만들지 않는 경계는 유지한다.
+- `GameLifetimeScope`: 같은 WorldObjects에 WorldPointerInput이 있을 때만 scene component로 등록한다. 기존 검증 fixture처럼 없는 씬도 유지한다.
+
+### 정적 확인과 씬 보존
+
+Unity 6000.3.10f1에서 compiler error 0개를 확인했다. Cannon 4개, Shot 4개, GameLifetimeScope, ClickLaunchRuntimeProbe, ClickLaunchValidation의 총 11개 스크립트를 개별 진단해 warning 0·error 0이었다. 첫 compile에서 Unity 6의 `PointerEventData.eventSystem`을 읽을 수 없는 오류가 있었고, 생성에 사용한 `EventSystem`을 별도 필드로 기억해 비교하도록 수정했다. [정적 원자료](evidence/raw/click-launch-static-validation.json).
+
+씬은 작업 직전 tracked HEAD와 바이트 단위로 같고 dirty=false였다. AI의 최초 저장 변경은 기존 `Cannon`에 CannonView와 루트/Body/Head/offset 참조, 기존 `WorldObjects`에 WorldPointerInput과 Camera/Blocks/Cannon/Ball Pool 참조·목표 범위·발사 값만 추가한 **40 YAML 행**이었다. 그 뒤 2026-09-09T07:28:48Z 씬 저장에서 기존 비풀링 `GameObjects/Ball` Prefab 인스턴스 63행이 제거됐고, Daniel이 자신의 작업이라고 확인했다. 삭제 의도는 더 추정하지 않으며 사용자 소유 최신 상태를 복구하지 않는다. 이번 fixture 수정 중에는 씬 MeshRenderer 두 곳의 Cast Shadows 변경과 Cube PoolConfig Prefab 연결이라는 별도 저장 변경을 추가로 관측했으며 작성자 의도는 추정하지 않았다. 2026-09-09T07:54:49Z 확인 시 scene diff는 +42/-65, SHA `bcf6bdc...`, dirty=false·루트 4개였다. 이후 사용자 병행 변경이 계속될 수 있어 이 값은 시점 관측으로만 남긴다. test-only 수정은 Scene·Prefab·SO를 저장하지 않았다. [변경 관측](evidence/raw/click-launch-concurrent-scene-change-20260909T072848Z.json) · [사용자 귀속 확인](evidence/raw/click-launch-scene-ball-user-attribution-20260909T074216Z.json) · [fixture 수정·보존](evidence/raw/click-launch-projection-fixture-fix-static.json).
+
+### 사용자 1차 런타임 실패와 fixture 수정
+
+Daniel의 1차 `Tools/Smesh Fest/Validation/Click Launch Runtime` 실행은 중앙 화면점 투영까지 통과한 뒤 **assertion 5, simulatedSteps 0, collisionContacts 0**에서 중단됐다. 실패 문구는 `Projection accepted a point outside the configured world bounds.`다. 화면 우측점은 screen bounds 안이고, 임시 Obstacle의 scale까지 역변환한 로컬 X가 설정한 ±5 안이어서 생산 `WorldTargetProjector`가 이를 받아들인 동작은 맞았다. 따라서 Ball Pool·발사·Cannon 정렬·PhysX 접촉에는 아직 도달하지 않았다. [1차 실패 스냅샷](evidence/raw/click-launch-runtime-failed-20260909T074802Z.json).
+
+Probe는 같은 우측 화면점을 먼저 넓은 calibration bounds로 투영하고 non-zero local X를 확인한 다음, 그 절반 폭의 좁은 local bounds에서 같은 점을 거절하도록 수정했다. 이 방식은 카메라 FOV나 Obstacle scale이 우측점을 임의의 ±5 경계 밖으로 보낼 것이라는 가정에 의존하지 않는다. 생산 `WorldTargetProjector`와 Game 씬은 수정하지 않았다. Unity 6000.3.10f1 compile 요청 후 idle, compiler error 0, 변경 Probe warning 0·error 0, diff check 통과를 확인했다. 수정본 Play Mode는 아직 재실행하지 않았다. [fixture 수정 정적 근거](evidence/raw/click-launch-projection-fixture-fix-static.json).
+
+수정본 격리 Probe를 먼저 다시 실행한 뒤 실제 Game 씬에서 Block 영역을 클릭해 Pool Ball 발사, Cannon 정렬, 첫 충돌과 속도·궤적·머즐 체감을 확인해야 한다. Daniel이 제거한 기존 비풀링 scene Ball은 현재 live 이름 검색 결과 0개다. W-001은 Ball PoolConfig의 Prefab을 대여하므로 그 인스턴스에 의존하지 않는다. 현재 Blocks는 native PhysX 충돌만 제공하며 HP·파괴·결과·재도전 수명은 다음 단위다. High 설정 Player 빌드·IL2CPP/AOT·기기 실행도 미실행이다.
+
+## W-001-GROUND-TARGETABILITY-LAYER-001 — Obstacle Layer와 Ground 제외
+
+2026-09-09 KST. 사용자 승인 범위대로 `Obstacle`을 사용자 Layer 8에 만들고 `PhysXConfig`의 포인터 mask를 이 한 Layer(`256`)로 제한했다. 현재 Game 씬의 ObstacleView 24개는 23개 명시 오브젝트와 prefab-backed 1개 override 모두 Layer 8이며, Ground는 Default Layer를 유지하고 같은 Collider 오브젝트에 `GroundSurface`를 명시적으로 연결했다.
+
+`ObstacleView`는 씬 배치 상태에서는 targetable로 시작하고, 자신과 충돌한 상대 Collider에 `GroundSurface`가 직접 있을 때 해당 Obstacle만 비대상화한다. 풀 객체는 대여 때 복구되고 반환·폐기 때 해제된다. 이름·태그·부모 탐색이나 fallback은 없다. 기존 Ball 중력 코드는 이 작업 단위에서 건드리지 않았다.
+
+Unity 6000.3.10f1 스크립트 refresh와 domain reload 뒤 `GroundSurface` 타입 및 Ground의 live 컴포넌트, Obstacle Layer 24개와 ObstacleView 24개를 확인했다. Console error는 0개이고 관련 스크립트 5개 진단은 warning 0·error 0이다. 작업 전 scene SHA는 `80b21c3...`, 후는 `b1eb93e...`이며 기존 사용자·병행 변경을 보존했다. Play Mode에서 “서 있는 Obstacle은 발사 가능, Ground 접촉 뒤 그 Obstacle만 발사 불가”는 아직 사용자 재확인 전이다. [정적·live 근거](evidence/raw/ground-targetability-layer-static-20260909T110202Z.json).
+
+## W-001-BALL-GRAVITY-TRANSITION-001 — [대체됨] Straight 첫 충돌 중력 전환
+
+이 절은 당시 구현 기록이다. 아래 `W-001-BALL-GRAVITY-TRANSITION-002`를 거쳐 현재는 문서 상단의 `W-001-FLIGHT-PHYSICS-003` **직접 Obstacle 충돌 또는 world-Z 경계 방식**으로 대체됐다.
+
+Daniel이 실제 Game에서 Obstacle hit point보다 Ball이 훨씬 아래로 지나간다고 관측했다. 당시 `BallConfig`는 `Straight`, Ball Prefab은 `useGravity=true`였고, 계산된 초기속도는 hit point를 향했지만 발사 뒤 중력을 끄는 연결이 없었다. 따라서 Y 좌표 변환보다 누락된 비행 상태 전환이 직접 원인이었다.
+
+`BallController.TryLaunch`는 이제 trajectory mode를 명시적으로 받아 Straight면 중력을 끄고 Curve면 고정 비행시간 공식의 전제대로 처음부터 중력을 켠다. `BallView.OnCollisionEnter`가 첫 물리 접촉 뒤 중력을 켠다. 반환·재대여·폐기에서는 Prefab에 저작된 원래 `useGravity`를 복구하며, 알 수 없는 mode는 거절하고 이전 2-인자 overload는 남기지 않았다. Scene·Prefab·Config asset은 이 수정으로 바꾸지 않았다.
+
+생성 csproj 정적 빌드는 error 0이며 26개 warning은 Unity 직렬화 필드에 대한 CS0649다. 변경 6개 스크립트의 Unity 진단은 warning 0·error 0, refresh 뒤 Console error 0, live reflection에서 `TryLaunch` overload 1개를 확인했다. 수정 후 Play Mode 비행과 첫 충돌 중력 전환은 아직 실행하지 않았다. [정적 근거](evidence/raw/ball-gravity-transition-static-20260909T110202Z.json).
+
+## W-001-BALL-GRAVITY-TRANSITION-002 — 궤적별 중력과 Obstacle 직접 충돌
+
+이 절도 당시 구현 기록이다. 현재는 직접 같은 GameObject `ObstacleView` 충돌과 strict world-Z fallback을 함께 쓰는 문서 상단의 `W-001-FLIGHT-PHYSICS-003`이 대체한다.
+
+Daniel이 Cannon Collider를 제거하고 Ball Prefab의 `Use Gravity=false`에서 Straight가 원하는 목표점으로 이동한다고 직접 확인했다. 이 관측으로 Screen→World Y 변환이 아니라 비행 중 중력이 원인임을 다시 확인했다. 작업 시작 시 최신 소스에는 앞선 기록의 궤적별 중력 전환이 남아 있지 않았지만, 현재 worktree가 미커밋 상태라 변경 주체는 추정하지 않았다.
+
+최신 코드에 `TryLaunch(epoch, velocity, trajectoryMode)` 단일 API를 연결했다. Straight는 발사 시 `useGravity=false`, Curve는 고정 비행시간 속도 계산에 사용한 동일 중력을 받도록 발사 시 `true`다. Ball은 충돌 상대 Collider와 같은 GameObject에 `ObstacleView`가 직접 있을 때만 중력을 켠다. tag·이름·부모/자식 탐색 fallback은 없다. 반환·재대여·폐기 때는 Prefab의 저작 중력값을 복구한다. Daniel이 제거한 Cannon Collider와 Ball Prefab의 현재 `Use Gravity=false`, Scene·Config는 수정하지 않았다.
+
+Unity 6000.3.10f1 스크립트 refresh 뒤 Console error 0, 변경 6개 스크립트 진단 warning 0·error 0, live reflection의 `TryLaunch` overload 1개를 확인했다. 생성 solution 정적 빌드는 error 0, Unity/MCP 참조 버전 충돌 warning 4개다. Click Launch Probe는 Straight 충돌 전 무중력, Obstacle 충돌 후 중력, PhysX Probe는 재대여 뒤 Curve 발사부터 중력과 반환 시 저작값 복구를 검사하도록 갱신했다. 새 코드의 Play Mode Probe와 실제 Straight/Curve 도착은 Daniel 실행 전이므로 정적 완료로만 기록한다. [정적 근거](evidence/raw/ball-gravity-mode-correction-static-20260909T114000Z.json).
+
+## W-002-LEVEL-EDITOR-001 — Level Editor MVP 검토 상태
+
+Terra Medium builder 구현과 Sol High 검토 뒤 `LevelConfig`은 순서/transform/PoolConfig 및 PoolConfig별 필요 개수≤MaxPool을 검증한다. 창은 직접 child `ObstacleView`만 Capture하고 명시 Bake에서만 SO를 저장하며, 선택 변경 시 미리보기를 폐기한다. `LevelSpawner`는 명시 `TrySpawn`과 `ReturnAll`만 제공하고 대여 실패는 보유 lease를 원자적으로 반환한다.
+
+신규 스크립트 4개 Unity 정적 진단은 warning/error 0, Console error 0이다. `Tools/Smesh Fest/Validation/Level Editor and Spawn`과 실제 Bake는 **미실행**이다. 현재 24 Blocks는 Cube MaxPool=8·미등록 catalog 상태라 Bake/spawn 거절이 기대 동작이며, Scene/Prefab/기존 config/Blocks 제거는 수행하지 않았다.
+
+## W-002-LEVEL-EDITOR-002 — Level1 Bake와 Game 통합 정적 확인
+
+Daniel이 Cube PoolConfig `MaxPool=100`으로 변경한 뒤 `Assets/Project/Level/Level1.asset`을 Bake했고 Cube 24개 항목과 local TRS가 저장돼 있다. Game 씬에는 authored `Blocks`의 sibling `RuntimeBlocks`가 있고 local position은 `(0, 0.29, 0)`이며 authored Blocks와 local TRS가 일치한다. `WorldObjects`에는 `LevelSpawner`·`LevelSession`, `PoolContainer`에는 Ball·Cube가 연결돼 있다.
+
+`GameFlow`는 `LevelSession.TryStart` 성공 뒤에만 loop를 시작한다. authored Blocks는 runtime에서 비활성화되고 시작 실패 또는 `ReturnAll` 시 복원된다. fallback/parallel pool은 없으며 `LevelSession`은 nested/ancestor root를 거절한다. 5개 스크립트 정적 진단 warning/error 0, Console 0이다. Level Editor validation 메뉴와 Play Mode는 아직 실행하지 않아 런타임은 미검증이다.
+
+첫 validation 실행은 `OnPoolRent` 뒤 일반 `OnEnable`까지 Edit Mode preview scene에서 관측하려 해 false negative가 발생했다. 사용자 관측상 RuntimeBlocks 생성은 성공했다. 생산 코드는 유지하고 fixture를 `OnPoolRent` 시 inactive+world P/R, 완료 시 active+최종 local P/R/S 검증으로 교정했다. 기존 Play Mode Pool probe가 rent-before-enable 순서를 담당하며, 교정된 메뉴 재실행은 대기 중이다.
+
+## W-004-GROUND-FADE-RETURN-001 — 정적 검증
+
+Terra Medium 구현과 Sol High 독립 재검토를 사용했다. 첫 검토에서 material-index property block이 renderer override를 가릴 수 있는 경계, hierarchy-first 파괴 시 Loop 구독, 기존 runtime fixture의 새 필수 의존성 누락을 찾아 보완했고 최종 P0/P1은 없다.
+
+Unity 6000.3.10f1 강제 refresh·compile 뒤 `GroundFadeReturn`, 공통 validation fixture, `ObstacleMvcRuntimeProbe` 진단은 warning/error 0이며 Console error 0이다. 생성된 runtime/editor C# 프로젝트 빌드는 각각 error 0이고 MCPForUnity 참조의 기존 `System.Net.Http`·`System.IO.Compression` 버전 충돌 warning 4개가 남는다. live Game 씬은 dirty=false이며 `WorldObjects/GameLifetimeScope`가 `Assets/Project/Config/GroundFadeConfig.asset`을 참조한다. Ball/Cube Prefab 모두 `GroundFadeReturn`을 한 개씩 가진다.
+
+두 Fade Material은 임포트된 URP/Lit에서 Transparent surface, SrcAlpha/OneMinusSrcAlpha, ZWrite off, preserve specular off를 확인했다. 원본 opaque Material은 수정하지 않았다. 이번 단계는 Play Mode를 실행하지 않았으므로 Ground 접촉 뒤 1초 대기·1초 Fade·exactly-once Return, 재대여 복구와 겹친 Cube의 투명 정렬은 아직 런타임 근거가 없다.
+
+### Ground Fade 시각 교정
+
+Daniel이 Ball/Cube Prefab Renderer를 각 GroundFade Material로 직접 연결한 현재 값을 권위로 삼았다. 두 Prefab의 Renderer와 `fadeMaterial`이 같은 자산을 참조함을 확인했고, 두 Material만 URP/Lit Transparent alpha 상태로 변경하되 기존 그림자가 Fade 시작에 끊기지 않도록 ShadowCaster pass는 유지했다. `GroundFadeReturn`의 런타임 Material 교체와 shadow 상태 저장·변경·복구를 제거하여 Fade 동안 `_BaseColor.a` PropertyBlock만 변한다. Unity 정적 진단과 Console error는 0이며 실제 시각 결과는 Play Mode 확인 대기다.
+
+사용자 런타임 관측에서 alpha 값은 감소하지만 화면은 opaque로 유지되고 alpha 0의 Pool 반환 때만 사라졌다. `RestoreVisual()`이 원래 비어 있던 material-index-0 범위에도 빈 `MaterialPropertyBlock`을 설정해 renderer-level alpha block보다 우선한 것이 원인이었다. 빈 원본 범위는 `null`로 제거했다. 이어진 Play Mode 확인에서 그림자는 여전히 없었고 두 Material에 `SHADOWCASTER` 비활성화가 다시 직렬화된 것을 확인했다. URP 17.3 `BaseShaderGUI.UpdateMaterialSurfaceOptions()`가 `_CastShadows` 속성이 없는 built-in Lit의 Transparent 상태를 검사할 때 ShadowCaster를 강제로 끄므로, YAML 제거 방식은 유지될 수 없었다. 현재는 `GroundFadeReturn.OnPoolCreated()`가 공유 Fade Material의 `ShadowCaster` pass를 활성화하고 결과를 검증한다. Prefab Renderer의 Cast Shadows/Receive Shadows, Directional Light, Ground Receive Shadows, URP shadow 지원은 모두 켜져 있다. 정적 진단·Console error는 0이고 실제 그림자 결과는 Play Mode 재확인 대기다.

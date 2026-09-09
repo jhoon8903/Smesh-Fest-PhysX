@@ -1,0 +1,38 @@
+{
+  "recordedAtUtc": "2026-09-09T05:48:41Z",
+  "projectRoot": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX",
+  "unityVersion": "6000.3.10f1",
+  "gitBranch": "MVC-Obstacle",
+  "gitHead": "ca1c6914da43ff094c47ab8dc8275521b5dfd3cd",
+  "activeScene": {
+    "name": "Game",
+    "path": "Assets/Scenes/Game.unity",
+    "isDirty": false,
+    "rootCount": 4
+  },
+  "liveResolvedComponents": {
+    "obstacleViewCount": 24,
+    "rigidbodyCount": 25,
+    "note": "Live component resolution includes prefab-backed objects. The earlier baseline JSON counted 23 explicit ObstacleView/Rigidbody YAML additions in the user scene diff."
+  },
+  "validation": {
+    "scriptFilesChecked": 14,
+    "scriptDiagnosticsWarnings": 0,
+    "scriptDiagnosticsErrors": 0,
+    "unityCompilationRequested": true,
+    "unityCompilationCompleted": true,
+    "unityCompilerErrors": 0,
+    "consoleWarnings": 3,
+    "consoleWarningScope": "MCP bridge port reload retry and fallback only; final reload moved from 6400 to 6401",
+    "physxValidationMenuSource": "Tools/Smesh Fest/Validation/PhysX Lifecycle Runtime",
+    "playModeEntered": false,
+    "runtimeProbeExecuted": false,
+    "playerBuildRun": false,
+    "deviceRun": false
+  },
+  "compileRepairHistory": [
+    "PhysXRuntimeProbe Assert helper and definite assignment were repaired after the first compile exposed them.",
+    "PhysXValidation UnityEngine.Object namespace qualification was repaired after the next compile exposed it.",
+    "The final compile after Pool transition guards, callback-destruction regressions, dynamic Rigidbody, active-dispose, and cleanup review fixes completed with zero compiler errors."
+  ]
+}

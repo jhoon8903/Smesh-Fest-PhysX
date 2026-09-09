@@ -1,0 +1,22 @@
+{
+  "recordedAtUtc": "2026-09-09T09:04:41Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "scope": "Config correction only; no runtime wiring",
+  "supersedes": "BallConfig spawnWorldPosition from the initial config-foundation decision",
+  "launchOrigin": "Cannon Head Muzzle",
+  "cannonMuzzleOffset": {
+    "x": 0.0,
+    "y": 0.16,
+    "z": 0.0
+  },
+  "ballSpawnWorldPositionRemoved": true,
+  "fallbackLaunchOriginAdded": false,
+  "compilerErrors": 0,
+  "scriptWarnings": 0,
+  "scriptErrors": 0,
+  "gitDiffCheckPassed": true,
+  "sceneEditedByThisUnit": false,
+  "sceneSha256BeforeAndAfter": "c3bf38a191de3e2b59e5fb341fa6526aab29981c1b1db1e3b35e7070852d53b1",
+  "runtimeBehaviorChanged": false
+}

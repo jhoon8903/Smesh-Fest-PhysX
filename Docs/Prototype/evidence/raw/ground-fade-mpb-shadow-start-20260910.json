@@ -1,0 +1,23 @@
+{
+  "id": "ground-fade-mpb-shadow-start-20260910",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "ground-fade-mpb-shadow-010",
+  "status": "in_progress",
+  "summary": "감소하는 alpha가 렌더링에 반영되지 않고 alpha 0의 Pool 반환 때만 사라지는 현상과 Transparent Material의 shadow 누락을 최소 수정한다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "observed_by_user": "alpha value decreases but the object remains opaque until alpha reaches zero; Ball and Cube shadows are absent",
+    "confirmed_cause": "RestoreVisual creates an empty material-index property block that overrides the renderer-level alpha block; both materials serialize SHADOWCASTER as disabled",
+    "scope": "GroundFadeReturn material-index-0 MPB path and the two existing GroundFade Material shadow passes only",
+    "fallback": false,
+    "human_role": "수정 후 Play Mode에서 중간 alpha 프레임과 shadow를 확인",
+    "ai_role": "Main이 단일 material slot 계약으로 코드를 단순화하고 하위 검토 모델이 원인과 최종 diff를 검토"
+  }
+}

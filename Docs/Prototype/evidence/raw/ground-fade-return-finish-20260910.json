@@ -1,0 +1,59 @@
+{
+  "id": "ground-fade-return-finish-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "Daniel + Main + prototype_builder + prototype_reviewer",
+  "task_id": "ground-fade-return-008",
+  "status": "static_complete_runtime_pending",
+  "summary": "Ball과 Obstacle이 Ground 직접 충돌 후 1초 대기와 1초 alpha Fade를 거쳐 현재 PoolLease를 한 번 반환하는 공통 수명주기를 구현하고 정적 검증했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Config/GroundFadeConfig.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Config/GroundFadeConfig.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "human_role": "Unity Play Mode에서 Ground 충돌 뒤 1초 유지, 다음 1초 Fade, 반환과 재대여 시각 복구를 확인",
+    "ai_role": "하위 제작 모델이 bounded 구현과 fixture 정합을 맡고 하위 검토 모델이 MaterialPropertyBlock 및 Pool 수명 경쟁을 독립 검토하며 Main이 Unity 검증과 기록을 통합",
+    "contract": "direct same-GameObject GroundSurface collision; scaled Update delay 1 second; linear alpha fade 1 second; current lease return exactly once",
+    "fallback": false,
+    "builder": {
+      "assigned_model": "gpt-5.6-terra",
+      "reasoning_effort": "medium",
+      "usage": null,
+      "outcome": "production config, lifecycle, materials, prefab references and validation fixtures implemented",
+      "rework_required": true,
+      "rework_completed": true
+    },
+    "reviewer": {
+      "assigned_model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "usage": null,
+      "outcome": "final independent review found no P0 or P1 issues"
+    },
+    "preservation": {
+      "scene_regenerated": false,
+      "scene_partial_reference_added": "GameLifetimeScope.groundFadeSettings only",
+      "original_materials_modified": false,
+      "runtime_material_clones": false,
+      "user_owned_unrelated_changes_reverted": false
+    },
+    "unity_compile": "Unity 6000.3.10f1 refresh and compile completed with 0 console errors",
+    "unity_script_diagnostics": "GroundFadeReturn, GroundFadeValidationFixture and ObstacleMvcRuntimeProbe: 0 warnings, 0 errors after final review fixes",
+    "live_references": "Game scene clean after reload; GroundFadeConfig reference present; Ball and Cube prefabs each contain one GroundFadeReturn",
+    "material_import": "URP/Lit transparent surface, SrcAlpha and OneMinusSrcAlpha blend, ZWrite off, preserve specular off",
+    "dotnet_build": "runtime and editor projects succeeded with 0 errors and 4 pre-existing MCPForUnity assembly reference warnings",
+    "git_diff_check": "passed for owned code, assets and docs; existing Unity scene trailing whitespace excluded from ownership claim",
+    "play_mode_run": false,
+    "runtime_pending": "Ground timing, exactly-once return, rerent restoration and overlapping transparent Cube appearance"
+  }
+}

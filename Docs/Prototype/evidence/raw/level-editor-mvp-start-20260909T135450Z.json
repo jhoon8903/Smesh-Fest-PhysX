@@ -1,0 +1,35 @@
+{
+  "id": "level-editor-mvp-start-20260909T135450Z",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "level-editor-mvp-005",
+  "status": "in_progress",
+  "summary": "씬 배치 Obstacle을 보존하며 LevelConfig로 Bake하고 런타임에는 Pool에서 생성할 Unity Editor 전용 Level Editor MVP 구현을 시작했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "scope": "LevelConfig SO schema, non-destructive Bake EditorWindow, pool-based LevelSpawner, isolated validation; no automatic bake, scene save, deletion, prefab/material/shader/fade changes",
+    "human_role": "기존 Blocks 배치 소유 및 EditorWindow에서 Bake 결과 23개 확인",
+    "ai_role": "하위 모델이 데이터·Editor·runtime spawn 계약을 구현·검토하고 Main이 검증과 기록을 통합",
+    "assistant_assignments": [
+      {
+        "role": "prototype_builder",
+        "assigned_model": "gpt-5.6-terra",
+        "reasoning_effort": "medium",
+        "task_scope": "Level Editor MVP production code and isolated validation",
+        "context_mode": "none; explicit contract and owned paths"
+      },
+      {
+        "role": "prototype_reviewer",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "task_scope": "pool rollback, authoring/runtime separation, serialization and scene-preservation review",
+        "context_mode": "none; explicit contract and review paths"
+      }
+    ]
+  }
+}

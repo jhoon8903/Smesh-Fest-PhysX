@@ -29,6 +29,9 @@ namespace Framework.EditorValidation
             sourceRoot.SetActive(false);
             GameObject source = new GameObject("Temporary_BallView_Source");
             source.transform.SetParent(sourceRoot.transform, false);
+            source.AddComponent<Rigidbody>().useGravity = false;
+            source.AddComponent<SphereCollider>();
+            GroundFadeValidationFixture.Add(source, "Assets/Project/Prefabs/Ball.prefab", "Assets/Project/Materials/Ball_GroundFade.mat");
             BallView view = source.AddComponent<BallView>();
 
             PoolConfig config = ScriptableObject.CreateInstance<PoolConfig>();

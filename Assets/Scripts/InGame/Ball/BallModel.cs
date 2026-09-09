@@ -5,7 +5,7 @@ namespace InGame.Ball
 {
     /// <summary>
     /// Physics-independent lifetime state for one pooled Ball bundle.
-    /// Position, velocity and collision authority are intentionally deferred to the Physics unit.
+    /// Unity's Rigidbody owns the runtime Transform and velocity state in the current PhysX slice.
     /// </summary>
     public sealed class BallModel : ObModel
     {
@@ -13,14 +13,11 @@ namespace InGame.Ball
         public uint RentalEpoch { get; private set; }
 
         /// <summary>True only for callbacks that belong to the currently active rental.</summary>
-        public bool IsCurrentRental(uint rentalEpoch) =>
-            IsRented && rentalEpoch != 0 && rentalEpoch == RentalEpoch;
+        public bool IsCurrentRental(uint rentalEpoch) => IsRented && rentalEpoch != 0 && rentalEpoch == RentalEpoch;
 
         internal void BeginRental()
         {
-            if (IsRented)
-                throw new InvalidOperationException("BallModel is already rented.");
-
+            if (IsRented) throw new InvalidOperationException("BallModel is already rented.");
             RentalEpoch = NextEpoch(RentalEpoch);
             IsRented = true;
             NotifyChanged();
@@ -28,9 +25,7 @@ namespace InGame.Ball
 
         internal void EndRental()
         {
-            if (!IsRented)
-                return;
-
+            if (!IsRented) return;
             IsRented = false;
             NotifyChanged();
         }

@@ -1,0 +1,24 @@
+{
+  "recordedAtUtc": "2026-09-09T08:58:40Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "scope": "Config definitions and assets only; no runtime wiring",
+  "configs": [
+    "CannonConfig",
+    "BallConfig",
+    "ObstacleConfig",
+    "PhysXConfig"
+  ],
+  "ballTrajectoryModes": [
+    "Straight",
+    "Curve"
+  ],
+  "compilerErrors": 0,
+  "scriptWarnings": 0,
+  "scriptErrors": 0,
+  "gitDiffCheckPassed": true,
+  "sceneEditedByThisUnit": false,
+  "sceneSha256BeforeAndAfter": "c3bf38a191de3e2b59e5fb341fa6526aab29981c1b1db1e3b35e7070852d53b1",
+  "runtimeBehaviorChanged": false,
+  "nextApproval": "Choose the Curve trajectory implementation before wiring configs and replacing the old targeting and ballistic paths."
+}

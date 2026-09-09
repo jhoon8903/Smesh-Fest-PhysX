@@ -1,0 +1,37 @@
+{
+  "recordedAtUtc": "2026-09-09T07:54:49Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "scope": "ClickLaunchRuntimeProbe world-bounds fixture correction only",
+  "failureSnapshot": "click-launch-runtime-failed-20260909T074802Z.json",
+  "diagnosis": "The rightmost in-screen ray projected inside the configured local +/-5 bounds because the temporary obstacle transform scales local X. The production projector correctly accepted it.",
+  "change": "Calibrate the edge-screen point with permissive bounds, measure its non-zero local X, then retry the same point against a bound half that width.",
+  "productionWorldTargetProjectorChanged": false,
+  "savedScenePrefabOrScriptableObjectEditedByFix": false,
+  "unityCompile": {
+    "requested": true,
+    "resultingState": "idle",
+    "compilerErrorsMatchingCs": 0
+  },
+  "scriptDiagnostics": {
+    "path": "Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs",
+    "warnings": 0,
+    "errors": 0
+  },
+  "gitDiffCheckPassed": true,
+  "runtimeRerun": false,
+  "nextValidation": "Daniel reruns Tools/Smesh Fest/Validation/Click Launch Runtime; the output file is overwritten, so preserve a new immutable result snapshot after execution.",
+  "hashesAfterFix": {
+    "clickLaunchRuntimeProbeSha256": "3794584f493a2059d5c92af9f23fb57e6df356ca7479956db8df558dfd81e24d",
+    "worldTargetProjectorSha256": "c7c70c53f22eb427fb826069b41fd6b30b03e92ffeecd16c507ec7c781482bac",
+    "gameSceneObservedSha256": "bcf6bdc7b261000cd989ef0a13cb18db4650763cebbd2e91b8e5e67918b41915",
+    "ballPoolConfigObservedSha256": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+    "cubePoolConfigObservedSha256": "902e163fb3c39a5e8c2c2ea01c5772a2f94488f1f25835e6105d7630c19ade75"
+  },
+  "concurrentSavedChangesObserved": {
+    "gameScene": "Compared with the previous +40/-63 W-001 snapshot, the current tracked diff is +42/-65 and contains two additional MeshRenderer m_CastShadows 1-to-0 changes. Unity reports dirty=false and rootCount=4.",
+    "cubePoolConfig": "The Prefab reference is now linked while the Game PoolContainer list still contains only Ball.",
+    "attributionOrIntentInferred": false
+  },
+  "preservationNote": "The scene and Cube PoolConfig already contained concurrent saved changes. This fix did not edit, save, revert, or infer intent for them."
+}

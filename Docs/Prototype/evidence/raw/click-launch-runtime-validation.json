@@ -1,0 +1,18 @@
+{
+    "recordedAtUtc": "2026-09-09T07:48:02.8381800Z",
+    "unityVersion": "6000.3.10f1",
+    "success": false,
+    "assertions": 5,
+    "simulatedSteps": 0,
+    "collisionContacts": 0,
+    "projectedScreenPoint": true,
+    "rejectedInvalidProjection": false,
+    "rejectedParallelProjection": false,
+    "rejectedImpossibleTrajectory": false,
+    "rejectedDuplicateAndStaleLaunch": false,
+    "capacityFailureWasGraceful": false,
+    "timedReturnAndRerent": false,
+    "barrelVelocityAngleDegrees": 0.0,
+    "error": "System.InvalidOperationException: Projection accepted a point outside the configured world bounds.\n  at Framework.Test.ClickLaunchRuntimeProbe.Assert (System.Boolean condition, System.String message) [0x0001d] in /Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs:192 \n  at Framework.Test.ClickLaunchRuntimeProbe+<Run>d__9.MoveNext () [0x00140] in /Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs:78 ",
+    "scope": "Temporary camera, cannon, pooled ball, and obstacle in an isolated LocalPhysicsMode.Physics3D scene. No saved Scene, Prefab, or ScriptableObject asset is changed."
+}

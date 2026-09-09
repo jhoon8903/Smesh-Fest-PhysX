@@ -1,0 +1,31 @@
+{
+  "id": "level-runtime-spawn-integration-start-20260909",
+  "stage": "build",
+  "kind": "start",
+  "actor": "main orchestrator with lower-model builder and reviewer",
+  "task_id": "level-runtime-spawn-integration-006",
+  "status": "in_progress",
+  "summary": "사용자가 Bake한 Level1을 단일 PoolFactory와 GameFlow 시작 게이트에 연결하는 작은 런타임 단위 시작",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Level/Level1.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/So/Cube.asset",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Level/LevelSpawner.cs"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "scope": "LevelSession, GameFlow startup gate, GameLifetimeScope registration, targeted Game scene references",
+    "human_role": "Cube Config 변경과 Level1 Bake 완료; Unity Play Mode 검증 담당",
+    "scene_preservation": "Blocks 및 수동 Transform과 오브젝트는 삭제하거나 재생성하지 않고 runtime에서만 전환",
+    "assigned_model": "gpt-5.6-terra and gpt-5.6-sol",
+    "reasoning_effort": "medium and high",
+    "routing_reason": "Terra가 구현하고 Sol이 수명주기와 원자 전환을 독립 검토",
+    "context_mode": "none; 지정 경로와 계약만 전달",
+    "task_scope": "runtime level spawn integration",
+    "escalation_count": 0,
+    "escalation_reason": null,
+    "execution_confirmation": "에이전트 배정에 모델과 effort를 명시",
+    "observed_model": null,
+    "observed_reasoning_effort": null,
+    "usage": null
+  }
+}

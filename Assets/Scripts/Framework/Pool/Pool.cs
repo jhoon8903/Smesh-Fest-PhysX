@@ -133,6 +133,12 @@ namespace Framework.Pool
                 throw failure;
             }
 
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
+
             if (!TryGetEntryIndex(entry, out int entryIndex))
                 return false;
 
@@ -242,7 +248,8 @@ namespace Framework.Pool
 
         internal bool IsCurrentRental(IPoolable value, uint version)
         {
-            if (disposed || ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (disposed || ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -253,7 +260,8 @@ namespace Framework.Pool
 
         internal bool ShouldContinueRentCallbacks(IPoolable value, uint version)
         {
-            if (ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -309,6 +317,12 @@ namespace Framework.Pool
             if (entry.State != EntryState.Returning || entry.Version != returnVersion)
                 return false;
 
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
+
             try
             {
                 FinalizeInactive(entry, index);
@@ -352,6 +366,12 @@ namespace Framework.Pool
             if (disposed || !TryGetEntryIndex(entry, out currentIndex)
                 || entry.State != EntryState.Returning || entry.Version != returnVersion)
                 return false;
+
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
 
             try
             {
@@ -409,10 +429,8 @@ namespace Framework.Pool
                     return null;
                 }
                 lifecycle = new PoolLifecycleRunner(value);
-                if (lifecycle.PoolObject.activeSelf)
-                    throw new InvalidOperationException("Pool create delegate must return an inactive IPoolable.");
-                if (entryIndices.ContainsKey(value))
-                    throw new InvalidOperationException("Pool create delegate returned an instance already owned by this pool.");
+                if (lifecycle.PoolObject.activeSelf) throw new InvalidOperationException("Pool create delegate must return an inactive IPoolable.");
+                if (entryIndices.ContainsKey(value)) throw new InvalidOperationException("Pool create delegate returned an instance already owned by this pool.");
 
                 lifecycle.Transform.SetParent(activeRoot, false);
                 entry = new Entry
@@ -436,12 +454,9 @@ namespace Framework.Pool
                     failure = exception;
                 }
                 failure = EndLifecycle(failure);
-                if (failure != null)
-                    throw failure;
-
-                if (disposed || !TryGetEntryIndex(entry, out int index) || entry.State != EntryState.Initializing)
-                    return null;
-
+                if (failure != null) throw failure;
+                if (IsDestroyedUnityObject(entry.Value)) throw new InvalidOperationException("Pooled object was destroyed during OnPoolCreated.");
+                if (disposed || !TryGetEntryIndex(entry, out int index) || entry.State != EntryState.Initializing) return null;
                 FinalizeInactive(entry, index);
                 return entry;
             }
@@ -465,13 +480,18 @@ namespace Framework.Pool
 
         private void Quarantine(Entry entry)
         {
-            if (!TryGetEntryIndex(entry, out int index))
-                return;
+            if (!TryGetEntryIndex(entry, out int index)) return;
 
-            if (entry.State == EntryState.Active || entry.State == EntryState.Renting)
-                activeCount--;
-            if (entry.State == EntryState.Inactive)
-                RemoveInactiveIndex(index);
+            switch (entry.State)
+            {
+                case EntryState.Active or EntryState.Renting:
+                    activeCount--;
+                    break;
+                case EntryState.Inactive:
+                    RemoveInactiveIndex(index);
+                    break;
+            }
+
             entry.Version = NextVersion(entry.Version);
             Entry detached = DetachAt(index);
             DestroyDetached(detached);
@@ -480,8 +500,7 @@ namespace Framework.Pool
         private void FinalizeInactive(Entry entry, int index)
         {
             double idleSince = now();
-            if (disposed || !TryGetEntryIndex(entry, out int currentIndex) || currentIndex != index)
-                return;
+            if (disposed || !TryGetEntryIndex(entry, out int currentIndex) || currentIndex != index) return;
 
             entry.IdleSince = idleSince;
             entry.State = EntryState.Inactive;
@@ -490,7 +509,8 @@ namespace Framework.Pool
 
         internal bool IsReturning(IPoolable value, uint version)
         {
-            if (disposed || ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (disposed || ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -503,8 +523,7 @@ namespace Framework.Pool
         {
             int entryIndex = inactiveIndices[idleListIndex];
             int lastIdleIndex = inactiveIndices.Count - 1;
-            if (idleListIndex != lastIdleIndex)
-                inactiveIndices[idleListIndex] = inactiveIndices[lastIdleIndex];
+            if (idleListIndex != lastIdleIndex) inactiveIndices[idleListIndex] = inactiveIndices[lastIdleIndex];
             inactiveIndices.RemoveAt(lastIdleIndex);
             return DetachAt(entryIndex);
         }
@@ -513,8 +532,7 @@ namespace Framework.Pool
         {
             for (int i = inactiveIndices.Count - 1; i >= 0; i--)
             {
-                if (inactiveIndices[i] != entryIndex)
-                    continue;
+                if (inactiveIndices[i] != entryIndex) continue;
                 int last = inactiveIndices.Count - 1;
                 inactiveIndices[i] = inactiveIndices[last];
                 inactiveIndices.RemoveAt(last);
@@ -526,8 +544,7 @@ namespace Framework.Pool
         {
             for (int i = inactiveIndices.Count - 1; i >= 0; i--)
             {
-                if (entries[inactiveIndices[i]].TrimEpoch == epoch)
-                    return i;
+                if (entries[inactiveIndices[i]].TrimEpoch == epoch) return i;
             }
             return -1;
         }
@@ -541,7 +558,6 @@ namespace Framework.Pool
                 && index < entries.Count
                 && ReferenceEquals(entries[index], entry))
                 return true;
-
             index = -1;
             return false;
         }
@@ -558,8 +574,7 @@ namespace Framework.Pool
                 entryIndices[moved.Value] = entryIndex;
                 for (int i = 0; i < inactiveIndices.Count; i++)
                 {
-                    if (inactiveIndices[i] == lastIndex)
-                        inactiveIndices[i] = entryIndex;
+                    if (inactiveIndices[i] == lastIndex) inactiveIndices[i] = entryIndex;
                 }
             }
             entries.RemoveAt(lastIndex);
@@ -575,8 +590,7 @@ namespace Framework.Pool
             try { destroy(value); }
             catch (Exception exception) { failure ??= exception; }
             failure = EndLifecycle(failure);
-            if (failure != null)
-                throw failure;
+            if (failure != null) throw failure;
         }
 
         private void DestroyDetached(Entry entry)
@@ -587,9 +601,7 @@ namespace Framework.Pool
 
             Exception failure = null;
             BeginLifecycle();
-            if (previousState == EntryState.Renting
-                || previousState == EntryState.Active
-                || previousState == EntryState.ReturnPending)
+            if (previousState is EntryState.Renting or EntryState.Active or EntryState.ReturnPending)
             {
                 try { entry.Lifecycle.ReturnToPool(activeRoot, entry.OriginalScale); }
                 catch (Exception exception) { failure = exception; }
@@ -597,8 +609,7 @@ namespace Framework.Pool
             try { DestroyUntracked(entry.Value, entry.Lifecycle); }
             catch (Exception exception) { failure ??= exception; }
             failure = EndLifecycle(failure);
-            if (failure != null)
-                throw failure;
+            if (failure != null) throw failure;
         }
 
         private void BeginLifecycle()
@@ -622,6 +633,9 @@ namespace Framework.Pool
             version++;
             return version == 0 ? 1u : version;
         }
+
+        private static bool IsDestroyedUnityObject(IPoolable value) =>
+            value is UnityEngine.Object unityObject && unityObject == null;
 
         private void ThrowIfDisposed()
         {

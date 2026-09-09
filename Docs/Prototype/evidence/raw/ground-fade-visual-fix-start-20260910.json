@@ -1,0 +1,27 @@
+{
+  "id": "ground-fade-visual-fix-start-20260910",
+  "stage": "review",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "ground-fade-visual-fix-009",
+  "status": "in_progress",
+  "summary": "Ground 반환 시 alpha Fade보다 그림자 소실과 Lit 외관 변경이 먼저 보이는 사용자 관측을 재현 가능한 material 전환 계약으로 좁히고 수정한다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "observed_by_user": "shadow disappears, lit texture appearance changes, then object disappears instead of visibly fading",
+    "confirmed_static_causes": "BeginFade disables shadow immediately and swaps opaque URP Lit to transparent; Ball fade material does not clone the source default Lit visual properties",
+    "human_role": "수정 후 Unity Play Mode에서 외관 전환 없는 연속 Fade와 그림자 진행을 확인",
+    "ai_role": "원본 Lit 속성을 보존하는 전용 fade shader/material과 lifecycle 최소 수정, 정적 컴파일 및 독립 검토",
+    "preservation": "원본 source material과 사용자 scene layout 및 unrelated prefab values를 수정하지 않고 fallback을 추가하지 않음",
+    "reader_assignment": {
+      "assigned_model": "gpt-5.6-terra",
+      "reasoning_effort": "medium",
+      "usage": null
+    }
+  }
+}

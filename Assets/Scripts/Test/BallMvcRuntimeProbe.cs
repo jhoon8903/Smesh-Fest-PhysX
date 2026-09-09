@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.IO;
 using Framework.Pool;
+using Framework.Loop;
 using InGame.Ball;
+using InGame.Config;
 using UnityEngine;
 using VContainer;
 
@@ -28,12 +30,15 @@ namespace Framework.Test
 
         private readonly Result result = new Result
         {
-            scope = "Isolated PoolFactory + temporary BallView source only; does not edit a Scene, Prefab, PoolConfig asset, physics, Rigidbody, or input."
+            scope = "Isolated PoolFactory plus a temporary BallView source with required Rigidbody and SphereCollider; does not edit a saved Scene, Prefab, PoolConfig asset, or input, and does not simulate physics."
         };
 
         private GameObject fixtureRoot;
         private PoolFactory factory;
         private IObjectResolver resolver;
+        private BallConfig ballSettings;
+        private GroundFadeConfig groundFadeSettings;
+        private LoopDispatcher loopDispatcher;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -50,7 +55,14 @@ namespace Framework.Test
             result.unityVersion = Application.unityVersion;
             try
             {
+                ballSettings = ScriptableObject.CreateInstance<BallConfig>();
+                groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
+                loopDispatcher = new LoopDispatcher();
+                loopDispatcher.StartLoop();
                 ContainerBuilder builder = new ContainerBuilder();
+                builder.RegisterInstance(ballSettings);
+                builder.RegisterInstance(groundFadeSettings);
+                builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -123,6 +135,9 @@ namespace Framework.Test
                        !hierarchyController.IsCurrentRental(hierarchyEpoch) &&
                        hierarchyModel.ObserverCount == 0,
                     "Hierarchy-first destruction left the Ball MVC bundle active before pool disposal.");
+                Assert(!hierarchyLease.IsValid && !hierarchyLease.Return() &&
+                       !hierarchyController.TryLaunch(hierarchyEpoch, Vector3.right, BallTrajectoryMode.Straight),
+                    "A destroyed Ball remained reachable through its lease or controller before pool disposal.");
 
                 hierarchyFirstPool.Dispose();
                 Assert(!hierarchyLease.IsValid,
@@ -149,6 +164,9 @@ namespace Framework.Test
                 if (fixtureRoot != null) Destroy(fixtureRoot);
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
+                if (ballSettings != null) Destroy(ballSettings);
+                loopDispatcher?.Dispose();
+                if (groundFadeSettings != null) Destroy(groundFadeSettings);
             }
 
             yield return null;

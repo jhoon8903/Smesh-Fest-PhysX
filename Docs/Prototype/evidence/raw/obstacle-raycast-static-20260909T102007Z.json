@@ -1,0 +1,45 @@
+{
+  "recordedAtUtc": "2026-09-09T10:20:07Z",
+  "unityVersion": "6000.3.10f1",
+  "success": true,
+  "scope": "Direct Obstacle raycast and two World Config references; Ground state and Ball gravity transition excluded",
+  "targetRule": "Accept only the first PhysicsScene.Raycast hit when its exact Collider GameObject owns an active ObstacleView",
+  "rejectedResolutionPaths": [
+    "Block plane",
+    "local bounds",
+    "parent component search",
+    "name",
+    "tag",
+    "fallback target"
+  ],
+  "removedLegacyCalculator": "WorldTargetProjector",
+  "replacement": "ObstacleTargetRaycaster",
+  "sceneComponentFileId": 1383522109,
+  "sceneReferencesAdded": {
+    "ballSettings": "Assets/Project/Config/BallConfig.asset",
+    "physXSettings": "Assets/Project/Config/PhysXConfig.asset"
+  },
+  "sceneSerializedFieldsRemoved": [
+    "blockPlane",
+    "targetBoundsCenter",
+    "targetBoundsExtents",
+    "launchSpeed",
+    "maxFlightSeconds",
+    "recycleBelowY"
+  ],
+  "sceneSha256Before": "c3bf38a191de3e2b59e5fb341fa6526aab29981c1b1db1e3b35e7070852d53b1",
+  "sceneSha256After": "80b21c35804146823c68a3025bfdb6bb7899d1f5b69031940808580803fe5922",
+  "sceneTrackedDiffBefore": "+42/-65",
+  "sceneTrackedDiffAfter": "+38/-65",
+  "unityCompilerErrors": 0,
+  "validatedScriptWarnings": 0,
+  "validatedScriptErrors": 0,
+  "scopedGitDiffCheckPassed": true,
+  "liveWorldConfigReferencesObservedAfterReload": true,
+  "runtimeValidationRun": false,
+  "pending": [
+    "Ground collision makes the Obstacle untargetable",
+    "Straight Ball disables gravity until first collision",
+    "Curve Ball enables gravity from launch"
+  ]
+}

@@ -246,6 +246,11 @@ namespace Framework.Test
             private void Destroy(IPoolable value)
             {
                 DestroyCalls++;
+                if (value is UnityEngine.Object unityObject && unityObject == null)
+                {
+                    if (ThrowFromDestroy) throw new InvalidOperationException("expected destroy failure");
+                    return;
+                }
                 BeforeDestroy?.Invoke(value);
                 if (value?.PoolObject != null) UnityEngine.Object.Destroy(value.PoolObject);
                 if (ThrowFromDestroy) throw new InvalidOperationException("expected destroy failure");
@@ -424,6 +429,8 @@ namespace Framework.Test
                     "Hierarchy teardown fixture did not hold one active and one inactive instance.");
                 Destroy(teardownContainerObject);
                 yield return null;
+                Assert(!teardownActive.IsValid && !teardownActive.Return() && teardownPool.CountActive == 1,
+                    "A native-destroyed active object kept a usable lease or was recycled before pool disposal.");
                 teardownFactory.Dispose();
                 Assert(teardownPool.CountAll == 0 && teardownPool.CountActive == 0 && teardownPool.CountInactive == 0 &&
                        !teardownActive.IsValid,
@@ -515,7 +522,30 @@ namespace Framework.Test
                    foreign.Pool.CountActive == 0 && foreign.Pool.CountInactive == 1,
                 "A foreign lease changed the primary pool rental.");
             Assert(primaryLease.Return(), "Primary lease did not return after the foreign lease check.");
-            Release(foreign); Release(primary); ScenarioHooks.Reset();
+            Release(foreign); Release(primary);
+
+            ScenarioHooks.Reset();
+            TransientPoolFixture destroyedOnRent = Own(new TransientPoolFixture("__PoolValidation_DestroyedOnRent", 1, 1, 1f));
+            destroyedOnRent.Pool.Prewarm();
+            ScenarioHooks.OwnerRent = (value, lease) => DestroyImmediate(value.gameObject);
+            bool destroyedRentSucceeded = destroyedOnRent.Pool.TryRent(args, out PoolLease destroyedRentLease);
+            Assert(!destroyedRentSucceeded && !destroyedRentLease.IsValid && destroyedOnRent.DestroyCalls == 1 &&
+                   destroyedOnRent.Pool.CountAll == 0 && destroyedOnRent.Pool.CountActive == 0 &&
+                   destroyedOnRent.Pool.CountInactive == 0,
+                "An object destroyed during OnPoolRent escaped as a rental or remained in inventory.");
+            Release(destroyedOnRent);
+
+            ScenarioHooks.Reset();
+            TransientPoolFixture destroyedOnReturn = Own(new TransientPoolFixture("__PoolValidation_DestroyedOnReturn", 1, 1, 1f));
+            destroyedOnReturn.Pool.Prewarm();
+            Assert(destroyedOnReturn.Pool.TryRent(args, out PoolLease destroyedReturnLease),
+                "Destroyed-on-return fixture did not rent.");
+            ScenarioHooks.OwnerReturned = value => DestroyImmediate(value.gameObject);
+            Assert(!destroyedReturnLease.Return() && !destroyedReturnLease.IsValid && destroyedOnReturn.DestroyCalls == 1 &&
+                   destroyedOnReturn.Pool.CountAll == 0 && destroyedOnReturn.Pool.CountActive == 0 &&
+                   destroyedOnReturn.Pool.CountInactive == 0,
+                "An object destroyed during OnPoolReturn re-entered inactive inventory.");
+            Release(destroyedOnReturn); ScenarioHooks.Reset();
         }
 
         private void RunFailureChecks(PoolSpawnArgs args)

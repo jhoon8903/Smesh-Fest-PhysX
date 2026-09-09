@@ -1,6 +1,8 @@
 # 기본 아키텍처 — 확정 기준
 
-상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View 기반에 이어 R-021·R-022의 Ball별 MVC 묶음을 구현했다. 2026-09-09 W-000-BALL-MVC-001 Play Mode 19개 검사 통과. Obstacle MVC, 물리 권위·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
+> **2026-09-09 최신 사용자 정정:** 발사는 실제 **targetable Obstacle Collider**를 맞힌 Raycast에서만 시작하고 Ball은 **Cannon Head Muzzle**에서 생성한다. Cannon은 수동 child 회전을 보존한 채 world Yaw만 바꾼다. `Straight` Ball은 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick의 월드 Z가 `BallConfig.GravityActivationWorldZ`(기본 0)를 **엄격히 초과**한 첫 순간 중 먼저 발생한 조건에서 중력을 켠다. `Curve`는 고정 비행시간 공식과 같은 중력을 발사부터 사용한다. tag·name·parent 검색 fallback과 legacy 경로는 두지 않는다. Ball/Obstacle Rigidbody 고정값은 기능별 Config SO가 적용하고, CCD는 Ball `ContinuousDynamic`·Obstacle `Continuous`다. 물리 Layer는 Obstacle 8·Ball 9·Ground 10이며 필요한 gameplay 조합만 충돌한다. 최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이며 최신 Play Mode 재확인은 아직이다.
+
+상태: **사용자 기준 확정 / 첫 플레이 수직 슬라이스 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View와 Ball/Obstacle 객체별 MVC에 이어 Unity PhysX 수명 연결을 구현했고, 수정본 격리 Probe를 Daniel이 42개 assertion으로 통과시켰다. 다음 W-001은 클릭 목표 투영·Ball 풀 대여/포물선 발사·Cannon 정렬을 코드와 현재 씬에 부분 연결했으며 Unity 컴파일과 정적 진단을 통과했다. 격리 Click Launch Runtime과 실제 Game 조작 확인, HP/파괴·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
 
 출처: Daniel이 “내가 만드는 게임들은 대부분 아래 설명한 아키텍처 기반으로 작동해”라고 제시한 1–8번과 “문서에 기록하여 다음부터 질문하지 않도록” 요청한 메시지, 이후 “추가로 나는 DI 의존성 주입으로 코드 작성을 해”라는 추가 기준과 “Code Stripping을 High로 하기 때문에 관리도 해야해”라는 후속 기준. 이 문서는 해당 기준의 단일 원본이다.
 
@@ -186,7 +188,7 @@ W-000-MVC-REFERENCE-001은 비교·설계만 수행했다. 후속 진행 요청(
 
 OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므로, 파생 View의 추가 모델 이벤트도 여기서 쌍으로 관리한다. 단순 비활성화를 풀 반환으로 취급하지 않는다. 실제 반환 시 Controller의 Loop 구독을 끊고 View.Unbind 후 객체별 상태를 초기화한다. Model/Controller 묶음 유지와 재생성 두 방식은 임시 객체로 모두 검사했으며 공통부에서 하나를 강제하지 않았다.
 
-현재 공통 ObController는 빈 기반이고 Cannon/Obstacle별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball의 객체별 수명 계약은 다음 절에서 실제 코드로 연결했다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
+현재 공통 ObController는 빈 기반이고 Cannon별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball과 Obstacle의 객체별 수명 계약은 아래 절에서 실제 코드로 연결했고, 첫 PhysX 명령·초기화 계약은 R-023 절을 따른다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
 
 ### Ball 객체별 MVC 묶음 계약 — W-000-BALL-MVC-001
 
@@ -201,11 +203,52 @@ OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므�
 | `OnPoolReturn` | Controller의 현재 lease/세대 해제 → View.Unbind → Model 대여 상태 해제. Model/Controller 인스턴스와 마지막 세대 값은 다음 대여까지 유지한다. |
 | 풀 종료 / 계층 선파괴 | 풀 콜백과 Unity `OnDestroy`가 같은 idempotent 정리 경로를 사용한다. 씬 계층이 Factory보다 먼저 파괴돼도 Controller·Model·관찰을 즉시 끊고, 뒤이은 Pool Dispose는 안전하게 중복 정리한다. |
 
-BallController에는 실제 입력·Loop·물리 구독을 넣지 않았다. 구독할 권위가 정해지기 전에 빈 Tick을 등록하면 구현 완료처럼 보이면서 반환 누수만 늘기 때문이다. 물리 단위에서 구독을 추가할 때는 대여 세대를 캡처하고 모든 늦은 충돌·Tween·UniTask 완료가 `IsCurrentRental(epoch)`를 확인해야 한다.
+Ball MVC 단위 당시에는 실제 입력·Loop·물리 구독을 넣지 않았다. 현재 R-023에서 초기 PhysX 속도 명령만 추가했으며, 매 프레임 Rigidbody 값을 Model에 복사하거나 빈 Tick을 등록하지 않는다. 이후 늦은 충돌·Tween·UniTask 완료는 대여 세대를 캡처하고 `IsCurrentRental(epoch)`를 확인해야 한다.
 
-현재 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지며 Rigidbody는 없다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있다. 이 값들은 이번 코드/검사에서 수정하지 않았다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
+Ball MVC 단위 종료 당시 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지고 Rigidbody는 없었다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있었다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [당시 사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
 
-다음 컨텍스트는 같은 원칙으로 Obstacle MVC를 구현한다. 현재 Cube Prefab은 MeshRenderer·BoxCollider만 있고 Cube PoolConfig의 Prefab은 비어 있으며 Game 씬 목록에도 등록되지 않았다. 이를 과거 설정으로 되돌리거나 자동 완성하지 않고, 최신 사용자 값과 Obstacle 코드 상태를 다시 확인한 뒤 필요한 참조만 부분 연결한다. 그 다음 물리 구현에서 Ball/Obstacle의 상태 권위와 Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 확정한다.
+### Obstacle 객체별 MVC 묶음 계약 — W-000-OBSTACLE-MVC-001
+
+[IMPLEMENTED:agent / R-019·R-021 원칙 적용 / 2026-09-09 KST] Obstacle도 풀 인스턴스마다 View·Model·Controller를 한 번 조립해 재사용한다. Ball과 코드가 닮았다는 이유만으로 공통 베이스를 먼저 추출하지 않았고, 첫 상태는 `IsRented`와 0이 아닌 `RentalEpoch`로 제한했다.
+
+수명 순서와 이전 세대 거절은 Ball 계약과 같되 구체 타입이 직접 소유한다. `ObstacleView.OnPoolCreated`가 묶음을 만들고, 대여에서 Model 시작 → View Bind → Controller lease 연결, 반환에서 Controller → View → Model 순서로 정리한다. 준비 중 유효하지 않은 lease가 들어오면 이미 시작한 Model과 View 연결까지 되돌린다. 풀 종료와 Unity `OnDestroy`는 같은 idempotent 정리를 사용한다. 물리·HP·파괴·위치·속도·충돌·시각 표현은 아직 권위가 정해지지 않아 넣지 않았다.
+
+Unity 6000.3.10f1의 임시 PoolFactory/ObstacleView 검사에서 같은 묶음 재대여, 세대 전진, 오래된 lease/Controller 거절, 정상 반환, 활성 Pool Dispose, 계층 선파괴, 생성 후 미대여 파괴, 잘못된 lease 준비 실패 롤백과 파괴 오류 로그 부재를 포함해 25개 assertion을 통과했다. [Obstacle 코드](../../Assets/Scripts/InGame/Obstacle/ObstacleView.cs), [실행 결과](evidence/raw/obstacle-mvc-runtime-validation.json).
+
+이 작업은 Cube Prefab·PoolConfig·Game 목록을 연결하지 않았다. 작업 중 외부에서 Ball/Cube Prefab에 Rigidbody가 추가된 저장 변경을 감지했지만 AI/보조가 만든 것으로 귀속하지 않고 사용자 소유 최신 상태로 보존했다. 다음 물리 단위에서는 이 실제 Rigidbody 구성과 Daniel의 의도를 다시 읽고, 상태 권위·초기화 책임·Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 정한다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
+
+## Unity PhysX 런타임 권위와 풀 수명 — R-023
+
+[DECISION:user / 2026-09-09 KST] 채용 공고의 PhysX 요구에 맞춰 첫 플레이는 Unity PhysX로 구현한다. 직접 구현 물리와의 비교 및 물리 권위 설명은 대표 PhysX 플레이를 확인한 뒤 별도 문서로 남긴다.
+
+| 책임 | 현재 계약 |
+|---|---|
+| 런타임 물리 권위 | Rigidbody가 위치·회전·선속도·각속도를 소유한다. BallModel/ObstacleModel에는 이를 복제하지 않고 대여 상태·세대만 둔다. |
+| 컴포넌트 계약 | BallView/ObstacleView와 같은 루트에 Collider와 **dynamic Rigidbody**가 있어야 한다. 코드는 컴포넌트를 만들거나 `isKinematic`·constraints·detectCollisions를 바꾸지 않는다. Config SO가 mass·linear/angular damping·interpolation·collision detection을 주입 시점과 매 대여에 적용한다. |
+| Ball 대여 | 속도·각속도와 중력을 끄고 Sleep한 뒤 현재 대여에 초기속도를 한 번만 적용한다. Straight는 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick의 `Rigidbody.position.z > GravityActivationWorldZ`가 처음 성립할 때 중력을 한 번 켠다. Curve는 발사부터 켠다. |
+| Obstacle 대여 | Config 값을 적용하고 속도·각속도를 0으로 만든 뒤 활성화 때 WakeUp한다. 씬 배치 Obstacle도 같은 Config를 DI로 주입받으며 `TargetableAtStart`를 사용한다. |
+| 반환·활성 풀 종료 | 두 Rigidbody의 속도·각속도를 0으로 만들고 Sleep한다. Ball 중력과 Z 대기 상태를 끄고 Controller lease/epoch와 View/Model 연결도 해제한다. |
+| 충돌 결과 | 현재 단위는 PhysX 접촉과 Obstacle의 물리 이동만 다룬다. 피해·HP·파괴·점수·결과·연출은 뒤의 게임 규칙 계층이다. |
+
+Ball 발사는 Controller가 Rigidbody에 명령하지만, 충돌 후의 Transform/velocity를 Controller가 다시 계산해 덮어쓰지 않는다. 따라서 현재 권위는 “Controller가 명령, PhysX Rigidbody가 상태 소유”다. 직접 구현 물리를 붙일 때는 이 구현과 동시에 같은 Transform을 쓰게 하지 않고, 별도의 물리 백엔드가 권위를 넘겨받는 경계를 문서와 동일 조건 Probe로 정의한다.
+
+계층이 Factory보다 먼저 파괴되는 경로에서는 Unity의 파괴된 객체가 CLR 참조로 남아 있어도 PoolLease가 즉시 무효다. 해당 lease의 Return은 false이고 죽은 객체를 비활성 재고로 넣지 않는다. Pool의 Count는 최종 Dispose 때 정리되므로 계층 선파괴는 정상 재사용 흐름이 아니라 씬 종료용 방어 경로다.
+
+기존 local PhysicsScene Probe의 수명 검사는 Daniel 실행으로 **42 assertions, 15 simulated steps, contact 1회, Obstacle displacement 0.6153807**을 통과했다. 최신 Probe는 여기에 Config 물성 적용, CCD 모드, 직접 Obstacle 충돌, Z=0 유지·Z>0 전환, stale epoch, Curve 즉시 중력을 추가했으며 아직 Play Mode 재실행 전이다. Config 소유값은 SO와의 일치를, 그 외 Rigidbody 값은 보존을 따로 검사한다. [검증 코드](../../Assets/Scripts/Test/PhysXRuntimeProbe.cs) · [이전 통과](evidence/raw/physx-lifecycle-runtime-passed-20260909T064144Z.json).
+
+향후 `PHYSICS_AUTHORITY.md`는 대표 플레이 뒤 작성한다. 최소 내용은 권위 전환 표, PhysX/직접 구현 각각의 입력·fixed step·초기 상태·충돌 처리, 비교 지표(재현성·오차·CPU·GC·조작감), 혼합 금지 규칙과 Player/기기 검증 범위다. 문서 계획은 직접 구현 방식 채택이나 비교 통과를 뜻하지 않는다.
+
+## 클릭 목표 → PhysX 발사 → Cannon 정렬 — W-001-CLICK-LAUNCH-001
+
+`WorldPointerInput`은 중앙 `UpdateTick`에서 포인터를 받고 UI/safe-area 입력을 거른 뒤, `PhysXConfig.PointerCollisionMask`에 포함된 targetable `ObstacleView` Collider를 직접 Raycast한다. 중앙 `FixedTick`에서는 활성 Straight Ball의 Z 경계를 검사하고, Ball의 직접 충돌은 같은 GameObject의 `ObstacleView`만 인정한다. 평면 투영·tag·name·parent 검색 fallback은 사용하지 않는다.
+
+`BallLaunchVelocity`는 Cannon Head Muzzle에서 시작한다. Straight는 목표점 방향의 직선 초기속도, Curve는 `CurveFlightSeconds`에 목표점에 도착하는 고정 비행시간 초기속도를 계산한다. 발사 뒤 Transform·속도·충돌은 Rigidbody/PhysX가 소유하고 활성 shot은 고정 배열에서 lifetime/y 경계로 반환한다.
+
+`CannonHead`는 시작 시 저장한 yawRoot 회전을 기준으로 목표 방향의 수평 성분만 world Y 회전한다. Body/Head를 포함한 child의 저작 local rotation은 바꾸지 않는다. Muzzle 위치는 `barrelReference + muzzleOffset`이며 발사 궤적의 수직 성분과 Cannon 표시 회전은 분리한다.
+
+Ball·Ground·Obstacle을 별도 레이어로 분리하고 Ball↔Obstacle, Ball↔Ground, Obstacle↔Ground, Obstacle↔Obstacle만 gameplay 충돌로 유지한다. Ball↔Ball과 Ground↔Ground, gameplay↔Default/UI 등은 끈다. Ball은 `ContinuousDynamic`, Obstacle은 `Continuous`를 Config에서 적용해 빠른 Ball의 터널링을 줄인다. 씬 배치와 Pool clone 모두 같은 Config를 사용한다.
+
+최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이다. 격리 `Click Launch Runtime`과 `PhysX Lifecycle Runtime`, 실제 Game의 yaw·CCD·충돌 또는 Z 경계 중 먼저 중력이 켜지는지는 Daniel의 Play Mode 확인 대기다. 이전 Probe 결과는 최신 계약의 런타임 증거로 재사용하지 않는다.
 
 ## 성능 근거를 기록하는 방법
 
@@ -240,3 +283,25 @@ AI가 기존 빈 `Observable.cs`를 `Observable<T>`로 구현했다. 등록·해
 패키지 확인: UniTask는 manifest에 있고 DOTween 플러그인 파일도 있다. Addressables는 현재 manifest/lock에 없다. 이는 A-08의 채택이 미정이라는 뜻이 아니며, 이 기록 작업에서는 패키지를 설치하지 않았다.
 
 작업 순서와 소유 범위는 [PLAN](PLAN.md), 요구 출처는 [BRIEF](BRIEF.md), 재개 지점은 [HANDOFF](../HANDOFF.md)에 둔다. 다른 문서에는 이 10개 기준을 복제하지 않고 이 원본을 연결한다.
+
+## Level 저작 데이터와 명시적 전환 — W-002-LEVEL-EDITOR-001
+
+`LevelConfig`은 순서가 있는 `PoolConfig + level root 기준 local position/rotation/scale`만 저장한다. 누락·비정상 transform·PoolConfig 오류와 PoolConfig별 필요 수가 `MaxPool`을 넘는 상태는 fallback 없이 거절한다.
+
+`Smesh Fest/Level Editor`는 지정 authoring root의 **직접 자식 `ObstacleView`**를 hierarchy 순서대로 Capture 미리보기로 읽고, 명시 Bake에서만 지정 SO에 쓴다. 선택이 바뀌면 미리보기를 비운다. 자동 Capture/Bake, Scene 저장·삭제·비활성화, Prefab 생성, 기존 Blocks 제거는 하지 않는다.
+
+`LevelSpawner`는 기존 `PoolFactory`에서 명시 `TrySpawn`할 때만 대여하며, 실패 시 보유 lease를 `ReturnAll`로 원자적으로 되돌린다. 현재 Blocks 기대 Capture=24지만 Cube MaxPool=8·Factory catalog 미등록이므로 Bake/spawn 거절은 의도된 상태다. 다음 사용자 승인 통합에서 capacity와 authored Blocks→runtime 전환 시점을 정한다.
+
+### 최신 Level 런타임 전환 체크포인트 — 정적 확인만 완료
+
+Cube PoolConfig의 사용자 설정 `MaxPool=100`과 Bake된 `Assets/Project/Level/Level1.asset`(Cube 24개, 순서·local TRS)을 기준으로 한다. Game 씬은 authored `Blocks`와 sibling `RuntimeBlocks`를 두며 RuntimeBlocks local position은 `(0, 0.29, 0)`이고 authored Blocks와 local TRS가 같다. `WorldObjects`는 `LevelSpawner`·`LevelSession`을 참조하고 `PoolContainer`는 Ball·Cube를 보유한다.
+
+런타임 진입은 `LevelSession.TryStart` 성공 뒤에만 `GameFlow`가 loop를 시작하는 단일 경로다. authored Blocks는 runtime에서 비활성화하고 시작 실패 또는 `ReturnAll` 시 복원한다. fallback/parallel pool은 없으며 `LevelSession`은 nested/ancestor root를 거절한다. 5개 스크립트 정적 진단과 Console은 0이지만 Level Editor 메뉴·Play Mode는 아직 미검증이다.
+
+## Ground 충돌 Fade 반환 — W-004-GROUND-FADE-RETURN-001
+
+Ball과 Obstacle의 풀 인스턴스는 같은 Collider 오브젝트에서 `GroundSurface`가 감지될 때만 반환 연출을 시작한다. `GroundFadeConfig`가 대기 시간과 Fade 시간을 소유하며 현재 기본값은 각각 1초다. 중앙 Loop의 배율 적용된 Update delta로 1초 동안 원래 모습을 유지한 뒤, 1초 동안 alpha를 선형으로 낮추고 현재 `PoolLease`를 한 번만 반환한다.
+
+Ball/Cube Prefab의 Renderer는 시작부터 각 전용 URP/Lit Transparent GroundFade Material을 사용하고 `GroundFadeReturn.fadeMaterial`도 같은 자산을 참조한다. `GroundFadeReturn.OnPoolCreated()`는 built-in URP/Lit가 Transparent Material의 ShadowCaster pass를 에셋 검증 때 자동으로 끄는 정책을 보정하기 위해 같은 공유 Material의 `ShadowCaster` pass를 런타임에 한 번 활성화하고 결과를 검증한다. Fade 자체는 renderer-level 또는 material-index-0 중 기존에 활성인 property block 범위의 `_BaseColor.a`만 낮춘 뒤 반환·재대여 때 원래 property block을 복구한다. 원래 비어 있던 property block 범위는 빈 block을 설정하지 않고 `null`로 제거하여 material-index override가 renderer-level alpha를 가리지 않게 한다. 런타임 Material 복제, 이름·태그·부모 탐색, legacy/fallback 경로는 없다.
+
+`ShotDirector`는 대기/Fade 중인 Ball을 일반 lifetime·y 경계 반환으로 선점하지 않는다. 계층이 풀보다 먼저 파괴돼도 Loop 구독을 해제한다. 컴파일과 정적 연결은 확인했지만 Ground 충돌 뒤 실제 1초+1초 타이밍, 투명 오브젝트 겹침 표현, 정확한 반환·재대여 복구는 Play Mode 확인 전이다.

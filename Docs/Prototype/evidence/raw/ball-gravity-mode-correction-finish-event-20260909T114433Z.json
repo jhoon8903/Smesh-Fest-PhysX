@@ -1,0 +1,33 @@
+{
+  "id": "sf-ball-gravity-mode-correction-finish-20260909-001",
+  "stage": "build",
+  "kind": "finish",
+  "actor": "Daniel + Main",
+  "task_id": "W-001-BALL-GRAVITY-TRANSITION-002",
+  "status": "static_complete_runtime_pending",
+  "summary": "Straight는 Obstacle 직접 충돌 전 무중력, Curve는 발사부터 중력을 사용하도록 최신 코드에 연결하고 풀 반환 시 저작 중력값을 복구했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/ball-gravity-mode-correction-static-20260909T114000Z.json",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Shot/ShotDirector.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PhysXRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "human_role": "Cannon Collider 제거와 Use Gravity false 비교 플레이로 원인을 좁히고 적용을 승인했다.",
+    "ai_role": "궤적 모드별 중력, Obstacle 직접 충돌 전환, 풀 복구와 회귀 Probe를 최신 코드에 연결했다.",
+    "straight_gravity_from_launch": false,
+    "curve_gravity_from_launch": true,
+    "obstacle_direct_collision_only": true,
+    "fallback": false,
+    "scene_prefab_config_edited_by_ai": false,
+    "unity_console_errors": 0,
+    "unity_script_diagnostics": "6 scripts, 0 warnings, 0 errors",
+    "dotnet_build": "0 errors, 4 existing assembly reference warnings",
+    "runtime_pending": "Daniel Play Mode Click Launch probe and actual Straight/Curve arrival"
+  }
+}

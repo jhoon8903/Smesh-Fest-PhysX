@@ -1,0 +1,42 @@
+{
+  "task_id": "W-000-OBSTACLE-MVC-001",
+  "baseline_checked_at_utc": "2026-09-08T17:50:37Z",
+  "final_checked_at_utc": "2026-09-08T18:05:04Z",
+  "unchanged": [
+    {
+      "path": "Assets/Scenes/Game.unity",
+      "sha256_before": "9f6976e025ecc3334dcf3cec01bbe189fa7721bb97ebc0f91260a442835aede3",
+      "sha256_after": "9f6976e025ecc3334dcf3cec01bbe189fa7721bb97ebc0f91260a442835aede3"
+    },
+    {
+      "path": "Assets/Project/So/Ball.asset",
+      "sha256_before": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+      "sha256_after": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1"
+    },
+    {
+      "path": "Assets/Project/So/Cube.asset",
+      "sha256_before": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579",
+      "sha256_after": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+    }
+  ],
+  "concurrent_external_changes_preserved": [
+    {
+      "path": "Assets/Project/Prefabs/Ball.prefab",
+      "sha256_before": "412681aa63d20248fbd990d1fafe1a4c406637d1f089a08a2650a521965d954d",
+      "sha256_after": "c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff",
+      "observed_diff": "Rigidbody component added with serialized default values",
+      "changed_by_obstacle_task": false,
+      "reverted_or_overwritten": false
+    },
+    {
+      "path": "Assets/Project/Prefabs/Cube.prefab",
+      "sha256_before": "6e5c7923581f166838d2921d7cbf3475096336faab52bf2332a179e019659f52",
+      "sha256_after": "631e2f4b2fce4995b05234a497874855a4fc7533c91431a199201c746bb93243",
+      "observed_diff": "Rigidbody component added with serialized default values",
+      "changed_by_obstacle_task": false,
+      "reverted_or_overwritten": false
+    }
+  ],
+  "unexpected_ai_changes": [],
+  "note": "Both Prefab changes appeared after the Obstacle task baseline while Main and auxiliaries were scoped to C# and documentation. Their authorship was not inferred; they were treated as user-owned concurrent work and preserved. The validation used only temporary Play Mode objects and did not save a Scene, Prefab, or PoolConfig asset."
+}

@@ -1,0 +1,21 @@
+{
+  "recordedAtUtc": "2026-09-09T06:02:28Z",
+  "documentsChecked": 7,
+  "localLinksChecked": 145,
+  "missingLocalLinks": 0,
+  "contextManifestBlocks": 1,
+  "contextManifestRequiredPaths": 10,
+  "contextManifestOptionalPaths": 70,
+  "contextManifestTotalPaths": 80,
+  "contextManifestMissingPaths": 0,
+  "contextManifestJsonValid": true,
+  "handoffTracked": true,
+  "handoffIgnored": false,
+  "scopedDiffWhitespaceErrors": 0,
+  "scopeNote": "Whitespace checks exclude the pre-existing user-owned Assets/Scenes/Game.unity diff and include every other tracked or untracked current file.",
+  "physxRuntimeResultExists": false,
+  "gitBranch": "MVC-Obstacle",
+  "gitHead": "ca1c6914da43ff094c47ab8dc8275521b5dfd3cd",
+  "upstreamAhead": 0,
+  "upstreamBehind": 0
+}

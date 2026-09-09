@@ -1,0 +1,22 @@
+{
+  "id": "sf-ball-gravity-mode-correction-start-20260909-001",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "W-001-BALL-GRAVITY-TRANSITION-002",
+  "status": "in_progress",
+  "summary": "Daniel이 Ball Prefab의 Use Gravity를 끄면 Straight가 목표점에 도착함을 확인했다. 최신 소스에서 누락된 궤적별 중력 전환을 작은 단위로 다시 연결한다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Shot/ShotDirector.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab"
+  ],
+  "metadata": {
+    "validation_level": "runtime",
+    "human_observation": "Use Gravity false에서 Straight Ball이 원하는 위치로 이동",
+    "scope": "Straight 발사 중 무중력, Curve 발사부터 중력, Obstacle 직접 충돌 후 중력, 풀 초기화",
+    "preserve": "Scene, Prefab, Config, Cannon authored values",
+    "fallback": false
+  }
+}

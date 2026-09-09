@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749cee846b16e4bf4b2e924b4f99a3da, type: 3}
+  m_Name: CannonConfig
+  m_EditorClassIdentifier: Assembly-CSharp::InGame.Config.CannonConfig
+  lookRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  muzzleOffset: {x: 0, y: 0.16, z: 0}
+  headRecoilDistance: 0.1
+  headRecoilSeconds: 0.2
+  headRecoverySeconds: 0.2

@@ -1,0 +1,49 @@
+{
+  "id": "ground-fade-visual-fix-finish-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "Daniel + Main + prototype_reviewer",
+  "task_id": "ground-fade-visual-fix-009",
+  "status": "static_complete_runtime_pending",
+  "summary": "Ball과 Cube Prefab이 시작부터 각 GroundFade Material을 사용하도록 한 사용자 설정을 기준으로, 런타임 Material 전환을 제거하고 alpha만 변경하도록 단순화했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "human_role": "Unity Play Mode에서 Ground 충돌 후 1초 대기와 1초 연속 alpha Fade, 그림자 유지, 반환과 재대여 alpha 복구를 확인",
+    "ai_role": "Main이 현재 Prefab과 Material 연결을 다시 확인해 최소 수정하고 하위 검토 모델이 최종 P0/P1을 독립 확인",
+    "confirmed_state": "Ball/Cube Renderer와 GroundFadeReturn.fadeMaterial은 각각 동일한 GroundFade Material 자산을 참조",
+    "root_cause": "현재 Prefab 계약에서는 런타임 Material 교체가 중복이었고 두 GroundFade Material이 Opaque라 _BaseColor alpha가 화면 투명도에 반영되지 않음",
+    "implementation": "두 URP/Lit Material을 Transparent alpha blend로 설정하고 ShadowCaster를 유지; runtime은 Material과 shadow를 변경하지 않고 MaterialPropertyBlock alpha만 변경",
+    "fallback": false,
+    "custom_shader_added": false,
+    "preservation": {
+      "prefab_material_references_preserved": true,
+      "ball_color_preserved": true,
+      "cube_texture_normal_specular_preserved": true,
+      "scene_modified": false,
+      "unrelated_changes_reverted": false
+    },
+    "reviewer": {
+      "assigned_model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "usage": null,
+      "outcome": "ShadowCaster 설정 교정 후 남은 P0/P1 없음"
+    },
+    "unity_compile": "Unity 6000.3.10f1 force refresh and compile completed",
+    "unity_script_diagnostics": "GroundFadeReturn warnings 0, errors 0",
+    "unity_console": "errors 0",
+    "material_import": "both URP/Lit materials report Surface 1, SrcBlend 5, DstBlend 10 and ZWrite 0",
+    "play_mode_run": false,
+    "runtime_pending": "실제 연속 Fade와 투명 Cube 겹침 표현"
+  }
+}

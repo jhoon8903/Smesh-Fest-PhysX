@@ -1,0 +1,38 @@
+{
+  "id": "level-validation-editmode-fix-finish-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "main orchestrator with lower-model builder and reviewer",
+  "task_id": "level-validation-editmode-fix-007",
+  "status": "done_static_rerun_pending",
+  "summary": "생산 Pool을 변경하지 않고 LevelValidation의 Edit Mode OnEnable 오탐을 수정했으며 사용자 재실행 대기",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LevelValidation.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "root_cause": "Edit Mode preview scene에서 일반 MonoBehaviour.OnEnable 실행을 런타임처럼 요구한 false negative",
+    "new_contract": "OnPoolRent에서 inactive와 world position/rotation; TrySpawn 완료 후 active와 final local position/rotation/scale",
+    "production_changes": "none",
+    "unity_script_diagnostics": "0 warnings, 0 errors",
+    "unity_console_errors": 0,
+    "dotnet_build": "succeeded with 0 errors and 4 pre-existing assembly reference warnings",
+    "runtime_observation": "사용자가 RuntimeBlocks 생성 확인",
+    "runtime_pending": "교정된 Level Editor and Spawn validation 재실행",
+    "assigned_model": "gpt-5.6-terra and gpt-5.6-sol",
+    "reasoning_effort": "medium and high",
+    "routing_reason": "fixture-only implementation and independent lifecycle review",
+    "context_mode": "none; failure stack and relevant pool files only",
+    "task_scope": "LevelValidation false-negative correction",
+    "escalation_count": 0,
+    "escalation_reason": null,
+    "execution_confirmation": "agent calls explicitly specified model and effort",
+    "observed_model": null,
+    "observed_reasoning_effort": null,
+    "usage": null,
+    "outcome": "reviewer clean; corrected validation rerun pending",
+    "rework_required": false
+  }
+}

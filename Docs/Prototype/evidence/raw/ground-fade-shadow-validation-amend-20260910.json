@@ -1,0 +1,24 @@
+{
+  "id": "ground-fade-shadow-validation-amend-20260910",
+  "stage": "review",
+  "kind": "checkpoint",
+  "actor": "Main",
+  "task_id": "ground-fade-visual-fix-009",
+  "status": "static_complete_runtime_pending",
+  "summary": "GroundFadeReturn의 필수 검증을 alpha Fade에 필요한 Transparent 속성으로만 제한하고, ShadowCaster는 Material의 현재 authored 설정으로 유지했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "reason": "URP/Lit Material Inspector가 Transparent 편집 시 ShadowCaster pass를 다시 계산해도 alpha Fade 자체가 런타임 예외로 중단되지 않게 책임을 분리",
+    "current_material_state": "두 Material의 ShadowCaster pass는 enabled 상태로 보존",
+    "runtime_shadow_mutation": false,
+    "fallback": false,
+    "unity_script_diagnostics": "warnings 0, errors 0",
+    "unity_console": "errors 0",
+    "play_mode_run": false
+  }
+}
