@@ -6,15 +6,12 @@ using Framework.Pool;
 using Framework.Loop;
 using InGame.Ball;
 using InGame.Config;
+using InGame.DI;
 using UnityEngine;
 using VContainer;
 
 namespace Framework.Test
 {
-    /// <summary>
-    /// Isolated Play Mode verification for the Ball MVC bundle. It deliberately creates no scene object,
-    /// prefab, physics, or input dependency.
-    /// </summary>
     public sealed class BallMvcRuntimeProbe : MonoBehaviour
     {
         [Serializable]
@@ -37,8 +34,10 @@ namespace Framework.Test
         private PoolFactory factory;
         private IObjectResolver resolver;
         private BallConfig ballSettings;
+        private ObstacleConfig obstacleSettings;
         private GroundFadeConfig groundFadeSettings;
         private LoopDispatcher loopDispatcher;
+        private WorldObjectControllerRegistry controllers;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -56,6 +55,7 @@ namespace Framework.Test
             try
             {
                 ballSettings = ScriptableObject.CreateInstance<BallConfig>();
+                obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
                 groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
                 loopDispatcher = new LoopDispatcher();
                 loopDispatcher.StartLoop();
@@ -64,7 +64,8 @@ namespace Framework.Test
                 builder.RegisterInstance(groundFadeSettings);
                 builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
-                factory = new PoolFactory(container, resolver, true);
+                controllers = new WorldObjectControllerRegistry(ballSettings, obstacleSettings);
+                factory = new PoolFactory(container, resolver, controllers, true);
                 factory.Initialize(false);
 
                 IPool pool = factory.GetPool(config);
@@ -75,11 +76,10 @@ namespace Framework.Test
                 Assert(factory.TryRent(config, args, out PoolLease firstLease), "Initial Ball rent failed.");
                 BallView view = firstLease.Value as BallView;
                 Assert(view != null, "Pool did not return a BallView.");
-                BallModel model = view.OwnedModel;
-                BallController controller = view.Controller;
-                Assert(model != null && controller != null, "BallView did not create its Model and Controller bundle.");
+                Assert(controllers.TryGet(view, out BallController controller), "Registry did not compose a BallController.");
+                BallModel model = controller.Model;
                 uint firstEpoch = model.RentalEpoch;
-                Assert(view.Model == model && view.IsObserving &&
+                Assert(controller.IsObserving &&
                        model.IsRented && controller.IsRented && controller.RentalEpoch == firstEpoch &&
                        controller.IsCurrentRental(firstEpoch) && model.IsCurrentRental(firstEpoch) &&
                        model.ObserverCount == 1,
@@ -87,19 +87,19 @@ namespace Framework.Test
 
                 Assert(controller.TryReturn(firstEpoch), "Current BallController return failed.");
                 Assert(!firstLease.IsValid && !model.IsRented && !controller.IsRented &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "Controller return did not detach the Ball MVC observation and rental state.");
 
                 Assert(factory.TryRent(config, args, out PoolLease secondLease), "Ball re-rent failed.");
-                Assert(ReferenceEquals(secondLease.Value, view) && ReferenceEquals(view.OwnedModel, model) &&
-                       ReferenceEquals(view.Controller, controller),
+                Assert(ReferenceEquals(secondLease.Value, view) && controllers.TryGet(view, out BallController reused) &&
+                       ReferenceEquals(reused, controller),
                     "Ball re-rent recreated a View, Model, or Controller instead of reusing the bundle.");
 
                 uint secondEpoch = model.RentalEpoch;
                 Assert(secondEpoch != firstEpoch && model.IsRented && controller.IsRented &&
                        model.IsCurrentRental(secondEpoch) && controller.IsCurrentRental(secondEpoch) &&
                        !model.IsCurrentRental(firstEpoch) && !controller.IsCurrentRental(firstEpoch) &&
-                       model.ObserverCount == 1 && view.IsObserving && view.Model == model,
+                       model.ObserverCount == 1 && controller.IsObserving,
                     "Re-rent did not advance the epoch or restore exactly one observation.");
                 Assert(!firstLease.Return() && !controller.TryReturn(firstEpoch) && secondLease.IsValid &&
                        model.IsCurrentRental(secondEpoch) && controller.IsCurrentRental(secondEpoch) &&
@@ -108,7 +108,7 @@ namespace Framework.Test
 
                 Assert(secondLease.Return(), "Current PoolLease return failed.");
                 Assert(!secondLease.IsValid && !model.IsRented && !controller.IsRented &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "PoolLease return did not detach the Ball MVC observation and rental state.");
 
                 Assert(factory.TryRent(config, args, out PoolLease disposeLease),
@@ -117,7 +117,7 @@ namespace Framework.Test
                 pool.Dispose();
                 Assert(!disposeLease.IsValid && !model.IsRented && !controller.IsRented &&
                        !model.IsCurrentRental(disposeEpoch) && !controller.IsCurrentRental(disposeEpoch) &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "Active pool disposal left the Ball MVC rental or observer connected.");
 
                 IPool hierarchyFirstPool = factory.GetPool(hierarchyFirstConfig);
@@ -125,11 +125,13 @@ namespace Framework.Test
                     "Hierarchy-first Ball rent failed.");
                 BallView hierarchyView = hierarchyLease.Value as BallView;
                 Assert(hierarchyView != null, "Hierarchy-first pool did not return a BallView.");
-                BallModel hierarchyModel = hierarchyView.OwnedModel;
-                BallController hierarchyController = hierarchyView.Controller;
+                Assert(controllers.TryGet(hierarchyView, out BallController hierarchyController),
+                    "Registry did not compose a hierarchy-first BallController.");
+                BallModel hierarchyModel = hierarchyController.Model;
                 uint hierarchyEpoch = hierarchyModel.RentalEpoch;
 
-                DestroyImmediate(hierarchyView.gameObject);
+                DestroyAndAssertNoError(hierarchyView.gameObject,
+                    "Hierarchy-first Ball destruction logged an error.");
                 Assert(!hierarchyModel.IsRented && !hierarchyController.IsRented &&
                        !hierarchyModel.IsCurrentRental(hierarchyEpoch) &&
                        !hierarchyController.IsCurrentRental(hierarchyEpoch) &&
@@ -138,6 +140,9 @@ namespace Framework.Test
                 Assert(!hierarchyLease.IsValid && !hierarchyLease.Return() &&
                        !hierarchyController.TryLaunch(hierarchyEpoch, Vector3.right, BallTrajectoryMode.Straight),
                     "A destroyed Ball remained reachable through its lease or controller before pool disposal.");
+                Assert(hierarchyFirstPool.CountAll == 0 && hierarchyFirstPool.CountActive == 0 &&
+                       hierarchyFirstPool.CountInactive == 0 && controllers.BallCount == 0,
+                    "Hierarchy-first Ball destruction left an orphaned pool or registry entry.");
 
                 hierarchyFirstPool.Dispose();
                 Assert(!hierarchyLease.IsValid,
@@ -161,10 +166,12 @@ namespace Framework.Test
                     result.error = (result.error ?? string.Empty) + "\nCleanup: " + exception;
                 }
                 resolver?.Dispose();
+                controllers?.Dispose();
                 if (fixtureRoot != null) Destroy(fixtureRoot);
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
                 if (ballSettings != null) Destroy(ballSettings);
+                if (obstacleSettings != null) Destroy(obstacleSettings);
                 loopDispatcher?.Dispose();
                 if (groundFadeSettings != null) Destroy(groundFadeSettings);
             }
@@ -182,6 +189,22 @@ namespace Framework.Test
         {
             result.assertions++;
             if (!condition) throw new InvalidOperationException(message);
+        }
+
+        private void DestroyAndAssertNoError(GameObject target, string message)
+        {
+            string loggedFailure = null;
+            void CaptureLog(string condition, string stackTrace, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
+                    loggedFailure ??= condition + "\n" + stackTrace;
+            }
+
+            Application.logMessageReceived += CaptureLog;
+            try { DestroyImmediate(target); }
+            finally { Application.logMessageReceived -= CaptureLog; }
+
+            Assert(loggedFailure == null, loggedFailure == null ? message : message + "\n" + loggedFailure);
         }
     }
 }

@@ -4,10 +4,6 @@ using VContainer;
 
 namespace InGame.Level
 {
-    /// <summary>
-    /// Owns the deliberate handoff from authored Blocks to one rented level. It never starts by
-    /// itself: GameFlow or another caller must explicitly request TryStart.
-    /// </summary>
     public sealed class LevelSession : MonoBehaviour
     {
         private LevelSpawner _levelSpawner;
@@ -22,11 +18,7 @@ namespace InGame.Level
             if (_levelSpawner != null) throw new InvalidOperationException("LevelSession was already configured.");
             _levelSpawner = injectedLevelSpawner ?? throw new ArgumentNullException(nameof(injectedLevelSpawner));
         }
-
-        /// <summary>
-        /// Hides authored Blocks only for the attempted runtime handoff. A failed spawn restores
-        /// their exact prior activeSelf state; a successful one intentionally leaves them hidden.
-        /// </summary>
+        
         public bool TryStart(out string failure)
         {
             failure = null;
@@ -60,8 +52,7 @@ namespace InGame.Level
             }
             return false;
         }
-
-        /// <summary>Explicitly returns the runtime level and restores the authored Blocks state captured at start.</summary>
+        
         public void ReturnAll()
         {
             if (_levelSpawner == null) throw new InvalidOperationException("LevelSession requires LevelSpawner injection before returning.");
@@ -76,7 +67,6 @@ namespace InGame.Level
             }
         }
 
-        /// <summary>Explicit reset alias for callers that own a level restart command.</summary>
         public void ResetSession() => ReturnAll();
     }
 }

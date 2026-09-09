@@ -6,6 +6,7 @@ using System.Reflection;
 using Framework.Pool;
 using Framework.Loop;
 using InGame.Config;
+using InGame.DI;
 using InGame.Obstacle;
 using InGame.Presentation;
 using UnityEngine;
@@ -14,10 +15,6 @@ using VContainer.Unity;
 
 namespace Framework.Test
 {
-    /// <summary>
-    /// Isolated Play Mode verification for the Obstacle MVC bundle. It deliberately creates no scene
-    /// object, prefab, physics, HP, destruction, or input dependency.
-    /// </summary>
     public sealed class ObstacleMvcRuntimeProbe : MonoBehaviour
     {
         [Serializable]
@@ -39,9 +36,11 @@ namespace Framework.Test
         private GameObject fixtureRoot;
         private PoolFactory factory;
         private IObjectResolver resolver;
+        private BallConfig ballSettings;
         private ObstacleConfig obstacleSettings;
         private GroundFadeConfig groundFadeSettings;
         private LoopDispatcher loopDispatcher;
+        private WorldObjectControllerRegistry controllers;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -58,6 +57,7 @@ namespace Framework.Test
             result.unityVersion = Application.unityVersion;
             try
             {
+                ballSettings = ScriptableObject.CreateInstance<BallConfig>();
                 obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
                 groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
                 loopDispatcher = new LoopDispatcher();
@@ -67,7 +67,8 @@ namespace Framework.Test
                 builder.RegisterInstance(groundFadeSettings);
                 builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
-                factory = new PoolFactory(container, resolver, true);
+                controllers = new WorldObjectControllerRegistry(ballSettings, obstacleSettings);
+                factory = new PoolFactory(container, resolver, controllers, true);
                 factory.Initialize(false);
 
                 IPool pool = factory.GetPool(config);
@@ -78,11 +79,10 @@ namespace Framework.Test
                 Assert(factory.TryRent(config, args, out PoolLease firstLease), "Initial Obstacle rent failed.");
                 ObstacleView view = firstLease.Value as ObstacleView;
                 Assert(view != null, "Pool did not return an ObstacleView.");
-                ObstacleModel model = view.OwnedModel;
-                ObstacleController controller = view.Controller;
-                Assert(model != null && controller != null, "ObstacleView did not create its Model and Controller bundle.");
+                Assert(controllers.TryGet(view, out ObstacleController controller), "Registry did not compose an ObstacleController.");
+                ObstacleModel model = controller.Model;
                 uint firstEpoch = model.RentalEpoch;
-                Assert(view.Model == model && view.IsObserving &&
+                Assert(controller.IsObserving &&
                        model.IsRented && controller.IsRented && controller.RentalEpoch == firstEpoch &&
                        controller.IsCurrentRental(firstEpoch) && model.IsCurrentRental(firstEpoch) &&
                        model.ObserverCount == 1,
@@ -90,19 +90,19 @@ namespace Framework.Test
 
                 Assert(controller.TryReturn(firstEpoch), "Current ObstacleController return failed.");
                 Assert(!firstLease.IsValid && !model.IsRented && !controller.IsRented &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "Controller return did not detach the Obstacle MVC observation and rental state.");
 
                 Assert(factory.TryRent(config, args, out PoolLease secondLease), "Obstacle re-rent failed.");
-                Assert(ReferenceEquals(secondLease.Value, view) && ReferenceEquals(view.OwnedModel, model) &&
-                       ReferenceEquals(view.Controller, controller),
+                Assert(ReferenceEquals(secondLease.Value, view) && controllers.TryGet(view, out ObstacleController reused) &&
+                       ReferenceEquals(reused, controller),
                     "Obstacle re-rent recreated a View, Model, or Controller instead of reusing the bundle.");
 
                 uint secondEpoch = model.RentalEpoch;
                 Assert(secondEpoch != firstEpoch && model.IsRented && controller.IsRented &&
                        model.IsCurrentRental(secondEpoch) && controller.IsCurrentRental(secondEpoch) &&
                        !model.IsCurrentRental(firstEpoch) && !controller.IsCurrentRental(firstEpoch) &&
-                       model.ObserverCount == 1 && view.IsObserving && view.Model == model,
+                       model.ObserverCount == 1 && controller.IsObserving,
                     "Re-rent did not advance the epoch or restore exactly one observation.");
                 Assert(!firstLease.Return() && !controller.TryReturn(firstEpoch) && secondLease.IsValid &&
                        model.IsCurrentRental(secondEpoch) && controller.IsCurrentRental(secondEpoch) &&
@@ -111,7 +111,7 @@ namespace Framework.Test
 
                 Assert(secondLease.Return(), "Current PoolLease return failed.");
                 Assert(!secondLease.IsValid && !model.IsRented && !controller.IsRented &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "PoolLease return did not detach the Obstacle MVC observation and rental state.");
 
                 Assert(factory.TryRent(config, args, out PoolLease disposeLease),
@@ -120,7 +120,7 @@ namespace Framework.Test
                 pool.Dispose();
                 Assert(!disposeLease.IsValid && !model.IsRented && !controller.IsRented &&
                        !model.IsCurrentRental(disposeEpoch) && !controller.IsCurrentRental(disposeEpoch) &&
-                       model.ObserverCount == 0 && !view.IsObserving && view.Model == null,
+                       model.ObserverCount == 0 && !controller.IsObserving,
                     "Active pool disposal left the Obstacle MVC rental or observer connected.");
 
                 IPool hierarchyFirstPool = factory.GetPool(hierarchyFirstConfig);
@@ -128,8 +128,9 @@ namespace Framework.Test
                     "Hierarchy-first Obstacle rent failed.");
                 ObstacleView hierarchyView = hierarchyLease.Value as ObstacleView;
                 Assert(hierarchyView != null, "Hierarchy-first pool did not return an ObstacleView.");
-                ObstacleModel hierarchyModel = hierarchyView.OwnedModel;
-                ObstacleController hierarchyController = hierarchyView.Controller;
+                Assert(controllers.TryGet(hierarchyView, out ObstacleController hierarchyController),
+                    "Registry did not compose a hierarchy-first ObstacleController.");
+                ObstacleModel hierarchyModel = hierarchyController.Model;
                 uint hierarchyEpoch = hierarchyModel.RentalEpoch;
 
                 DestroyAndAssertNoError(hierarchyView.gameObject,
@@ -141,6 +142,9 @@ namespace Framework.Test
                     "Hierarchy-first destruction left the Obstacle MVC bundle active before pool disposal.");
                 Assert(!hierarchyLease.IsValid && !hierarchyLease.Return(),
                     "A destroyed Obstacle remained reachable through its lease before pool disposal.");
+                Assert(hierarchyFirstPool.CountAll == 0 && hierarchyFirstPool.CountActive == 0 &&
+                       hierarchyFirstPool.CountInactive == 0 && controllers.ObstacleCount == 0,
+                    "Hierarchy-first Obstacle destruction left an orphaned pool or registry entry.");
 
                 hierarchyFirstPool.Dispose();
                 Assert(!hierarchyLease.IsValid,
@@ -154,16 +158,17 @@ namespace Framework.Test
                 AddRequiredGroundFade(invalidLeaseObject, config.Prefab);
                 ObstacleView invalidLeaseView = invalidLeaseObject.AddComponent<ObstacleView>();
                 resolver.InjectGameObject(invalidLeaseObject);
+                controllers.Compose(invalidLeaseView);
                 invalidLeaseView.OnPoolCreated(invalidLeaseView);
-                ObstacleModel invalidLeaseModel = invalidLeaseView.OwnedModel;
-                ObstacleController invalidLeaseController = invalidLeaseView.Controller;
+                Assert(controllers.TryGet(invalidLeaseView, out ObstacleController invalidLeaseController),
+                    "Registry did not compose invalid-lease fixture.");
+                ObstacleModel invalidLeaseModel = invalidLeaseController.Model;
                 bool invalidLeaseRejected = false;
                 try { invalidLeaseView.OnPoolRent(default); }
                 catch (InvalidOperationException) { invalidLeaseRejected = true; }
                 Assert(invalidLeaseRejected, "ObstacleView accepted an invalid PoolLease.");
                 Assert(!invalidLeaseModel.IsRented && !invalidLeaseController.IsRented &&
-                       invalidLeaseModel.ObserverCount == 0 && !invalidLeaseView.IsObserving &&
-                       invalidLeaseView.Model == null,
+                       invalidLeaseModel.ObserverCount == 0 && !invalidLeaseController.IsObserving,
                     "Failed Obstacle rental did not roll back Model, Controller, and View state.");
                 DestroyAndAssertNoError(invalidLeaseView.gameObject,
                     "Failed-rental Obstacle destruction logged an error.");
@@ -176,10 +181,11 @@ namespace Framework.Test
                 AddRequiredGroundFade(neverRentedObject, config.Prefab);
                 ObstacleView neverRentedView = neverRentedObject.AddComponent<ObstacleView>();
                 resolver.InjectGameObject(neverRentedObject);
+                controllers.Compose(neverRentedView);
                 neverRentedView.OnPoolCreated(neverRentedView);
-                Assert(neverRentedView != null && neverRentedView.OwnedModel != null &&
-                       neverRentedView.Controller != null && !neverRentedView.OwnedModel.IsRented &&
-                       !neverRentedView.Controller.IsRented && neverRentedView.OwnedModel.ObserverCount == 0,
+                Assert(controllers.TryGet(neverRentedView, out ObstacleController neverRentedController) &&
+                       !neverRentedController.Model.IsRented && !neverRentedController.IsRented &&
+                       neverRentedController.Model.ObserverCount == 0,
                     "Created-never-rented Obstacle bundle was not safely idle.");
                 DestroyAndAssertNoError(neverRentedView.gameObject,
                     "Created-never-rented Obstacle destruction logged an error.");
@@ -202,9 +208,11 @@ namespace Framework.Test
                     result.error = (result.error ?? string.Empty) + "\nCleanup: " + exception;
                 }
                 resolver?.Dispose();
+                controllers?.Dispose();
                 if (fixtureRoot != null) Destroy(fixtureRoot);
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
+                if (ballSettings != null) Destroy(ballSettings);
                 if (obstacleSettings != null) Destroy(obstacleSettings);
                 loopDispatcher?.Dispose();
                 if (groundFadeSettings != null) Destroy(groundFadeSettings);

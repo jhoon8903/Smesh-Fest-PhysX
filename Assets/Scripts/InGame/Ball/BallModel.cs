@@ -3,16 +3,10 @@ using Framework.Object;
 
 namespace InGame.Ball
 {
-    /// <summary>
-    /// Physics-independent lifetime state for one pooled Ball bundle.
-    /// Unity's Rigidbody owns the runtime Transform and velocity state in the current PhysX slice.
-    /// </summary>
     public sealed class BallModel : ObModel
     {
         public bool IsRented { get; private set; }
         public uint RentalEpoch { get; private set; }
-
-        /// <summary>True only for callbacks that belong to the currently active rental.</summary>
         public bool IsCurrentRental(uint rentalEpoch) => IsRented && rentalEpoch != 0 && rentalEpoch == RentalEpoch;
 
         internal void BeginRental()

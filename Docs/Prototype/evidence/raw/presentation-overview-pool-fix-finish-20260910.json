@@ -1,0 +1,42 @@
+{
+  "id": "presentation-overview-pool-fix-finish-20260910",
+  "stage": "document",
+  "kind": "finish",
+  "actor": "main + helper writer and reader",
+  "task_id": "presentation-overview-update-002",
+  "status": "done",
+  "summary": "Presentation overview regenerated with Controller-owned MVC and separate normal-return versus hierarchy-first-destruction lifecycle paths",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/presentation-overview-pool-fix-validation-20260910.json"
+  ],
+  "metadata": {
+    "recorded_at_kst": "2026-09-10T05:16:37+09:00",
+    "validation_level": "static",
+    "html_parse": "passed",
+    "desktop_browser_visual_review": "passed",
+    "fact_audit": "passed after High build terminology and evidence-boundary corrections",
+    "helpers": [
+      {
+        "role": "html writer",
+        "assigned_model": "gpt-5.6-terra",
+        "reasoning_effort": "medium",
+        "result": "updated the standalone HTML"
+      },
+      {
+        "role": "fact reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "result": "cross-checked code, Config values, and evidence boundaries"
+      }
+    ],
+    "scene_prefab_material_config_edits": false,
+    "unity_play_mode_run": false,
+    "legacy_or_fallback_added": false
+  }
+}

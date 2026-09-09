@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Smesh Fest PhysX — Project Overview</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5c667a;
+      --line: #dce2eb;
+      --line-strong: #b9c5d6;
+      --paper: #f4f6f9;
+      --surface: #ffffff;
+      --navy: #183153;
+      --blue: #316bdf;
+      --blue-soft: #eaf1ff;
+      --green: #23815c;
+      --green-soft: #e9f7f1;
+      --amber: #a86611;
+      --amber-soft: #fff5df;
+      --violet: #7053c6;
+      --violet-soft: #f1edff;
+      --red: #b24b4b;
+      --shadow: 0 8px 28px rgba(24, 49, 83, .07);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      line-height: 1.55;
+      letter-spacing: -.012em;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1440px, calc(100% - 40px));
+      margin: 22px auto 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 10px 4px 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 760;
+      letter-spacing: .02em;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--blue);
+      border-radius: 8px;
+      transform: rotate(7deg);
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      right: -5px;
+      top: -5px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: -14px 20px 0 var(--green);
+    }
+
+    .actions { display: flex; gap: 8px; }
+
+    .action {
+      appearance: none;
+      border: 1px solid var(--line-strong);
+      background: rgba(255,255,255,.85);
+      color: var(--navy);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .action:hover { border-color: var(--blue); color: var(--blue); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.32fr .68fr;
+      min-height: 330px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: clamp(34px, 4.2vw, 62px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(38px, 5vw, 72px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .hero-copy h1 span { color: var(--blue); }
+
+    .lede {
+      max-width: 820px;
+      margin: 22px 0 20px;
+      color: #3e4a60;
+      font-size: clamp(16px, 1.55vw, 21px);
+      line-height: 1.62;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .chip {
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fafbfd;
+      color: #45526a;
+      font-size: 12px;
+      font-weight: 690;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 330px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 62% 28%, rgba(255,255,255,.30), transparent 20%),
+        linear-gradient(145deg, #183153 0%, #265a9c 58%, #316bdf 100%);
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      right: -96px;
+      top: -110px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 84px rgba(255,255,255,.025);
+    }
+
+    .mini-scene {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .mini-stage {
+      position: relative;
+      width: min(85%, 400px);
+      height: 230px;
+      transform: translateY(7px);
+    }
+
+    .ground-line {
+      position: absolute;
+      left: 2%; right: 2%; bottom: 24px;
+      height: 2px;
+      background: rgba(255,255,255,.6);
+      box-shadow: 0 11px 22px rgba(0,0,0,.16);
+    }
+
+    .cannon {
+      position: absolute;
+      left: 8%; bottom: 26px;
+      width: 80px; height: 54px;
+    }
+
+    .cannon::before {
+      content: "";
+      position: absolute;
+      width: 54px; height: 22px;
+      left: 18px; top: 2px;
+      background: #e9f0ff;
+      border-radius: 14px 5px 5px 14px;
+      transform: rotate(-18deg);
+      transform-origin: 8px 11px;
+      box-shadow: 0 6px 12px rgba(0,0,0,.16);
+    }
+
+    .cannon::after {
+      content: "";
+      position: absolute;
+      left: 5px; bottom: 0;
+      width: 50px; height: 30px;
+      border-radius: 16px 16px 5px 5px;
+      background: #96b8ee;
+    }
+
+    .ball-dot {
+      position: absolute;
+      left: 37%; top: 39%;
+      width: 23px; height: 23px;
+      border-radius: 50%;
+      background: #fff4cb;
+      border: 3px solid #f4b547;
+      box-shadow: 0 0 0 8px rgba(255, 220, 129, .12), 0 8px 18px rgba(0,0,0,.18);
+    }
+
+    .trajectory {
+      position: absolute;
+      left: 28%; top: 54%;
+      width: 42%; height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 9px, transparent 9px 16px);
+      transform: rotate(-16deg);
+      transform-origin: left center;
+    }
+
+    .blocks {
+      position: absolute;
+      right: 8%; bottom: 26px;
+      display: grid;
+      grid-template-columns: repeat(3, 28px);
+      gap: 5px;
+      align-items: end;
+    }
+
+    .block {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,.5);
+      border-radius: 5px;
+      background: rgba(199, 225, 255, .84);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 8px 12px rgba(0,0,0,.12);
+    }
+
+    .block:nth-child(1), .block:nth-child(3) { transform: translateY(32px); }
+
+    .visual-label {
+      position: absolute;
+      right: 20px; top: 20px;
+      color: rgba(255,255,255,.75);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .09em;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: clamp(24px, 3vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 4px 18px rgba(24, 49, 83, .045);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(25px, 2.5vw, 36px);
+      line-height: 1.1;
+      letter-spacing: -.035em;
+    }
+
+    .section-intro {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .one-line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 22px 24px;
+      border-left: 5px solid var(--blue);
+      border-radius: 4px 14px 14px 4px;
+      background: var(--blue-soft);
+    }
+
+    .one-line .label {
+      padding-top: 2px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .1em;
+      white-space: nowrap;
+    }
+
+    .one-line p {
+      margin: 0;
+      color: #243b64;
+      font-size: clamp(17px, 1.7vw, 22px);
+      font-weight: 720;
+      line-height: 1.48;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 146px;
+      padding: 16px 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      z-index: 2;
+      right: -15px;
+      top: 58px;
+      display: grid;
+      place-items: center;
+      width: 19px; height: 25px;
+      color: var(--blue);
+      background: var(--surface);
+      font-weight: 900;
+    }
+
+    .step-no {
+      display: inline-grid;
+      place-items: center;
+      width: 26px; height: 26px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      background: var(--navy);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .flow-step strong { display: block; color: var(--navy); font-size: 14px; }
+    .flow-step span { display: block; margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .diagram-wrap {
+      overflow-x: auto;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fbfcfe, #f7f9fc);
+    }
+
+    .arch-svg {
+      display: block;
+      width: 100%;
+      min-width: 1030px;
+      height: auto;
+    }
+
+    .arch-svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", sans-serif; }
+    .arch-svg .lane { fill: #f4f7fb; stroke: #dbe3ee; stroke-width: 1; }
+    .arch-svg .lane-title { fill: #667289; font-size: 12px; font-weight: 750; letter-spacing: .08em; }
+    .arch-svg .node { fill: #fff; stroke: #becbdd; stroke-width: 1.4; }
+    .arch-svg .node-blue { fill: #eaf1ff; stroke: #7ca1e7; }
+    .arch-svg .node-green { fill: #e9f7f1; stroke: #78b89e; }
+    .arch-svg .node-amber { fill: #fff5df; stroke: #d9ad62; }
+    .arch-svg .node-violet { fill: #f1edff; stroke: #a998df; }
+    .arch-svg .t1 { fill: #183153; font-size: 13px; font-weight: 760; }
+    .arch-svg .t2 { fill: #647087; font-size: 10.5px; }
+    .arch-svg .edge { fill: none; stroke: #8795ab; stroke-width: 1.6; marker-end: url(#arrow); }
+    .arch-svg .edge-blue { stroke: #316bdf; stroke-width: 2.1; }
+    .arch-svg .edge-dash { stroke-dasharray: 5 5; }
+    .arch-svg .edge-label { fill: #69758b; font-size: 9.5px; font-weight: 650; }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .subcard {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fff;
+    }
+
+    .subcard h3 {
+      margin: 0 0 14px;
+      color: var(--navy);
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    .trajectory-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .trajectory-card {
+      min-height: 150px;
+      padding: 18px;
+      border-radius: 13px;
+      border: 1px solid var(--line);
+    }
+
+    .trajectory-card.straight { background: var(--blue-soft); border-color: #cbdcff; }
+    .trajectory-card.curve { background: var(--violet-soft); border-color: #ddd3ff; }
+
+    .trajectory-card .mode {
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .trajectory-card p { margin: 8px 0 0; color: #4f5b70; font-size: 12.5px; }
+
+    .formula {
+      display: inline-block;
+      margin-top: 13px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.68);
+      color: #34415a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .state-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 26px;
+      align-items: center;
+      margin: 10px 0 18px;
+    }
+
+    .state {
+      position: relative;
+      padding: 14px 8px;
+      border: 1px solid #c6d1df;
+      border-radius: 12px;
+      text-align: center;
+      background: #f9fbfd;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .state:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -24px;
+      top: 10px;
+      color: var(--blue);
+      font-size: 22px;
+    }
+
+    .state.accent { background: var(--green-soft); border-color: #8dc6ae; }
+
+    .lifecycle-branches {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .lifecycle-branch {
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcfe;
+    }
+
+    .lifecycle-branch.normal { border-left: 3px solid var(--green); }
+    .lifecycle-branch.destroying { border-left: 3px solid var(--amber); }
+    .lifecycle-branch strong { display: block; color: var(--navy); font-size: 13px; }
+    .lifecycle-branch p { margin: 5px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.55; }
+
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .config-table th {
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--line);
+      color: #667289;
+      font-size: 10.5px;
+      letter-spacing: .08em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .config-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e7ebf1;
+      vertical-align: top;
+    }
+
+    .config-table tr:last-child td { border-bottom: 0; }
+    .config-table td:first-child { color: var(--navy); font-weight: 770; white-space: nowrap; }
+    .config-table td:nth-child(2) { color: #445168; }
+    .config-table td:last-child { color: var(--muted); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 128px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfcfe;
+    }
+
+    .metric .value {
+      display: block;
+      color: var(--blue);
+      font-size: clamp(28px, 3vw, 42px);
+      font-weight: 830;
+      letter-spacing: -.05em;
+      line-height: 1;
+    }
+
+    .metric .name { display: block; margin-top: 12px; color: var(--navy); font-size: 13px; font-weight: 760; }
+    .metric .detail { display: block; margin-top: 5px; color: var(--muted); font-size: 11.5px; }
+
+    .build-banner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      margin-top: 14px;
+      padding: 18px 20px;
+      border: 1px solid #a9d5c3;
+      border-radius: 14px;
+      background: var(--green-soft);
+    }
+
+    .build-banner strong { display: block; color: #176345; font-size: 16px; }
+    .build-banner span { color: #4e6a60; font-size: 12.5px; }
+
+    .build-banner .success-pill {
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+
+    .boundaries {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .boundary {
+      padding: 18px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .boundary.confirmed { background: #f4f8ff; }
+    .boundary.limit { background: #fffaf0; border-color: #ead4ac; }
+    .boundary strong { display: block; color: var(--navy); font-size: 13px; }
+    .boundary p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+
+    .roles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .role {
+      padding: 22px;
+      border-radius: 15px;
+      border: 1px solid var(--line);
+    }
+
+    .role.human { background: #fffaf0; border-color: #ead4ac; }
+    .role.ai { background: #f4f8ff; border-color: #cbdcff; }
+    .role-tag { color: var(--amber); font-size: 11px; font-weight: 850; letter-spacing: .08em; }
+    .role.ai .role-tag { color: var(--blue); }
+    .role h3 { margin: 6px 0 12px; color: var(--navy); font-size: 18px; }
+
+    ul.clean {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    ul.clean li {
+      position: relative;
+      padding-left: 17px;
+      margin: 7px 0;
+      color: #515d71;
+      font-size: 13px;
+    }
+
+    ul.clean li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: .64em;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .role.ai li::before { background: var(--blue); }
+
+    .talk-track {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 22px;
+      align-items: start;
+      padding: 28px;
+      color: #fff;
+      border-radius: 17px;
+      background: var(--navy);
+    }
+
+    .talk-time {
+      display: grid;
+      place-items: center;
+      width: 76px; height: 76px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 50%;
+      color: #bcd1f7;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .talk-track p {
+      margin: 0;
+      color: #f5f8ff;
+      font-size: clamp(17px, 1.6vw, 21px);
+      line-height: 1.65;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 6px 0;
+      color: #7a8495;
+      font-size: 11px;
+    }
+
+    .footer strong { color: #5c667a; }
+
+    @media (max-width: 1050px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 260px; }
+      .flow { grid-template-columns: repeat(3, 1fr); }
+      .flow-step:nth-child(3)::after { display: none; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, 1440px); margin-top: 10px; }
+      .topbar { padding: 7px 2px 12px; }
+      .brand { font-size: 12px; }
+      .hero-copy { padding: 30px 24px; }
+      .section { padding: 24px 18px; }
+      .section-head { display: block; }
+      .section-intro { margin-top: 9px; text-align: left; }
+      .one-line { grid-template-columns: 1fr; gap: 6px; }
+      .flow { grid-template-columns: 1fr; }
+      .flow-step { min-height: auto; }
+      .flow-step:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -20px; }
+      .split, .trajectory-grid, .metrics, .boundaries, .roles, .lifecycle-branches { grid-template-columns: 1fr; }
+      .state-flow { grid-template-columns: 1fr; gap: 22px; }
+      .state:not(:last-child)::after { content: "↓"; right: 49%; top: 40px; }
+      .build-banner { grid-template-columns: 1fr; }
+      .talk-track { grid-template-columns: 1fr; }
+      .footer { display: block; }
+      .footer span { display: block; margin-top: 5px; }
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 9mm; }
+      body { background: #fff; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .page { width: 100%; margin: 0; }
+      .topbar { display: none; }
+      .hero, .section { box-shadow: none; break-inside: avoid; }
+      .section { margin-top: 10px; padding: 18px; }
+      .hero { min-height: 250px; }
+      .hero-copy { padding: 28px; }
+      .hero-visual { min-height: 250px; }
+      .flow-step { min-height: 120px; }
+      .arch-svg { min-width: 0; }
+      .diagram-wrap { overflow: visible; }
+      .print-break { break-before: page; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Smesh Fest · Architecture Brief</div>
+      <div class="actions">
+        <button class="action" type="button" onclick="window.print()">PDF / 인쇄</button>
+      </div>
+    </div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Unity Physics Prototype · 2026.09</p>
+        <h1>Smesh Fest<br><span>PhysX</span></h1>
+        <p class="lede">직접 선택한 장애물을 향해 Ball을 발사하고, PhysX 충돌·중력 전환·Fade 반환까지 Controller 소유 MVC와 안전한 Pool 수명으로 연결한 Unity 프로토타입입니다.</p>
+        <div class="chips" aria-label="기술 스택">
+          <span class="chip">Unity 6000.3.10f1</span>
+          <span class="chip">URP 17.3</span>
+          <span class="chip">PhysX / Rigidbody</span>
+          <span class="chip">VContainer</span>
+          <span class="chip">MVC + Observer</span>
+          <span class="chip">Pool + Factory</span>
+          <span class="chip">ScriptableObject</span>
+          <span class="chip">WebGL High · 이전 빌드 근거</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <span class="visual-label">CLICK · LAUNCH · COLLIDE · RETURN</span>
+        <div class="mini-scene">
+          <div class="mini-stage">
+            <div class="trajectory"></div>
+            <div class="cannon"></div>
+            <div class="ball-dot"></div>
+            <div class="blocks">
+              <span class="block"></span><span class="block"></span><span class="block"></span>
+              <span class="block"></span><span class="block"></span><span class="block"></span>
+              <span class="block"></span><span class="block"></span><span class="block"></span>
+            </div>
+            <div class="ground-line"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="loop">
+      <div class="one-line">
+        <span class="label">CORE LOOP</span>
+        <p>Obstacle 직접 클릭 → Cannon Yaw 조준 → Muzzle에서 Pool Ball 발사 → Rigidbody/PhysX 충돌 → Ground Fade → 세대가 일치하는 Lease만 반환</p>
+      </div>
+
+      <div class="flow" aria-label="대표 플레이 흐름">
+        <article class="flow-step"><span class="step-no">01</span><strong>유효 입력</strong><span>Safe Area·UI를 통과한 포인터만 처리</span></article>
+        <article class="flow-step"><span class="step-no">02</span><strong>직접 선택</strong><span>Obstacle Layer의 targetable Collider만 hit</span></article>
+        <article class="flow-step"><span class="step-no">03</span><strong>조준·대여</strong><span>Cannon은 Yaw만 회전, Ball은 Muzzle에서 대여</span></article>
+        <article class="flow-step"><span class="step-no">04</span><strong>PhysX 비행</strong><span>Straight 또는 고정 비행시간 Curve</span></article>
+        <article class="flow-step"><span class="step-no">05</span><strong>충돌 전환</strong><span>Obstacle은 물리 반응, Ground 접촉 시 선택 제외</span></article>
+        <article class="flow-step"><span class="step-no">06</span><strong>Fade·반환</strong><span>정상 경로에서만 현재 Lease를 Pool로 반환</span></article>
+      </div>
+    </section>
+
+    <section class="section" id="architecture">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Dependency Map</p>
+          <h2>실행 의존 구조</h2>
+        </div>
+        <p class="section-intro">화살표는 현재 코드의 직접 호출·주입 관계입니다. Controller만 View와 Model을 알고, Transform·속도·충돌의 런타임 권위는 Rigidbody 하나로 유지합니다.</p>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg class="arch-svg" viewBox="0 0 1160 620" role="img" aria-labelledby="arch-title arch-desc">
+          <title id="arch-title">Smesh Fest PhysX 실행 의존 구조</title>
+          <desc id="arch-desc">ScriptableObject와 씬 저작값, VContainer 및 Controller Registry 조립, 입력과 발사, PhysX 충돌, Fade와 Pool 반환의 연결</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8795ab"></path>
+            </marker>
+          </defs>
+
+          <rect class="lane" x="16" y="16" width="1128" height="112" rx="14"></rect>
+          <text class="lane-title" x="34" y="41">AUTHORING / CONFIG</text>
+          <rect class="lane" x="16" y="144" width="1128" height="130" rx="14"></rect>
+          <text class="lane-title" x="34" y="169">COMPOSITION / LIFETIME</text>
+          <rect class="lane" x="16" y="290" width="1128" height="178" rx="14"></rect>
+          <text class="lane-title" x="34" y="315">COMMAND / PHYSICS</text>
+          <rect class="lane" x="16" y="484" width="1128" height="120" rx="14"></rect>
+          <text class="lane-title" x="34" y="509">RETURN / REUSE</text>
+
+          <g>
+            <rect class="node node-violet" x="45" y="58" width="156" height="50" rx="10"></rect>
+            <text class="t1" x="123" y="79" text-anchor="middle">LevelConfig</text>
+            <text class="t2" x="123" y="96" text-anchor="middle">24 ordered entries</text>
+          </g>
+          <g>
+            <rect class="node node-violet" x="219" y="58" width="156" height="50" rx="10"></rect>
+            <text class="t1" x="297" y="79" text-anchor="middle">PoolConfig</text>
+            <text class="t2" x="297" y="96" text-anchor="middle">Prefab · Min · Max</text>
+          </g>
+          <g>
+            <rect class="node node-violet" x="393" y="58" width="156" height="50" rx="10"></rect>
+            <text class="t1" x="471" y="79" text-anchor="middle">BallConfig</text>
+            <text class="t2" x="471" y="96" text-anchor="middle">Trajectory · CCD · lifetime</text>
+          </g>
+          <g>
+            <rect class="node node-violet" x="567" y="58" width="156" height="50" rx="10"></rect>
+            <text class="t1" x="645" y="79" text-anchor="middle">ObstacleConfig</text>
+            <text class="t2" x="645" y="96" text-anchor="middle">Targetable · Rigidbody</text>
+          </g>
+          <g>
+            <rect class="node node-violet" x="741" y="58" width="156" height="50" rx="10"></rect>
+            <text class="t1" x="819" y="79" text-anchor="middle">PhysXConfig</text>
+            <text class="t2" x="819" y="96" text-anchor="middle">Gravity · ray mask</text>
+          </g>
+          <g>
+            <rect class="node node-violet" x="915" y="58" width="186" height="50" rx="10"></rect>
+            <text class="t1" x="1008" y="79" text-anchor="middle">GroundFadeConfig</text>
+            <text class="t2" x="1008" y="96" text-anchor="middle">Delay · fade seconds</text>
+          </g>
+
+          <g>
+            <rect class="node node-blue" x="60" y="188" width="210" height="62" rx="11"></rect>
+            <text class="t1" x="165" y="212" text-anchor="middle">GameLifetimeScope</text>
+            <text class="t2" x="165" y="231" text-anchor="middle">VContainer Composition Root</text>
+          </g>
+          <g>
+            <rect class="node" x="304" y="188" width="176" height="62" rx="11"></rect>
+            <text class="t1" x="392" y="212" text-anchor="middle">GameFlow</text>
+            <text class="t2" x="392" y="231" text-anchor="middle">Level 성공 후 Loop 시작</text>
+          </g>
+          <g>
+            <rect class="node" x="514" y="188" width="190" height="62" rx="11"></rect>
+            <text class="t1" x="609" y="212" text-anchor="middle">UpdateLoop</text>
+            <text class="t2" x="609" y="231" text-anchor="middle">Update · Fixed · Late 전달</text>
+          </g>
+          <g>
+            <rect class="node node-green" x="738" y="188" width="178" height="62" rx="11"></rect>
+            <text class="t1" x="827" y="212" text-anchor="middle">PoolFactory → Registry</text>
+            <text class="t2" x="827" y="231" text-anchor="middle">clone DI · compose · created 전</text>
+          </g>
+          <g>
+            <rect class="node" x="950" y="188" width="152" height="62" rx="11"></rect>
+            <text class="t1" x="1026" y="212" text-anchor="middle">LevelSpawner</text>
+            <text class="t2" x="1026" y="231" text-anchor="middle">전체 대여 / rollback</text>
+          </g>
+
+          <g>
+            <rect class="node node-blue" x="45" y="337" width="170" height="62" rx="11"></rect>
+            <text class="t1" x="130" y="361" text-anchor="middle">WorldPointerInput</text>
+            <text class="t2" x="130" y="380" text-anchor="middle">Safe Area · UI filter</text>
+          </g>
+          <g>
+            <rect class="node node-blue" x="248" y="337" width="180" height="62" rx="11"></rect>
+            <text class="t1" x="338" y="361" text-anchor="middle">Obstacle Raycast</text>
+            <text class="t2" x="338" y="380" text-anchor="middle">직접 Collider + targetable</text>
+          </g>
+          <g>
+            <rect class="node node-blue" x="461" y="337" width="160" height="62" rx="11"></rect>
+            <text class="t1" x="541" y="361" text-anchor="middle">ShotDirector</text>
+            <text class="t2" x="541" y="380" text-anchor="middle">한 발의 조정자</text>
+          </g>
+          <g>
+            <rect class="node node-amber" x="654" y="316" width="170" height="62" rx="11"></rect>
+            <text class="t1" x="739" y="340" text-anchor="middle">Cannon Controller</text>
+            <text class="t2" x="739" y="359" text-anchor="middle">owns View + Model · Yaw</text>
+          </g>
+          <g>
+            <rect class="node node-amber" x="654" y="390" width="170" height="62" rx="11"></rect>
+            <text class="t1" x="739" y="414" text-anchor="middle">Launch Velocity</text>
+            <text class="t2" x="739" y="433" text-anchor="middle">Straight / Curve(T fixed)</text>
+          </g>
+          <g>
+            <rect class="node node-green" x="857" y="337" width="190" height="62" rx="11"></rect>
+            <text class="t1" x="952" y="361" text-anchor="middle">Ball Controller</text>
+            <text class="t2" x="952" y="380" text-anchor="middle">owns View + Model · lease</text>
+          </g>
+          <g>
+            <rect class="node node-amber" x="857" y="410" width="190" height="42" rx="10"></rect>
+            <text class="t1" x="952" y="436" text-anchor="middle">Rigidbody / PhysX</text>
+          </g>
+
+          <g>
+            <rect class="node node-green" x="120" y="530" width="195" height="52" rx="11"></rect>
+            <text class="t1" x="217" y="552" text-anchor="middle">Obstacle Controller</text>
+            <text class="t2" x="217" y="569" text-anchor="middle">owns View + Model · Ground</text>
+          </g>
+          <g>
+            <rect class="node node-green" x="385" y="530" width="195" height="52" rx="11"></rect>
+            <text class="t1" x="482" y="552" text-anchor="middle">GroundFadeReturn</text>
+            <text class="t2" x="482" y="569" text-anchor="middle">Wait → alpha → Return</text>
+          </g>
+          <g>
+            <rect class="node node-green" x="650" y="530" width="195" height="52" rx="11"></rect>
+            <text class="t1" x="747" y="552" text-anchor="middle">PoolLease.Return</text>
+            <text class="t2" x="747" y="569" text-anchor="middle">현재 epoch만 허용</text>
+          </g>
+          <g>
+            <rect class="node node-green" x="915" y="530" width="165" height="52" rx="11"></rect>
+            <text class="t1" x="997" y="552" text-anchor="middle">Inactive Pool</text>
+            <text class="t2" x="997" y="569" text-anchor="middle">reset · reuse</text>
+          </g>
+
+          <path class="edge edge-dash" d="M123 108 V158 H1026 V188"></path>
+          <path class="edge edge-dash" d="M297 108 V143 H827 V188"></path>
+          <path class="edge edge-dash" d="M471 108 V173 H165 V188"></path>
+          <path class="edge edge-dash" d="M645 108 V158 H165 V188"></path>
+          <path class="edge edge-dash" d="M819 108 V143 H165 V188"></path>
+          <path class="edge edge-dash" d="M1008 108 V173 H165 V188"></path>
+          <path class="edge edge-blue" d="M270 219 H304"></path>
+          <path class="edge edge-blue" d="M480 219 H514"></path>
+          <path class="edge" d="M270 230 C390 285 60 276 130 337"></path>
+          <path class="edge" d="M704 219 H738"></path>
+          <path class="edge" d="M916 219 H950"></path>
+          <path class="edge edge-blue" d="M215 368 H248"></path>
+          <path class="edge edge-blue" d="M428 368 H461"></path>
+          <path class="edge" d="M621 355 L654 347"></path>
+          <path class="edge" d="M621 382 L654 421"></path>
+          <path class="edge" d="M824 347 L857 355"></path>
+          <path class="edge edge-blue" d="M824 421 C840 421 840 382 857 382"></path>
+          <path class="edge edge-blue" d="M952 399 V410"></path>
+          <path class="edge" d="M857 431 C690 470 350 470 217 530"></path>
+          <path class="edge" d="M952 452 C780 496 590 496 482 530"></path>
+          <path class="edge edge-blue" d="M580 556 H650"></path>
+          <path class="edge edge-blue" d="M845 556 H915"></path>
+          <path class="edge edge-dash" d="M997 530 C1110 478 1120 292 827 250"></path>
+          <text class="edge-label" x="1078" y="412" text-anchor="middle">재대여</text>
+        </svg>
+      </div>
+      <p class="note" style="margin-top:12px"><strong>MVC 방향:</strong> Pool clone은 DI 직후, <code>OnPoolCreated</code> 전에 Registry가 View에 Model과 Controller를 한 번 조립합니다. Controller만 View와 Model을 참조하고 Model 변경 관찰을 담당합니다. View는 Unity 활성/파괴·Pool·충돌 이벤트만 발행하며 Model/Controller를 참조하지 않습니다. Model도 View/Controller를 참조하지 않습니다. 구형 호환 또는 fallback 없이 하나의 계약으로 구성했습니다.</p>
+    </section>
+
+    <section class="section print-break" id="physics">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Authority & Lifecycle</p>
+          <h2>물리 권위와 재사용 경계</h2>
+        </div>
+        <p class="section-intro">Model은 위치·속도를 복제하지 않습니다. 한 번의 대여를 epoch로 식별해 이전 사용의 늦은 콜백이 새 Ball/Obstacle을 건드리지 못하게 합니다.</p>
+      </div>
+
+      <div class="split">
+        <article class="subcard">
+          <h3>두 가지 궤적, 하나의 Rigidbody 권위</h3>
+          <div class="trajectory-grid">
+            <div class="trajectory-card straight">
+              <span class="mode">Straight</span>
+              <p>Muzzle→hit point 방향으로 일정 속도로 비행합니다. 처음에는 중력을 OFF로 두고, 직접 Obstacle 충돌 또는 world Z 경계 통과 시 ON으로 전환합니다.</p>
+              <span class="formula">v = normalize(target − muzzle) × speed</span>
+            </div>
+            <div class="trajectory-card curve">
+              <span class="mode">Curve · fixed time</span>
+              <p>Config의 고정 비행시간 T로 초기속도를 계산하고, 발사 순간부터 동일한 중력을 적용합니다.</p>
+              <span class="formula">v = Δp / T − ½gT</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="subcard">
+          <h3>Pool 객체 한 번의 생애</h3>
+          <div class="state-flow" aria-label="풀 상태 흐름">
+            <div class="state">Prewarm</div>
+            <div class="state accent">Rent</div>
+            <div class="state accent">Active</div>
+            <div class="state">Return</div>
+            <div class="state">Inactive</div>
+          </div>
+          <div class="lifecycle-branches" aria-label="정상 반환과 계층 선파괴의 분기">
+            <div class="lifecycle-branch normal"><strong>정상 반환 · 기존 계약 유지</strong><p>현재 lease 검증·version 무효화 → <code>OnPoolReturn</code> → 상태/표현 초기화 → Pool root 재부모화 → inactive 보관 순으로 처리합니다. MinPool을 남기고 오래된 비활성 재고만 정리합니다.</p></div>
+            <div class="lifecycle-branch destroying"><strong>계층 선파괴 · 신규 방어 분기</strong><p><code>OnDestroy</code>가 먼저면 현재 Pool entry와 version만 무효화·제거합니다. <code>OnPoolReturn</code>, 재부모화, 이중 <code>Destroy</code>는 실행하지 않습니다.</p></div>
+          </div>
+          <p class="note" style="margin-top:12px"><strong>의미:</strong> Unity가 이미 파괴 중인 GameObject를 소유합니다. 따라서 선파괴는 재사용 경로가 아니라 씬 종료 방어 경로이며, Pool count도 해당 엔트리 제거 시점에 즉시 정합성을 회복합니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="config">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Data-driven Tuning</p>
+          <h2>조정값의 위치</h2>
+        </div>
+        <p class="section-intro">플레이 중 Inspector 실험 뒤에도 값을 보존할 수 있도록 실행 규칙을 ScriptableObject로 분리했습니다.</p>
+      </div>
+
+      <table class="config-table">
+        <thead><tr><th>Authority</th><th>현재 핵심값</th><th>런타임 소비자</th></tr></thead>
+        <tbody>
+          <tr><td>BallConfig</td><td>Straight · speed 15 · gravity Z 0 · lifetime 3s · mass 1.5 · Continuous Dynamic</td><td>ShotDirector · BallController</td></tr>
+          <tr><td>ObstacleConfig</td><td>targetable on · mass 1.7 · linear damping 1 · Continuous</td><td>ObstacleController · Rigidbody 설정</td></tr>
+          <tr><td>PhysXConfig</td><td>gravity (0, −9.81, 0) · ray 100 · Obstacle Layer 8 only</td><td>ObstacleTargetRaycaster · ShotDirector</td></tr>
+          <tr><td>GroundFadeConfig</td><td>Ground 충돌 후 1.0s 대기 · 0.5s Fade</td><td>Ball/Cube GroundFadeReturn</td></tr>
+          <tr><td>PoolConfig</td><td>Ball 3–7 · Cube 1–100 · 비활성 재고 정리 시간</td><td>PoolFactory · LevelConfig · ShotDirector</td></tr>
+          <tr><td>Level1</td><td>Cube 24개 · 순서와 local position / rotation / scale</td><td>LevelSpawner → Runtime Root</td></tr>
+          <tr><td>Scene-authored Cannon</td><td>World-Yaw only · barrel reference · muzzle offset (0, .16, 0)</td><td>CannonView · CannonHead</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:12px">현재 실행 경로에서는 <code>CannonView</code>의 씬 저작 muzzle 값을 사용하며, <code>CannonConfig.asset</code>은 연결되어 있지 않습니다.</p>
+    </section>
+
+    <section class="section" id="evidence">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Evidence</p>
+          <h2>확인된 결과</h2>
+        </div>
+        <p class="section-intro">아래 수치는 기능별 당시 기록이며, R-024와 계층 선파괴 분기 이후의 최신 실행 근거와는 분리해 제시합니다.</p>
+      </div>
+
+      <div class="metrics">
+        <article class="metric"><span class="value">66</span><span class="name">과거 Pool Play Mode assertions</span><span class="detail">현 callback/선파괴 회귀 전의 역사적 결과</span></article>
+        <article class="metric"><span class="value">58</span><span class="name">과거 MVC Play Mode assertions</span><span class="detail">R-024 이전 View-owned 구조 결과</span></article>
+        <article class="metric"><span class="value">19 / 25</span><span class="name">과거 Ball / Obstacle assertions</span><span class="detail">Registry 기반 정정본은 별도 재검증 대상</span></article>
+        <article class="metric"><span class="value">대기</span><span class="name">최신 정정본 Play Mode</span><span class="detail">새 Probe·실제 Game·Pool 회귀 재확인 필요</span></article>
+      </div>
+
+      <div class="build-banner">
+        <div><strong>2026-09-10 기준 · Managed Stripping Level=High WebGL 빌드 성공</strong><span>276초 동안 빌드해 WebAssembly 산출물을 생성했으며, R-024와 계층 선파괴 개선 전 버전입니다.</span></div>
+        <span class="success-pill">HISTORICAL</span>
+      </div>
+
+      <div class="boundaries">
+        <div class="boundary confirmed"><strong>현재 정적 근거</strong><p>Controller 소유 MVC는 solution·Unity Editor 컴파일을 통과했습니다. 계층 선파괴 Pool 분리는 solution build error 0과 독립 검토 P0/P1 없음으로 확인했으며, 기존 MCPForUnity warning 4건은 이번 변경과 분리해 관리합니다.</p></div>
+        <div class="boundary limit"><strong>추가 런타임 검증</strong><p>MVC·Ball·Obstacle·Pool·PhysX·Click·Level Probe와 실제 Game은 정정 후 아직 재실행하지 않았습니다. Managed Stripping Level=High WebGL 빌드와 Android IL2CPP/AOT·기기·성능 측정도 추가 확인이 필요합니다.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="roles">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Collaboration</p>
+          <h2>사람과 AI의 역할</h2>
+        </div>
+        <p class="section-intro">Daniel의 결정·저작 영역과 AI의 구현·검토 지원 범위를 구분해 제시합니다.</p>
+      </div>
+
+      <div class="roles">
+        <article class="role human">
+          <span class="role-tag">DANIEL · PRODUCT / UNITY AUTHORITY</span>
+          <h3>방향과 실제 게임 결과</h3>
+          <ul class="clean">
+            <li>10개 아키텍처 기준과 플레이 요구 결정</li>
+            <li>Scene·Prefab·Material·Rigidbody·Collider 저작</li>
+            <li>Config 수치 조정, Level Bake, 실제 조작감 확인</li>
+            <li>실패 화면과 런타임 관측을 바탕으로 요구 정정</li>
+          </ul>
+        </article>
+        <article class="role ai">
+          <span class="role-tag">AI · IMPLEMENTATION / REVIEW SUPPORT</span>
+          <h3>작은 단위의 구현과 증거화</h3>
+          <ul class="clean">
+            <li>중앙 Loop·DI·Pool·MVC 수명 코드 연결</li>
+            <li>PhysX 발사·중력·Layer·Fade 반환 구현 보조</li>
+            <li>격리 Probe와 정적 검토로 실패 원인 좁히기</li>
+            <li>결정·검증·한계를 재개 가능한 문서로 기록</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="talk">
+      <div class="talk-track">
+        <div class="talk-time">30초<br>설명</div>
+        <p>“이 프로젝트는 선택 가능한 Obstacle Collider만 입력으로 받고, 저작된 Cannon 형태를 유지한 채 Y축으로 조준합니다. Ball은 Muzzle에서 Pool로 대여되며, Controller가 View와 Model의 흐름을 조정합니다. 위치와 속도는 Model에 복제하지 않고 Rigidbody와 PhysX가 관리합니다. 정상 반환과 계층 선파괴를 분리해 Pool 재사용과 씬 종료 시 정합성을 유지하도록 설계했습니다. WebGL 빌드·Play Mode 결과와 최신 구조 수정의 정적 검증은 시점별로 구분해 기록했습니다.”</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <strong>Smesh Fest PhysX · Presentation Overview</strong>
+      <span>Source: current project code, serialized Config assets, workflow evidence, Unity Editor build log · 2026-09-10 KST</span>
+    </footer>
+  </main>
+</body>
+</html>

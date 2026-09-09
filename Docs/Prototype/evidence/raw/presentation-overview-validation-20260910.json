@@ -1,0 +1,26 @@
+{
+  "recordedAtKst": "2026-09-10",
+  "document": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html",
+  "checks": {
+    "htmlParser": "pass",
+    "duplicateIds": [],
+    "externalDependencies": [],
+    "sectionCount": 7,
+    "inlineSvgCount": 1,
+    "linkedProjectDocumentsExist": true,
+    "desktopBrowserVisualReview": "pass",
+    "responsiveCssPresent": true,
+    "a4LandscapePrintCssPresent": true
+  },
+  "contentBasis": [
+    "current runtime source code",
+    "serialized Config assets",
+    "prototype workflow evidence",
+    "Unity Editor WebGL build log"
+  ],
+  "reviewNotes": [
+    "Hero, six-step loop, dependency diagram, authority and lifecycle cards, evidence, roles, and talk track are readable in the in-app browser.",
+    "CannonConfig is explicitly marked as not connected to the current runtime path; CannonView scene-authored muzzle data is shown as the active authority.",
+    "Historical runtime assertions are labeled as per-work-unit evidence rather than a final all-tests rerun."
+  ]
+}

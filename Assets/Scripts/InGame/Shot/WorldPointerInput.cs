@@ -4,6 +4,7 @@ using Framework.Loop;
 using Framework.Pool;
 using InGame.Cannon;
 using InGame.Config;
+using InGame.DI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -12,7 +13,6 @@ using VContainer;
 
 namespace InGame.Shot
 {
-    /// <summary>Scene adapter that polls one pointer press through the central UpdateLoop.</summary>
     [DisallowMultipleComponent]
     public sealed class WorldPointerInput : MonoBehaviour
     {
@@ -26,6 +26,7 @@ namespace InGame.Shot
         private ILoopEvents _loopEvents;
         private ShotDirector _director;
         private PhysXConfig _physXSettings;
+        private WorldObjectControllerRegistry _controllers;
         private PointerEventData _pointerEventData;
         private EventSystem _pointerEventSystem;
         private bool _subscribed;
@@ -34,28 +35,23 @@ namespace InGame.Shot
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(PoolFactory poolFactory, ILoopEvents events, BallConfig ballSettings,
-            PhysXConfig physXSettings)
+            PhysXConfig physXSettings, WorldObjectControllerRegistry controllers)
         {
-            if (_director != null || _loopEvents != null)
-                throw new InvalidOperationException("WorldPointerInput was already injected.");
-            if (worldCamera == null || cannon == null || ballPool == null)
-                throw new InvalidOperationException(
-                    "WorldPointerInput requires Camera, Cannon, and Ball Pool references.");
-            if (ballSettings == null || physXSettings == null)
-                throw new InvalidOperationException("WorldPointerInput requires BallConfig and PhysXConfig injection.");
+            if (_director != null || _loopEvents != null) throw new InvalidOperationException("WorldPointerInput was already injected.");
+            if (worldCamera == null || cannon == null || ballPool == null) throw new InvalidOperationException("WorldPointerInput requires Camera, Cannon, and Ball Pool references.");
+            if (ballSettings == null || physXSettings == null) throw new InvalidOperationException("WorldPointerInput requires BallConfig and PhysXConfig injection.");
             _loopEvents = events ?? throw new ArgumentNullException(nameof(events));
             _physXSettings = physXSettings;
-            _director = new ShotDirector(poolFactory, ballPool, cannon, ballParent, ballSettings, physXSettings);
+            _controllers = controllers ?? throw new ArgumentNullException(nameof(controllers));
+            _director = new ShotDirector(poolFactory, ballPool, cannon, ballParent, ballSettings,
+                physXSettings, controllers);
             Subscribe();
         }
 
-        /// <summary>Raycasts and fires a supplied point; UI filtering belongs to the live pointer adapter.</summary>
         public bool TryFireScreenPoint(Vector2 screenPoint)
         {
-            return _director != null
-                   && ObstacleTargetRaycaster.TryGetTarget(worldCamera, screenPoint, _physXSettings,
-                       out _, out Vector3 target)
-                   && _director.TryFire(target);
+            return _director != null && ObstacleTargetRaycaster.TryGetTarget(worldCamera, screenPoint,
+                _physXSettings, _controllers, out _, out Vector3 target) && _director.TryFire(target);
         }
 
         private void OnEnable() => Subscribe();
@@ -68,6 +64,7 @@ namespace InGame.Shot
             _director?.Dispose();
             _director = null;
             _physXSettings = null;
+            _controllers = null;
             _pointerEventData = null;
             _pointerEventSystem = null;
             _uiHits.Clear();

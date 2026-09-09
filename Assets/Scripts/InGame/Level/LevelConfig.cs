@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace InGame.Level
 {
-    /// <summary>Immutable-at-runtime authoring data for one ordered obstacle layout.</summary>
     [CreateAssetMenu(menuName = "Smesh Fest/Level Config")]
     public sealed class LevelConfig : ScriptableObject
     {
@@ -25,15 +24,12 @@ namespace InGame.Level
 
         [SerializeField] private Entry[] entries = Array.Empty<Entry>();
 
-        public int Count => entries != null ? entries.Length : 0;
+        public int Count => entries?.Length ?? 0;
         public Entry GetEntry(int index)
         {
-            if (entries == null || index < 0 || index >= entries.Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            if (entries == null || index < 0 || index >= entries.Length) throw new ArgumentOutOfRangeException(nameof(index));
             return entries[index];
         }
-
-        /// <summary>Checks serialized content only. It never substitutes missing data.</summary>
         public void Validate()
         {
             if (entries == null || entries.Length == 0)
@@ -43,14 +39,11 @@ namespace InGame.Level
             for (int i = 0; i < entries.Length; i++)
             {
                 Entry entry = entries[i];
-                if (entry == null)
-                    throw new InvalidOperationException($"LevelConfig entry {i} is missing.");
-                if (entry.PoolConfig == null)
-                    throw new InvalidOperationException($"LevelConfig entry {i} requires a PoolConfig.");
+                if (entry == null) throw new InvalidOperationException($"LevelConfig entry {i} is missing.");
+                if (entry.PoolConfig == null) throw new InvalidOperationException($"LevelConfig entry {i} requires a PoolConfig.");
 
                 entry.PoolConfig.Validate();
-                if (!IsFinite(entry.LocalPosition))
-                    throw new InvalidOperationException($"LevelConfig entry {i} has a non-finite local position.");
+                if (!IsFinite(entry.LocalPosition)) throw new InvalidOperationException($"LevelConfig entry {i} has a non-finite local position.");
                 float rotationMagnitude = SqrMagnitude(entry.LocalRotation);
                 if (!IsFinite(entry.LocalRotation) || rotationMagnitude < 0.999f
                     || rotationMagnitude > 1.001f)
@@ -65,9 +58,7 @@ namespace InGame.Level
 
             foreach (KeyValuePair<PoolConfig, int> required in requiredByPool)
             {
-                if (required.Value > required.Key.MaxPool)
-                    throw new InvalidOperationException(
-                        $"LevelConfig requires {required.Value} rentals from '{required.Key.name}', but its PoolConfig maximum is {required.Key.MaxPool}.");
+                if (required.Value > required.Key.MaxPool) throw new InvalidOperationException($"LevelConfig requires {required.Value} rentals from '{required.Key.name}', but its PoolConfig maximum is {required.Key.MaxPool}.");
             }
         }
 

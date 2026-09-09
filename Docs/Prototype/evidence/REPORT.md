@@ -1,7 +1,7 @@
 <!-- prototype-workflow:generated:v1 -->
 # Smesh-Fest-PhysX 협업 제작 기록
 
-초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 98개
+초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 107개
 
 이 문서는 기록 명령을 호출할 때 자동 갱신됩니다. 모든 시각은 기록기가 관측한 UTC입니다. 호출하지 않은 작업은 수집하지 않습니다.
 
@@ -11,8 +11,8 @@
 
 | 수준 | 이벤트 수 | 의미 |
 |---|---:|---|
-| 미검증 | 31 | 미실행·계획·근거 미제출 |
-| 정적 확인 | 53 | 코드·설정·문서 등 정적 확인 |
+| 미검증 | 34 | 미실행·계획·근거 미제출 |
+| 정적 확인 | 59 | 코드·설정·문서 등 정적 확인 |
 | 실행 확인 | 14 | 실제로 실행한 테스트·플레이 확인 |
 | 실기기 확인 | 0 | 실기기에서 실행한 확인 |
 
@@ -48,8 +48,11 @@
 | ground-fade-visual-fix-009 | 2026-09-09T16:12:51.275264Z | 2026-09-09T16:33:24.823734Z | 1233.548 |
 | ground-fade-mpb-shadow-010 | 2026-09-09T16:55:25.125484Z | 2026-09-09T16:59:45.727814Z | 260.602 |
 | ground-fade-shadow-011 | 2026-09-09T17:02:40.161946Z | 2026-09-09T17:06:22.094979Z | 221.933 |
+| presentation-overview-001 | 2026-09-09T17:45:13.076814Z | 2026-09-09T18:01:24.415392Z | 971.339 |
+| mvc-controller-ownership-012 | 2026-09-09T18:29:23.965316Z | 2026-09-09T19:48:47.384790Z | 4763.419 |
+| presentation-overview-update-002 | 2026-09-09T20:13:09.487086Z | 2026-09-09T20:17:56.372758Z | 286.886 |
 
-시작·종료 짝이 없거나 중복되어 시간 계산에서 제외한 이벤트: 3개.
+시작·종료 짝이 없거나 중복되어 시간 계산에서 제외한 이벤트: 5개.
 
 ## 단계별 기록
 
@@ -587,6 +590,14 @@
   - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Materials/Cube_GroundFade.mat>): 기록 시 파일 없음
   - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): 기록 시 파일 없음
   - 추가 기록: {"confirmed_cause":"URP BaseShaderGUI disables ShadowCaster whenever built-in Lit is Transparent","custom_shader":false,"fallback":false,"observed_by_user":"Ball and Cube still cast no shadow in Play Mode","scope":"GroundFadeReturn runtime material pass activation only"}
+- **Controller만 View와 Model을 알고 View와 Model은 서로 및 Controller를 모르는 MVC 의존 방향으로 리팩터링을 시작**
+  - 기록: 2026-09-09T18:29:23.965316Z · 담당: Daniel + Main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `mvc-controller-ownership-start-20260910` · 작업: `mvc-controller-ownership-012`
+  - [ObController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs>): SHA256 `ee535d9eca47a6403c73f068807a6eadb24d6cc44368cd30a48697632ba2b39d` · 158 bytes
+  - [ObView.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs>): SHA256 `ea3559cecb96be0ce30d5ba3737298ffb0b434e528f9d2370c84e9042c4ce6cf` · 4298 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `030350628bcbf1d671a09f16e89facae8c0b73e59ca3a2e777e494e53c0305f7` · 48607 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `6760acdfb10640be45fb64deb6a6bd6d7e685edf59bf4a25d1425ddf04e4ea3c` · 42817 bytes
+  - 추가 기록: {"ai_role":"Framework와 Ball, Obstacle, Cannon 조립 및 관련 Probe 리팩터링, 정적 검증과 기록","context_mode":"none; 프로젝트 절대 경로, 사용자 결정, 지정 질문만 전달","escalation_count":0,"fallback":false,"helpers":[{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","role":"reader","scope":"현재 소비자와 최소 조립 위치 확인"},{"assigned_model":"gpt-5.6-sol","reasoning_effort":"high","role":"reviewer","scope":"Pool 수명과 stale epoch 보존 설계 검토"}],"human_role":"MVC 의존 방향 확정 및 완료 후 Unity 컴파일과 대표 플레이 확인","preserve":"Scene, Prefab, Material, ParticleSystem, Importer 및 사용자 수동값","scope":"Controller -&gt; View 및 Model; View와 Model은 서로와 Controller를 참조하지 않음","usage":null}
 
 ### 5. 리뷰
 
@@ -799,6 +810,38 @@
   - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Docs/Prototype/REVIEW.md>): 기록 시 파일 없음
   - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Docs/HANDOFF.md>): 기록 시 파일 없음
   - 추가 기록: {"custom_shader":false,"fallback":false,"fix":"GroundFadeReturn.OnPoolCreated enables ShadowCaster on the configured shared fade Material and fails immediately if it remains disabled","human_role":"Play Mode에서 Ball과 Cube가 Ground에 그림자를 만드는지 재확인","material_yaml_removed":false,"play_mode_run":false,"root_cause":"URP 17.3 BaseShaderGUI forces built-in Lit Transparent materials ShadowCaster pass off during material validation","unity_compile":"Unity 6000.3.10f1 compile idle","unity_console":"errors 0","unity_script_diagnostics":"warnings 0, errors 0"}
+- **Controller-owned MVC refactor and comprehensive validation-probe port completed at static verification level**
+  - 기록: 2026-09-09T19:48:47.384790Z · 담당: Main + helper implementation and review · 종류: finish · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `mvc-controller-ownership-static-20260910` · 작업: `mvc-controller-ownership-012`
+  - [ObController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs>): SHA256 `39b203cd61d8cde8800ccd76eae872858e7537b99fdd1144088aa5afdd0c16b2` · 4830 bytes
+  - [ObView.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs>): SHA256 `05b347f0f980a2355ab053c04ec447f9c0ad0be3da14f20b39205e57f59c3154` · 966 bytes
+  - [IPoolObjectComposer.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolObjectComposer.cs>): SHA256 `c8e5c0b7a4e2dc4d30d7da91e3197e91e6c93a2f3ab091fbab52913006f82ba8` · 121 bytes
+  - [PoolFactory.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs>): SHA256 `95d91066f10c7e84b6ce21739d9dd23c513886d49f039d67823233544cf327df` · 8735 bytes
+  - [WorldObjectControllerRegistry.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/DI/WorldObjectControllerRegistry.cs>): SHA256 `2f9443e064813c295c18b0d51e6e7d7da790f04d29bf6dbe4112472f2c16a757` · 7587 bytes
+  - [BallController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs>): SHA256 `e1ce2ba248c59d633bfd252f80bfdc34f6cedaefba27925e9c3a63f0c231d405` · 8616 bytes
+  - [ObstacleController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs>): SHA256 `df65a9d604435defb495e1cffcfa960c67c41eec4905e75064b51d6f250f711f` · 6445 bytes
+  - [CannonController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs>): SHA256 `229bfbb4a31a71e6692b6aa376eb771aa170757ad6179bbdad6fa67e14b4872b` · 1110 bytes
+  - [MvcRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/MvcRuntimeProbe.cs>): SHA256 `387e53a8081776c719d4aa8f433da1096f822e12fceb7694debaac34c2060776` · 25902 bytes
+  - [PhysXRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PhysXRuntimeProbe.cs>): SHA256 `4da371ec3f46db9c42e0c8a8cfe7c9606e6caac63fe768fd0a3757fea172c46b` · 31099 bytes
+  - [ClickLaunchRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs>): SHA256 `5bbeec1c665fbfb789a9d37f580960ab2710565661d1f8a76a6ca2e4a4d271a3` · 24470 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `ee23db4d92e5e12fe6f156ce507428739f326cc4acca15d4ed91d87d45450d62` · 46987 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `beaa84587ae3d52179adb60bbc4966e8e9c454379b0600de7c62849b3ad27b8b` · 45848 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `cef2d118daa46c9a2473edc4bf0759e94b067ce0415267efe1bdf25b4b86092c` · 74535 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `dfd5f69b65d716c26397d79d7afb4249b407f7e80295043f37f5f16e820d7b0f` · 34330 bytes
+  - 추가 기록: {"dotnet_errors":0,"dotnet_solution_build":"passed","dotnet_warning_scope":"Pre-existing MCPForUnity System.Net.Http and System.IO.Compression assembly version conflicts","dotnet_warnings":4,"forbidden_dependency_search_hits":0,"global_diff_check":"outside-scope pre-existing trailing whitespace remains in PoolConfig and Level files","helpers":[{"assigned_model":"gpt-5.6-terra","reasoning_effort":"medium","result":"rework required because compatibility-disabled legacy probe code and reduced coverage were not accepted","role":"initial probe migration"},{"assigned_model":"gpt-5.6-sol","reasoning_effort":"high","result":"comprehensive port completed without legacy or fallback paths","role":"full probe port"},{"assigned_model":"gpt-5.6-sol","reasoning_effort":"high","result":"construction leak, registry-first disposal, and Cannon rollback edges reviewed; final P0/P1 none","role":"production lifecycle review"}],"high_webgl_build_after_refactor":false,"legacy_or_fallback_added":false,"outcome":"Static implementation complete; Daniel Unity Play Mode and actual Game validation pending","planned_probe_assertions":{"click_launch":39,"mvc":62,"physx":66},"play_mode_run":false,"production_review":"No remaining P0 or P1 correctness or lifecycle issue found after Cannon rollback fix","recorded_at_kst":"2026-09-10T04:45:48+09:00","scene_prefab_material_config_edits":false,"scoped_diff_check":"passed","unity_editor_compile":"passed at 2026-09-10 04:36 KST with Tundra build success and domain reload"}
+- **Unity hierarchy-first destruction now detaches the current pooled value without reparenting a GameObject that is already being destroyed**
+  - 기록: 2026-09-09T20:05:42.760224Z · 담당: Main + helper review · 종류: finish · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `pool-destroying-parent-fix-static-20260910` · 작업: `pool-destroying-owner-detach-013`
+  - [ObView.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs>): SHA256 `0432221a34d1ea188cb9f00fdce038fa0ad668b17c506bee35216053d52a5af7` · 1017 bytes
+  - [PoolLease.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs>): SHA256 `567b299b098656f8801c891dd351a4321676ab0459b7ff8652397208b91e2367` · 849 bytes
+  - [Pool.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs>): SHA256 `809eb28a89bc9d60150afe47f14e7784514889d116c818d2a61aaa619699431a` · 22079 bytes
+  - [BallController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs>): SHA256 `c25b6bd07def303438080b7ced7598bf85c538eb2cc44f44226a71f156e9a585` · 8753 bytes
+  - [ObstacleController.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs>): SHA256 `ced4e746afee46568a3e918409c49b7f0b0dd28312a126cfab94236ab43bcda1` · 6582 bytes
+  - [BallMvcRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/BallMvcRuntimeProbe.cs>): SHA256 `c960551a1da06eddac56015fc98bfae72124561eff86e42c7e572651cc077ef2` · 11096 bytes
+  - [ObstacleMvcRuntimeProbe.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ObstacleMvcRuntimeProbe.cs>): SHA256 `276b87d94a6a763cb541235fff62b5d63e8a3dcf6fcb0906451b9cc64ba5fe9b` · 15388 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `d5dab038b41307bb7371f8619a008765f9218258ba062daff78dcb343b172136` · 75613 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `c16cb3360345b180b64d1a819c5b1b41533169baf75123a24f026e4458682631` · 35389 bytes
+  - 추가 기록: {"dotnet_errors":0,"dotnet_solution_build":"passed","dotnet_warning_scope":"Pre-existing MCPForUnity System.Net.Http and System.IO.Compression assembly version conflicts","dotnet_warnings":4,"independent_review":"No P0 or P1 correctness or lifecycle issue found","legacy_or_fallback_added":false,"next_check":"Start and stop the actual Game once and confirm the SetParent-while-destroying error no longer appears","play_mode_run":false,"recorded_at_kst":"2026-09-10T05:04:42+09:00","runtime_probes_run":false,"scene_prefab_material_config_edits":false}
 
 ### 6. 문서로 증명
 
@@ -993,6 +1036,57 @@
   - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `ab824dcd60c0a9d51c574bdff906fa4ce78a306b3eb431c0e489203059262450` · 64518 bytes
   - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `0f772a59d6d4da40bdf007a8f80e65572e0d2c3c712b40b54b0bece4f3e2fab7` · 27814 bytes
   - 추가 기록: {"current_contract":"Ball ContinuousDynamic, Obstacle Continuous, Cannon world-Yaw-only, Straight gravity at world Z &gt; Config threshold, Curve gravity from launch","historical_sections_labeled":true,"incident_and_recovery_recorded":true,"latest_play_mode_run":false}
+- **완료된 PhysX 프로토타입의 발표용 한눈 요약 문서 제작 시작**
+  - 기록: 2026-09-09T17:45:13.076814Z · 담당: main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `presentation-overview-start-20260910` · 작업: `presentation-overview-001`
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `aa55e24a7dfc469e9db46f264e323aed74ea69d338b5ee4db390a45024ef752e` · 32139 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `030350628bcbf1d671a09f16e89facae8c0b73e59ca3a2e777e494e53c0305f7` · 48607 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `9e574687773a95ce892c2ce8597d9a1c3377f8ecf004615ba6add85cabd3b11a` · 70240 bytes
+  - 추가 기록: {"context_mode":"none; 프로젝트 절대 경로와 읽기 질문만 전달","escalation_count":0,"helpers":[{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","role":"reader","scope":"현재 코드 의존 관계 추출"},{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","role":"reader","scope":"검증 및 빌드 근거 분류"}],"human_role":"프로젝트 완료 선언과 발표용 문서 형태 결정","task_scope":"현재 코드 의존 관계, 플레이 흐름, Config 권위, Pool 수명, 검증 근거를 단일 HTML로 요약","usage":null}
+- **발표용 단일 HTML과 문서 입구·계획·검증·최종 인계를 현재 완료 상태로 정리**
+  - 기록: 2026-09-09T18:01:24.415392Z · 담당: main · 종류: finish · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `presentation-overview-finish-20260910` · 작업: `presentation-overview-001`
+  - [PROJECT_OVERVIEW.html](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html>): SHA256 `042851783ca41f5b3b3686f263e79244634eca0dcb9ceb2c69dab7d95d31c6a7` · 40707 bytes
+  - [README.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md>): SHA256 `c4f1ea33b33e99b6f17ce666b2100b1a964fb846fa66ff6547d35cd692d7f25a` · 5124 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `4c42c374d19b08e3b9cfb42527112c998cd5df9c041641e5ea7d4221ce395d5c` · 32737 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `6760acdfb10640be45fb64deb6a6bd6d7e685edf59bf4a25d1425ddf04e4ea3c` · 42817 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `b67954aca5628d57bfe426cb49fe1cc5013e9431877ae848dd136d3f4f0cd69d` · 71190 bytes
+  - [final-webgl-high-build-20260910.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/final-webgl-high-build-20260910.json>): SHA256 `00b26209ad005b7ff12a9998960cb8db580e309a230506ac7053738b205831de` · 1540 bytes
+  - [presentation-overview-validation-20260910.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/presentation-overview-validation-20260910.json>): SHA256 `b434639c39a1aa7bbdf80602c39163b77e744b1fc27fbb6db6a92abe71efa676` · 1045 bytes
+  - 추가 기록: {"assigned_model":"main","escalation_count":0,"helpers":[{"assigned_model":"gpt-5.6-luna","outcome":"current architecture dependency map extracted","reasoning_effort":"low","role":"reader"},{"assigned_model":"gpt-5.6-luna","outcome":"validation and build claims classified","reasoning_effort":"low","role":"reader"}],"human_role":"프로젝트 완료 선언, Unity 저작값과 최종 게임 결과 소유","not_revalidated":"Unity Play Mode, device run, performance measurement","outcome":"single-file overview created and browser-reviewed; current documentation entry points updated","reasoning_effort":"ultra","rework_required":true,"rework_summary":"browser QA에서 성공 배지 대비를 한 번 보정","usage":null,"validation_scope":"HTML parse, link existence, no external dependencies, desktop browser visual review, current code and serialized Config cross-check"}
+- **Controller-owned MVC and hierarchy-first Pool detach contract update started for the presentation overview**
+  - 기록: 2026-09-09T20:13:09.487086Z · 담당: main + helper writer and reader · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `presentation-overview-pool-fix-start-20260910` · 작업: `presentation-overview-update-002`
+  - [PROJECT_OVERVIEW.html](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html>): SHA256 `1b562b82ffcbb85b257d3bbe01193c70867b98267dda3c2ab1d90aff52fc6d62` · 43085 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `b5746af878bfbff25b77a35b1e3da6278c03cd5d13e4f60ba745cbb003070d50` · 47486 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `d5dab038b41307bb7371f8619a008765f9218258ba062daff78dcb343b172136` · 75613 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `c16cb3360345b180b64d1a819c5b1b41533169baf75123a24f026e4458682631` · 35389 bytes
+  - [pool-destroying-parent-fix-static-20260910.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/pool-destroying-parent-fix-static-20260910.json>): SHA256 `cbda33538773dc2282568c91987edfc41b8cf4c38863e8a02fa6fd372a3d6745` · 1857 bytes
+  - 추가 기록: {"context_mode":"none; only current project paths and correction contract supplied","helpers":[{"assigned_model":"gpt-5.6-terra","reasoning_effort":"medium","role":"html writer"},{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","role":"fact reader"}],"human_role":"requested regeneration of the presentation document after the lifecycle correction","recorded_at_kst":"2026-09-10T05:12:34+09:00","task_scope":"update the existing single-file HTML dependency and lifecycle diagrams without changing Unity assets","unity_assets_in_scope":false}
+- **Presentation overview regenerated with Controller-owned MVC and separate normal-return versus hierarchy-first-destruction lifecycle paths**
+  - 기록: 2026-09-09T20:17:56.372758Z · 담당: main + helper writer and reader · 종류: finish · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `presentation-overview-pool-fix-finish-20260910` · 작업: `presentation-overview-update-002`
+  - [PROJECT_OVERVIEW.html](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html>): SHA256 `6c66c95a5b7cb5385799c5f37a9da8d7372087ed35e976becfd9eeea3cea618e` · 43117 bytes
+  - [README.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/README.md>): SHA256 `9ad2e10ea7ae4e0954b9657933e7a120c39a5214b47aa467a7fc6ef90b7f70b0` · 5917 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `b5746af878bfbff25b77a35b1e3da6278c03cd5d13e4f60ba745cbb003070d50` · 47486 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `3707b903d3324244bf54f8144933f4822d485537c6b8f07375c0997eddad8cec` · 46144 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `2dea9d025aab6774cfd445f791084dd5021a87748d5d6cd936dbfce87da36ece` · 76138 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `9f7f070339920f7fc4498160675996f5e7a3df51090e62a88f0749af1e270c00` · 35756 bytes
+  - [presentation-overview-pool-fix-validation-20260910.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/presentation-overview-pool-fix-validation-20260910.json>): SHA256 `83d828e67d422f2a3df730b57706bd6d4b9acaf69fcb0a4d40571529e8c976d7` · 1229 bytes
+  - 추가 기록: {"desktop_browser_visual_review":"passed","fact_audit":"passed after High build terminology and evidence-boundary corrections","helpers":[{"assigned_model":"gpt-5.6-terra","reasoning_effort":"medium","result":"updated the standalone HTML","role":"html writer"},{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","result":"cross-checked code, Config values, and evidence boundaries","role":"fact reader"}],"html_parse":"passed","legacy_or_fallback_added":false,"recorded_at_kst":"2026-09-10T05:16:37+09:00","scene_prefab_material_config_edits":false,"unity_play_mode_run":false}
+- **Final wording aligned High stripping claims with the exact historical and pending build evidence**
+  - 기록: 2026-09-09T20:20:04.531548Z · 담당: main · 종류: checkpoint · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `presentation-overview-pool-fix-final-checkpoint-20260910` · 작업: `presentation-overview-update-002`
+  - [PROJECT_OVERVIEW.html](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html>): SHA256 `a2614ea91f9c5056cac222628c395e3c95767cea5a73b8fe9f39284ef47d254e` · 43144 bytes
+  - [presentation-overview-pool-fix-validation-20260910.json](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/presentation-overview-pool-fix-validation-20260910.json>): SHA256 `296ffaec8973a1b11967f89fac2ce415df2c7f7ac2f09d9d8b4dc4835b68f3af` · 1229 bytes
+  - 추가 기록: {"desktop_browser_visual_review":"passed after the final wording correction","html_parse":"passed","reason":"replace ambiguous High Player wording with Managed Stripping Level=High WebGL build wording","recorded_at_kst":"2026-09-10T05:18:59+09:00","scene_prefab_material_config_edits":false,"unity_play_mode_run":false}
+- **Interviewer-facing presentation prose revised from internal plain style to concise respectful Korean**
+  - 기록: 2026-09-09T20:31:45.581468Z · 담당: main + helper writer and reader · 종류: finish · 상태: done · 검증: 정적 확인
+  - 이벤트 ID: `presentation-overview-interviewer-tone-20260910` · 작업: `presentation-overview-tone-003`
+  - [PROJECT_OVERVIEW.html](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html>): SHA256 `6ead6c8ab17892fd7e83153c27c16b36edea5cddf9b4ff9c74d5b7817e3eb5a0` · 43245 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `b310aba684d09b7d711b01c66979bb957b01d44e4d41f416b8109d90807a9fa6` · 76486 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `2e17bccff1c206409254fbacbc01af2687a3545fdc866afc9051d10fec83293c` · 36101 bytes
+  - 추가 기록: {"desktop_browser_visual_review":"passed","document_sha256":"6ead6c8ab17892fd7e83153c27c16b36edea5cddf9b4ff9c74d5b7817e3eb5a0","duplicate_ids":0,"external_dependencies":0,"facts_or_evidence_changed":false,"helpers":[{"assigned_model":"gpt-5.6-terra","reasoning_effort":"medium","result":"converted audience-facing copy to formal respectful Korean","role":"html writer"},{"assigned_model":"gpt-5.6-luna","reasoning_effort":"low","result":"found no remaining blunt endings and flagged defensive internal wording for revision","role":"tone reader"}],"html_parse":"passed","plain_style_sentence_endings":0,"recorded_at_kst":"2026-09-10T05:31:01+09:00","scene_prefab_material_config_edits":false,"talk_track_line_break_review":"passed","unity_play_mode_run":false}
 
 ## 기록의 한계
 

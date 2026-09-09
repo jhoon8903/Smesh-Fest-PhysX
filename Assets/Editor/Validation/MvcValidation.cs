@@ -32,7 +32,6 @@ namespace Framework.EditorValidation
                 GameObject source = new GameObject("Source_" + i);
                 source.transform.SetParent(sourceRoot.transform, false);
                 MvcRuntimeProbe.PooledView view = source.AddComponent<MvcRuntimeProbe.PooledView>();
-                view.RecreateOnRent = i == 1;
                 PoolConfig config = ScriptableObject.CreateInstance<PoolConfig>();
                 SerializedObject settings = new SerializedObject(config);
                 settings.FindProperty("poolRootName").stringValue = "__MvcValidation_Pool_" + i;

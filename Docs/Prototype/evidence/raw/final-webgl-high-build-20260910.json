@@ -1,0 +1,34 @@
+{
+  "recordedAtKst": "2026-09-10",
+  "unityVersion": "6000.3.10f1",
+  "target": "WebGL",
+  "managedStrippingLevel": "High",
+  "managedStrippingSerializedValue": 3,
+  "buildResult": "Succeeded",
+  "buildDurationSecondsReported": 276,
+  "buildWindowKst": {
+    "start": "2026-09-10T02:31:24+09:00",
+    "end": "2026-09-10T02:36:00+09:00"
+  },
+  "editorLogEvidence": {
+    "path": "/Users/daniel/Library/Logs/Unity/Editor.log",
+    "line": 1304,
+    "message": "Build completed with a result of 'Succeeded' in 276 seconds (275678 ms)"
+  },
+  "settingsEvidence": {
+    "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/ProjectSettings/ProjectSettings.asset",
+    "webGLManagedStrippingLevel": 3
+  },
+  "artifacts": [
+    { "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/_Build/WebBuild/index.html", "bytes": 5625 },
+    { "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/_Build/WebBuild/Build/WebBuild.data.br", "bytes": 5664853 },
+    { "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/_Build/WebBuild/Build/WebBuild.framework.js.br", "bytes": 75217 },
+    { "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/_Build/WebBuild/Build/WebBuild.loader.js", "bytes": 26982 },
+    { "path": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/_Build/WebBuild/Build/WebBuild.wasm.br", "bytes": 8149015 }
+  ],
+  "classification": "player_build_runtime",
+  "limitations": [
+    "This snapshot proves the Player build completed and artifacts exist.",
+    "It does not by itself prove a separate device run or performance measurement."
+  ]
+}

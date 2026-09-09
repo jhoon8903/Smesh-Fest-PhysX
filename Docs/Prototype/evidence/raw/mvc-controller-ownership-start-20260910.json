@@ -1,0 +1,40 @@
+{
+  "id": "mvc-controller-ownership-start-20260910",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "mvc-controller-ownership-012",
+  "status": "in_progress",
+  "summary": "Controller만 View와 Model을 알고 View와 Model은 서로 및 Controller를 모르는 MVC 의존 방향으로 리팩터링을 시작",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "human_role": "MVC 의존 방향 확정 및 완료 후 Unity 컴파일과 대표 플레이 확인",
+    "ai_role": "Framework와 Ball, Obstacle, Cannon 조립 및 관련 Probe 리팩터링, 정적 검증과 기록",
+    "scope": "Controller -> View 및 Model; View와 Model은 서로와 Controller를 참조하지 않음",
+    "preserve": "Scene, Prefab, Material, ParticleSystem, Importer 및 사용자 수동값",
+    "fallback": false,
+    "helpers": [
+      {
+        "role": "reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "scope": "현재 소비자와 최소 조립 위치 확인"
+      },
+      {
+        "role": "reviewer",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "scope": "Pool 수명과 stale epoch 보존 설계 검토"
+      }
+    ],
+    "context_mode": "none; 프로젝트 절대 경로, 사용자 결정, 지정 질문만 전달",
+    "escalation_count": 0,
+    "usage": null
+  }
+}

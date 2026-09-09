@@ -1,0 +1,69 @@
+{
+  "id": "mvc-controller-ownership-static-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "Main + helper implementation and review",
+  "task_id": "mvc-controller-ownership-012",
+  "status": "done",
+  "summary": "Controller-owned MVC refactor and comprehensive validation-probe port completed at static verification level",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/IPoolObjectComposer.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolFactory.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/DI/WorldObjectControllerRegistry.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Cannon/CannonController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/MvcRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/PhysXRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ClickLaunchRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "recorded_at_kst": "2026-09-10T04:45:48+09:00",
+    "validation_level": "static",
+    "dotnet_solution_build": "passed",
+    "dotnet_errors": 0,
+    "dotnet_warnings": 4,
+    "dotnet_warning_scope": "Pre-existing MCPForUnity System.Net.Http and System.IO.Compression assembly version conflicts",
+    "unity_editor_compile": "passed at 2026-09-10 04:36 KST with Tundra build success and domain reload",
+    "forbidden_dependency_search_hits": 0,
+    "scoped_diff_check": "passed",
+    "global_diff_check": "outside-scope pre-existing trailing whitespace remains in PoolConfig and Level files",
+    "production_review": "No remaining P0 or P1 correctness or lifecycle issue found after Cannon rollback fix",
+    "play_mode_run": false,
+    "high_webgl_build_after_refactor": false,
+    "planned_probe_assertions": {
+      "mvc": 62,
+      "physx": 66,
+      "click_launch": 39
+    },
+    "scene_prefab_material_config_edits": false,
+    "legacy_or_fallback_added": false,
+    "helpers": [
+      {
+        "role": "initial probe migration",
+        "assigned_model": "gpt-5.6-terra",
+        "reasoning_effort": "medium",
+        "result": "rework required because compatibility-disabled legacy probe code and reduced coverage were not accepted"
+      },
+      {
+        "role": "full probe port",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "result": "comprehensive port completed without legacy or fallback paths"
+      },
+      {
+        "role": "production lifecycle review",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "result": "construction leak, registry-first disposal, and Cannon rollback edges reviewed; final P0/P1 none"
+      }
+    ],
+    "outcome": "Static implementation complete; Daniel Unity Play Mode and actual Game validation pending"
+  }
+}

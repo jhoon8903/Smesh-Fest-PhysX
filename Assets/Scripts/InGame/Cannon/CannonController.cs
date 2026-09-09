@@ -4,16 +4,36 @@ using UnityEngine;
 
 namespace InGame.Cannon
 {
-    /// <summary>Accepts aim commands while the View remains responsible for authored transforms.</summary>
-    public sealed class CannonController : ObController
+    public sealed class CannonController : ObController<CannonView, CannonModel>
     {
-        public CannonController(CannonModel model)
+        public CannonController(CannonView view, CannonModel model)
+            : base(view, model)
         {
-            Model = model ?? throw new ArgumentNullException(nameof(model));
+            try
+            {
+                Activate();
+            }
+            catch
+            {
+                try { Dispose(); }
+                catch { }
+                throw;
+            }
         }
 
-        public CannonModel Model { get; }
+        public Vector3 MuzzlePosition => View != null
+            ? View.MuzzlePosition
+            : throw new MissingReferenceException("CannonView was destroyed.");
 
-        public bool TryAim(Vector3 launchVelocity) => Model.TrySetAimDirection(launchVelocity);
+        public bool TryAim(Vector3 launchVelocity)
+        {
+            return !IsDisposed && View != null && Model.TrySetAimDirection(launchVelocity);
+        }
+
+        protected override void RefreshView(CannonModel model)
+        {
+            if (!View.RenderAim(model.AimDirection))
+                throw new InvalidOperationException("Cannon could not align its authored barrel horizontally with the launch direction.");
+        }
     }
 }

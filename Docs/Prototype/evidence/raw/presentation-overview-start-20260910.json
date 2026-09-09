@@ -1,0 +1,36 @@
+{
+  "id": "presentation-overview-start-20260910",
+  "stage": "document",
+  "kind": "start",
+  "actor": "main",
+  "task_id": "presentation-overview-001",
+  "status": "in_progress",
+  "summary": "완료된 PhysX 프로토타입의 발표용 한눈 요약 문서 제작 시작",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "human_role": "프로젝트 완료 선언과 발표용 문서 형태 결정",
+    "task_scope": "현재 코드 의존 관계, 플레이 흐름, Config 권위, Pool 수명, 검증 근거를 단일 HTML로 요약",
+    "helpers": [
+      {
+        "role": "reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "scope": "현재 코드 의존 관계 추출"
+      },
+      {
+        "role": "reader",
+        "assigned_model": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "scope": "검증 및 빌드 근거 분류"
+      }
+    ],
+    "context_mode": "none; 프로젝트 절대 경로와 읽기 질문만 전달",
+    "escalation_count": 0,
+    "usage": null
+  }
+}

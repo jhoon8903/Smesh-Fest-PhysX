@@ -381,3 +381,39 @@ Unity 6000.3.10f1 강제 refresh·compile 뒤 `GroundFadeReturn`, 공통 validat
 Daniel이 Ball/Cube Prefab Renderer를 각 GroundFade Material로 직접 연결한 현재 값을 권위로 삼았다. 두 Prefab의 Renderer와 `fadeMaterial`이 같은 자산을 참조함을 확인했고, 두 Material만 URP/Lit Transparent alpha 상태로 변경하되 기존 그림자가 Fade 시작에 끊기지 않도록 ShadowCaster pass는 유지했다. `GroundFadeReturn`의 런타임 Material 교체와 shadow 상태 저장·변경·복구를 제거하여 Fade 동안 `_BaseColor.a` PropertyBlock만 변한다. Unity 정적 진단과 Console error는 0이며 실제 시각 결과는 Play Mode 확인 대기다.
 
 사용자 런타임 관측에서 alpha 값은 감소하지만 화면은 opaque로 유지되고 alpha 0의 Pool 반환 때만 사라졌다. `RestoreVisual()`이 원래 비어 있던 material-index-0 범위에도 빈 `MaterialPropertyBlock`을 설정해 renderer-level alpha block보다 우선한 것이 원인이었다. 빈 원본 범위는 `null`로 제거했다. 이어진 Play Mode 확인에서 그림자는 여전히 없었고 두 Material에 `SHADOWCASTER` 비활성화가 다시 직렬화된 것을 확인했다. URP 17.3 `BaseShaderGUI.UpdateMaterialSurfaceOptions()`가 `_CastShadows` 속성이 없는 built-in Lit의 Transparent 상태를 검사할 때 ShadowCaster를 강제로 끄므로, YAML 제거 방식은 유지될 수 없었다. 현재는 `GroundFadeReturn.OnPoolCreated()`가 공유 Fade Material의 `ShadowCaster` pass를 활성화하고 결과를 검증한다. Prefab Renderer의 Cast Shadows/Receive Shadows, Directional Light, Ground Receive Shadows, URP shadow 지원은 모두 켜져 있다. 정적 진단·Console error는 0이고 실제 그림자 결과는 Play Mode 재확인 대기다.
+
+## V-FINAL-001 — 프로젝트 완료 선언과 WebGL High 빌드
+
+2026-09-10 KST Daniel이 프로젝트 완료를 선언했다. 이 결정에 맞춰 현재 코드·Config·기존 검증 기록을 발표용 [Project Overview](../Presentation/PROJECT_OVERVIEW.html)로 정리했다.
+
+- 실행자·도구: Daniel의 Unity Editor 6000.3.10f1 WebGL Player Build.
+- 설정: `ProjectSettings.asset`의 WebGL `managedStrippingLevel: 3`(High).
+- 관측 결과: Editor 로그에 `Build completed with a result of 'Succeeded' in 276 seconds`가 기록됐고, 실행 구간은 2026-09-10 02:31:24–02:36:00 KST다.
+- 산출물: `_Build/WebBuild/index.html`과 Brotli 압축된 data/framework/wasm 파일이 존재한다.
+- 분류: **Player 빌드 실행 확인**. 단계별 Play Mode assertion은 각 작업 시점의 근거이며, 이번 문서화에서 최신 전체 Probe 묶음이나 별도 기기 실행·성능 측정을 다시 수행하지 않았다.
+
+## W-000-MVC-CONTROLLER-001 — Controller 소유 MVC 정적 검증
+
+2026-09-10 KST / R-024. Controller만 구체 View와 Model을 알고, View·Model은 Controller 및 서로를 참조하지 않도록 공통 MVC와 Ball·Obstacle·Cannon 경로를 교체했다. `ObView<TModel>`·View-owned Model/Controller·Bind/Unbind·recreate-on-rent 같은 이전 API와 호환 fallback은 남기지 않았다.
+
+- `ObController<TView,TModel>`가 Model 관찰, View 갱신, 활성/비활성/파괴 정리를 소유한다. 활성화 중 초기 갱신이 실패하면 Model 및 View 생명주기 구독을 되돌린다.
+- `PoolFactory`는 clone 주입 직후 `IPoolObjectComposer`를 호출한다. `WorldObjectControllerRegistry`가 `OnPoolCreated` 전에 Ball/Obstacle Model+Controller를 한 번 조립하며, Controller 없는 생산 View의 대여·반환은 즉시 실패한다.
+- Ball/Obstacle Controller가 Config 적용, lease/epoch, Rigidbody와 충돌 상태를 소유한다. Registry가 Pool보다 먼저 종료될 때 활성 lease를 먼저 반환하고, 이후 controllerless 재대여는 quarantine된다.
+- Cannon 조준 렌더가 실패하면 Model 방향을 이전 값으로 복구한다. 같은 실패 방향 재시도가 Model의 동일값 단축 경로로 렌더를 우회하지 못하도록 Click Launch Probe에 회귀 조건을 추가했다.
+- ShotDirector·WorldPointerInput·ObstacleTargetRaycaster는 View 역참조 대신 Registry에서 Controller를 조회한다.
+
+정적 확인은 `dotnet build Smesh-Fest-PhysX.sln --no-restore` 성공, error 0, 기존 MCPForUnity의 `System.Net.Http`·`System.IO.Compression` 참조 충돌 warning 4다. Unity 6000.3.10f1 Editor 로그에서도 2026-09-10 04:36 KST `Tundra build success`와 domain reload 완료를 확인했다. View/Model 역참조와 `ObViewOfT`, `ObView<T>`, `OwnedModel`, `View.Controller`, Bind/Unbind, `RecreateOnRent`, `#if false` 검색 결과는 0건이다. 이번 변경 파일의 diff whitespace 검사도 통과했다. 전체 worktree에는 이번 범위 밖의 기존 trailing whitespace가 남아 있어 이를 수정하거나 완료 근거에 포함하지 않았다.
+
+Sol High 독립 생산 코드 검토에서 초기 생성 구독 누수, Registry 선행 종료, Cannon Model/View 불일치를 보완한 뒤 남은 P0/P1 correctness·lifecycle 결함은 없었다. Terra Medium의 첫 Probe 이식은 비활성 legacy 코드와 축약된 커버리지를 남겨 채택하지 않았고, Sol High가 원래 검증 범위를 Controller-owned API로 다시 이식했다. 새 성공 예정 카운터는 MVC 62, PhysX 66, Click Launch 39 assertions이며 **이번 작업에서는 Play Mode를 실행하지 않았으므로 통과 결과가 아니다**.
+
+AI는 Scene·Prefab·Material·Config 자산을 수정하거나 재생성하지 않았다. 다음 확인은 Daniel이 `MVC Runtime → Ball MVC Runtime → Obstacle MVC Runtime → Pool Runtime → PhysX Lifecycle Runtime → Click Launch Runtime → Level Editor and Spawn` 순서로 실행하고, 마지막으로 실제 Game에서 `Obstacle 클릭 → Cannon Yaw → Muzzle 발사 → 충돌/중력 → Ground Fade → Pool 반환`을 확인하는 것이다. R-024 정정본의 WebGL High 빌드도 아직 재실행하지 않았다. [정적 근거](evidence/raw/mvc-controller-ownership-static-20260910.json).
+
+## W-000-POOL-DESTROYING-DETACH-001 — 계층 선파괴 오류 수정
+
+`ObView.OnDestroy → Controller.Dispose → PoolLease.Return → Transform.SetParent` 순서 때문에 Unity가 이미 파괴 중인 Ball/Obstacle을 Pool root로 재부모화하던 오류를 수정했다. `ObView`가 파괴 상태를 노출하고, 이 상태의 Controller는 정상 반환 대신 현재 Pool entry를 제거하고 lease version을 무효화한다. Unity가 실제 GameObject 파괴를 소유하므로 `OnPoolReturn`, 재부모화, 중복 Destroy는 실행하지 않는다. 정상 Pool 반환과 stale lease 거절 계약은 유지되며 fallback은 없다.
+
+Ball/Obstacle 계층 선파괴 fixture에는 오류 로그 부재와 Pool/Registry 잔여 항목 0 조건을 추가했다. solution 정적 빌드는 error 0, 기존 MCPForUnity warning 4이며 독립 검토의 P0/P1은 없다. Play Mode/Probe는 이번 수정에서 실행하지 않았고, Scene·Prefab·Material·Config도 수정하지 않았다. [정적 근거](evidence/raw/pool-destroying-parent-fix-static-20260910.json).
+
+발표용 [Project Overview](../Presentation/PROJECT_OVERVIEW.html)는 정상 반환과 계층 선파괴를 별도 카드로 분리하고, 이전 High 설정 WebGL 빌드·과거 Play Mode 기록과 최신 정적 수정의 검증 경계를 구분하도록 다시 제작했다. HTML parse, ID 중복, 외부 의존성, 필수 섹션, 데스크톱 브라우저 렌더는 통과했다. 이는 Unity Play Mode 재실행 증거가 아니다. [문서 검증](evidence/raw/presentation-overview-pool-fix-validation-20260910.json).
+
+면접용 어조 검토에서는 설명형 문장을 모두 정중한 발표체로 바꾸고, 제목·도식·표 레이블만 명사형으로 유지했다. 평서체 종결 0건, HTML parse·데스크톱 렌더·30초 발표문 줄바꿈을 다시 확인했다. [어조 검증](evidence/raw/presentation-overview-interviewer-tone-20260910.json).

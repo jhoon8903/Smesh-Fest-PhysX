@@ -60,8 +60,9 @@ namespace Framework.Test
                 InjectedBeforeEnable = dependency != null;
             }
 
-            private void OnEnable()
+            protected override void OnEnable()
             {
+                base.OnEnable();
                 EnableCount++;
                 if (InjectedBeforeEnable && RentCount == EnableCount)
                     RentInitializedBeforeEnable = true;
@@ -190,7 +191,12 @@ namespace Framework.Test
             }
             public void OnPoolReturn() => ScenarioHooks.OwnerReturned?.Invoke(this);
             public void OnPoolDestroy() => ScenarioHooks.OwnerDestroyed?.Invoke(this);
-            private void OnEnable() { EnableCount++; ScenarioHooks.Enable?.Invoke(this); }
+            protected override void OnEnable()
+            {
+                base.OnEnable();
+                EnableCount++;
+                ScenarioHooks.Enable?.Invoke(this);
+            }
         }
 
         public sealed class ScenarioPart : MonoBehaviour, IPoolLifecycle
@@ -333,7 +339,7 @@ namespace Framework.Test
             resolver = builder.Build();
             double clock = 0d;
             bool originalSourceActiveSelf = sourcePrefab != null && sourcePrefab.gameObject.activeSelf;
-            factory = new PoolFactory(container, resolver, true, () => clock);
+            factory = new PoolFactory(container, resolver, new TestPoolObjectComposer(), true, () => clock);
             PoolSpawnArgs args = new PoolSpawnArgs(new Vector3(2f, 0f, 0f), Quaternion.identity);
             Assert(!factory.TryRent(config, args, out _), "TryRent succeeded before Initialize.");
             factory.Initialize(false);
@@ -392,7 +398,7 @@ namespace Framework.Test
             catch (ObjectDisposedException) { disposedRejected = true; }
             Assert(disposedRejected, "Disposed factory GetPool did not fail.");
 
-            maintenanceFactory = new PoolFactory(maintenanceContainer, resolver, true);
+            maintenanceFactory = new PoolFactory(maintenanceContainer, resolver, new TestPoolObjectComposer(), true);
             maintenanceFactory.Initialize();
             Assert(maintenanceFactory.TryRent(maintenanceConfig, args, out PoolLease maintenanceOne) &&
                    maintenanceFactory.TryRent(maintenanceConfig, args, out PoolLease maintenanceTwo) &&
@@ -418,7 +424,7 @@ namespace Framework.Test
             PoolConfig teardownConfig = CreateRuntimeConfig(teardownPrefab, 1, 2, 0f,
                 "__PoolValidation_HierarchyTeardownRoot");
             SetPrivateField(teardownContainer, "configs", new[] { teardownConfig });
-            PoolFactory teardownFactory = new PoolFactory(teardownContainer, resolver, true, () => 0d);
+            PoolFactory teardownFactory = new PoolFactory(teardownContainer, resolver, new TestPoolObjectComposer(), true, () => 0d);
             try
             {
                 teardownFactory.Initialize(false);
@@ -675,7 +681,7 @@ namespace Framework.Test
             EmptyPoolable allocationPrefab = prefabObject.AddComponent<EmptyPoolable>();
             PoolConfig allocationConfig = CreateRuntimeConfig(allocationPrefab, 1, 1, 0f, "__PoolValidation_AllocationRoot");
             SetPrivateField(allocationContainer, "configs", new[] { allocationConfig });
-            var allocationFactory = new PoolFactory(allocationContainer, resolver, true, () => 0d);
+            var allocationFactory = new PoolFactory(allocationContainer, resolver, new TestPoolObjectComposer(), true, () => 0d);
             try
             {
                 allocationFactory.Initialize(false);
@@ -726,8 +732,8 @@ namespace Framework.Test
         {
             GameObject source = new GameObject("__PoolValidation_StandaloneObView");
             source.SetActive(false);
-            ObView standalone = source.AddComponent<ObView>();
-            PoolConfig standaloneConfig = CreateRuntimeConfig(standalone, 0, 1, 1f,
+            ObView standalone = source.AddComponent<ProbeViewlessStandalone>();
+            PoolConfig standaloneConfig = CreateRuntimeConfig((MonoBehaviour)standalone, 0, 1, 1f,
                 "__PoolValidation_StandaloneObViewPool");
             bool rejected = false;
             try { standaloneConfig.Validate(); }
@@ -740,6 +746,8 @@ namespace Framework.Test
             Assert(rejected && !(standalone is IPoolable),
                 "Standalone ObView was forced into or accepted by the pooling contract.");
         }
+
+        private sealed class ProbeViewlessStandalone : ObView { }
 
         private static void SetPrivateField(object target, string name, object value)
         {

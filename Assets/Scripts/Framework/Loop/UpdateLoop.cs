@@ -9,7 +9,7 @@ namespace Framework.Loop
         #region TimeScale
 
         private float _requestedTimeScale = 1f;
-        public float TimeScale => _clock != null ? _clock.RequestedTimeScale : _requestedTimeScale;
+        public float TimeScale => _clock?.RequestedTimeScale ?? _requestedTimeScale;
         [SerializeField] private float maxScale = 2f;
         [SerializeField] private float minScale = 1f;
 
@@ -71,7 +71,6 @@ namespace Framework.Loop
 
         private void OnDisable()
         {
-            // The flow owns game state; disabling this driver only suspends delivery.
             _dispatcher?.StopLoop();
         }
 

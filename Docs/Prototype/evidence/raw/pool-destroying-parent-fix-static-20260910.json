@@ -1,0 +1,34 @@
+{
+  "id": "pool-destroying-parent-fix-static-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "Main + helper review",
+  "task_id": "pool-destroying-owner-detach-013",
+  "status": "done",
+  "summary": "Unity hierarchy-first destruction now detaches the current pooled value without reparenting a GameObject that is already being destroyed",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Object/ObView.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLease.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/Pool.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Ball/BallController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/BallMvcRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Test/ObstacleMvcRuntimeProbe.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "recorded_at_kst": "2026-09-10T05:04:42+09:00",
+    "validation_level": "static",
+    "dotnet_solution_build": "passed",
+    "dotnet_errors": 0,
+    "dotnet_warnings": 4,
+    "dotnet_warning_scope": "Pre-existing MCPForUnity System.Net.Http and System.IO.Compression assembly version conflicts",
+    "independent_review": "No P0 or P1 correctness or lifecycle issue found",
+    "play_mode_run": false,
+    "runtime_probes_run": false,
+    "scene_prefab_material_config_edits": false,
+    "legacy_or_fallback_added": false,
+    "next_check": "Start and stop the actual Game once and confirm the SetParent-while-destroying error no longer appears"
+  }
+}

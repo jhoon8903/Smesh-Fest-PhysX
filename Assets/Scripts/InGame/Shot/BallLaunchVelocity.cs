@@ -3,36 +3,30 @@ using UnityEngine;
 
 namespace InGame.Shot
 {
-    /// <summary>Calculates the explicit initial velocity for the selected Ball trajectory mode.</summary>
     public static class BallLaunchVelocity
     {
         public static bool TryCalculate(Vector3 origin, Vector3 target, BallTrajectoryMode trajectoryMode,
             float launchSpeed, float curveFlightSeconds, Vector3 gravity, out Vector3 velocity)
         {
             velocity = default;
-            if (!IsFinite(origin) || !IsFinite(target))
-                return false;
+            if (!IsFinite(origin) || !IsFinite(target)) return false;
 
             Vector3 displacement = target - origin;
-            if (displacement.sqrMagnitude <= 0.00000001f)
-                return false;
+            if (displacement.sqrMagnitude <= 0.00000001f) return false;
 
             switch (trajectoryMode)
             {
                 case BallTrajectoryMode.Straight:
-                    if (!IsFinite(launchSpeed) || launchSpeed <= 0f)
-                        return false;
+                    if (!IsFinite(launchSpeed) || launchSpeed <= 0f) return false;
                     velocity = displacement.normalized * launchSpeed;
                     break;
 
                 case BallTrajectoryMode.Curve:
-                    if (!IsFinite(curveFlightSeconds) || curveFlightSeconds <= 0f || !IsFinite(gravity))
-                        return false;
+                    if (!IsFinite(curveFlightSeconds) || curveFlightSeconds <= 0f || !IsFinite(gravity)) return false;
                     velocity = displacement / curveFlightSeconds - 0.5f * gravity * curveFlightSeconds;
                     break;
 
-                default:
-                    return false;
+                default: return false;
             }
 
             return IsFinite(velocity) && velocity.sqrMagnitude > 0.00000001f;

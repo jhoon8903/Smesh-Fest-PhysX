@@ -4,14 +4,11 @@ using UnityEngine;
 
 namespace InGame.Cannon
 {
-    /// <summary>Stores the cannon's commanded launch direction, not any Ball physics state.</summary>
     public sealed class CannonModel : ObModel
     {
         public CannonModel(Vector3 initialDirection)
         {
-            if (!TryNormalize(initialDirection, out Vector3 normalized))
-                throw new ArgumentException("Cannon requires a finite non-zero initial direction.", nameof(initialDirection));
-
+            if (!TryNormalize(initialDirection, out Vector3 normalized)) throw new ArgumentException("Cannon requires a finite non-zero initial direction.", nameof(initialDirection));
             AimDirection = normalized;
         }
 
@@ -22,8 +19,19 @@ namespace InGame.Cannon
             if (!TryNormalize(direction, out Vector3 normalized)) return false;
             if ((AimDirection - normalized).sqrMagnitude <= 0.00000001f) return true;
 
+            Vector3 previous = AimDirection;
             AimDirection = normalized;
-            NotifyChanged();
+            try
+            {
+                NotifyChanged();
+            }
+            catch
+            {
+                AimDirection = previous;
+                try { NotifyChanged(); }
+                catch { }
+                throw;
+            }
             return true;
         }
 
@@ -31,7 +39,8 @@ namespace InGame.Cannon
         {
             normalized = default;
             if (!IsFinite(value.x) || !IsFinite(value.y) || !IsFinite(value.z)
-                || value.sqrMagnitude <= 0.00000001f)
+                || value.sqrMagnitude <= 0.00000001f
+                || Vector3.ProjectOnPlane(value, Vector3.up).sqrMagnitude <= 0.00000001f)
                 return false;
 
             normalized = value.normalized;

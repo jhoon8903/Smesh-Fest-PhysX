@@ -1,6 +1,16 @@
 # 프로젝트 인계
 
-> **2026-09-09 최신 계약:** targetable Obstacle Collider 직접 hit만 Cannon Head Muzzle에서 발사한다. Cannon은 world Yaw만 회전하고 child의 수동 local rotation을 보존한다. Straight는 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick에서 Ball의 월드 Z가 `BallConfig.GravityActivationWorldZ`(기본 0)를 **엄격히 초과**하는 첫 조건 중 먼저 발생한 때 중력을 켠다. Curve는 고정 비행시간·발사 즉시 중력이다. tag·name·parent 검색 fallback과 legacy 경로는 두지 않는다. Config 기반 CCD와 Ball/Obstacle/Ground 전용 Layer Matrix를 쓴다.
+> **2026-09-10 최종 상태:** Daniel이 프로젝트 완료를 선언했다. 발표·인수인계의 첫 문서는 [Smesh Fest PhysX — Project Overview](Presentation/PROJECT_OVERVIEW.html)다. 아래 본문은 구현 과정과 당시 미검증 항목을 포함한 이력으로 보존한다.
+
+> **완료 선언 뒤 최신 코드 정정 — R-024:** MVC 참조 방향을 Controller 소유로 교체했다. Controller만 View+Model을 알고, View·Model에는 역참조가 없다. Pool clone은 DI 직후 `WorldObjectControllerRegistry`가 조립하며 View-owned 생성/Bind 경로와 호환 fallback은 제거했다. 정적 검증 완료 뒤 새 Play Mode Probe와 실제 Game 재확인이 필요하다. 이 변경은 Scene·Prefab·Material·Config를 수정하지 않는다.
+
+## 최종 완료 요약
+
+- 대표 흐름: targetable Obstacle Collider 직접 클릭 → Cannon world-Yaw 조준 → Head Muzzle에서 Pool Ball 발사 → Rigidbody/PhysX 충돌과 중력 전환 → Ground Fade → 현재 epoch의 PoolLease 반환.
+- 저작 흐름: Level1의 24개 ordered entry를 LevelSpawner가 Pool에서 대여해 Runtime Root에 배치한다.
+- 조정값: Ball·Obstacle·PhysX·GroundFade·Pool·Level은 ScriptableObject 자산, Cannon yaw/muzzle는 현재 Scene-authored `CannonView` 값이 런타임 권위다.
+- 최종 빌드: WebGL Managed Stripping High가 Unity Editor 로그에서 276초 후 `Succeeded`로 끝났고 `_Build/WebBuild` 산출물이 존재한다.
+- 검증 경계: Daniel의 완료 선언과 단계별 실행 기록, 최종 Player 빌드는 확인했다. 이번 문서 정리에서 별도 기기 실행·성능 측정이나 모든 과거 Probe의 최신 일괄 재실행은 하지 않았다.
 
 ## 목표와 현재 상태
 
@@ -21,6 +31,7 @@
 - PoolConfig의 MinPool은 사전 생성 수이자 비활성 재고 정리 후 남길 수, MaxPool은 활성+비활성 총 상한이다. 미사용 정리 시간은 ReturnDelaySeconds로 종류별 설정(초기 300초, 0은 자동 정리 끄기). 시간만으로 사용 중인 객체를 강제 반환하지 않는다. 비활성 정리 때 재고를 강제로 보충하지 않는다.
 - R-018: **ObView는 독립 MonoBehaviour**, 풀링이 필요한 구체 View만 **ObView 계열 + IPoolable**. 공통 View를 Poolable 기반에 묶지 않는다.
 - R-019: ProjectTemplate의 `Assets/Framework/MVC`는 설계 참고다. 필요한 책임부터 간소화해 적용한다. 참고의 Pool 상속·SO ModuleContainer·자동 타입 탐색 체계를 일괄 이식하지 않는다. 기존 GameLifetimeScope에서 필요한 의존성을 명시적으로 조립한다.
+- R-024: **Controller만 View와 Model을 안다.** View는 Unity·Pool·충돌 이벤트만 발행하고 Model/Controller를 보관하지 않는다. Model도 View/Controller를 모른다. `ObController<TView,TModel>`가 구체 타입·관찰·정리를 소유하고 Registry가 묶음을 조립한다.
 - R-021: Ball은 풀 인스턴스마다 View·Model·Controller를 한 번 조립해 인스턴스 수명 동안 재사용한다. 매 대여마다 Model/Controller를 새로 만들지 않고 반환·폐기에서 상태와 구독을 정리한다.
 - R-022: 첫 BallModel은 물리 비종속 `IsRented`와 `RentalEpoch`만 소유한다. R-023 구현 뒤에도 위치·속도·충돌·Rigidbody 상태를 Model에 복제하지 않는다.
 - Obstacle 적용: R-019·R-021의 객체별 조립 원칙을 구체 타입에 적용했다. 첫 ObstacleModel도 `IsRented`와 `RentalEpoch`만 소유하며 HP·파괴·위치·속도·충돌 상태는 아직 넣지 않는다.
@@ -34,16 +45,16 @@
 |---|---|
 | Observer·Loop·시간 | Observable<T>, LoopDispatcher/ILoopEvents, GameClock/IGamePause, UnityGameTime, GameFlow/UpdateLoop. 개별 월드 객체는 중앙 Loop의 필요한 phase를 구독한다. |
 | DI·UI Pause | WorldObjects의 GameLifetimeScope에서 주입·씬 서비스 수명 관리. ScreenPauseScope가 실제 화면의 활성/비활성과 Pause 요청을 연결한다. 상시 HUD 전체를 자동으로 Pause 대상으로 만들지 않는다. 동적 화면은 주입 후 사용하며 CanvasGroup만 숨길 때는 Presenter 수명에 연결해야 한다. |
-| Pool | PoolFactory·PoolConfig·PoolContainer·PoolLease·PoolLifecycleRunner. 비활성 부모 아래 복제 → DI → 초기화 → 활성화. 원본 Prefab 활성값을 토글하지 않는다. 사용 번호로 오래된 lease/중복 반환을 거절한다. Unity 계층이 먼저 파괴되면 lease를 즉시 무효화하고, 생성/대여/반환 callback 도중 파괴된 객체도 격리해 재고로 넣지 않는다. |
+| Pool | PoolFactory·PoolConfig·PoolContainer·PoolLease·PoolLifecycleRunner. 비활성 부모 아래 복제 → DI → Controller Registry 조립 → 초기화 → 활성화. 원본 Prefab 활성값을 토글하지 않는다. 사용 번호로 오래된 lease/중복 반환을 거절한다. Unity 계층이 먼저 파괴되면 lease를 즉시 무효화하고, 생성/대여/반환 callback 도중 파괴된 객체도 격리해 재고로 넣지 않는다. |
 | Pool 정리 | 각 IPoolLifecycle 파츠가 구독·Tween·파티클·비동기 작업을 정리한다. Factory는 UI Pause 중에도 실제 경과 시간으로 비활성 재고를 검사하고 Dispose에서 유지보수를 취소한다. 실패한 객체는 정상 재고에 섞지 않는다. 객체 파괴와 Addressables 자산 해제는 다른 책임이다. |
-| Model–View | ObModel은 상태 변경 후 NotifyChanged, 선택적 ObView<TModel>은 Bind/Unbind와 RefreshView(model)을 제공한다. 기존 ObView는 그대로이며 Pool을 요구하지 않는다. |
-| Ball MVC + PhysX | BallView가 Config 물성·`ContinuousDynamic`을 주입/대여 때 적용한다. Straight는 중력을 끄고 같은 GameObject의 `ObstacleView` 직접 충돌 또는 FixedTick의 엄격한 world-Z 경계 중 먼저 발생한 조건에서 한 번 켠다. Curve는 발사부터 켠다. 반환/폐기 때 속도·중력·대기 상태와 managed 수명을 초기화한다. |
-| Obstacle MVC + PhysX | ObstacleView가 Config 물성·`Continuous`를 씬 배치와 Pool clone 모두에 적용한다. GroundSurface 충돌 뒤 targetable을 끄고, 대여/반환의 속도·Sleep/Wake 수명은 유지한다. |
-| 클릭 발사 + Cannon | WorldPointerInput이 중앙 UpdateTick에서 Obstacle 전용 mask로 직접 Raycast하고 FixedTick에서 Ball Z 경계를 전달한다. BallView는 같은 GameObject의 `ObstacleView` 직접 충돌만 중력 전환으로 인정한다. ShotDirector는 Muzzle 발사·고정 배열 반환을 맡는다. CannonView는 yawRoot의 world Y만 회전하고 Body/Head의 수동 local rotation은 보존한다. |
+| MVC 방향 | `ObController<TView,TModel>`가 View+Model과 Model 관찰을 소유한다. ObView는 활성/비활성/파괴 신호만 제공하고 풀은 강제하지 않는다. `WorldObjectControllerRegistry`가 Ball·Obstacle·Cannon 묶음을 조립·조회한다. |
+| Ball MVC + PhysX | BallController가 Config 물성·`ContinuousDynamic`, lease/epoch, 발사·충돌/World-Z 중력 전환과 반환 초기화를 소유한다. BallView는 Pool·Collision 이벤트만 발행한다. Straight는 충돌 또는 엄격한 world-Z 경계 중 먼저 발생한 조건에서 중력을 켜고 Curve는 발사부터 켠다. |
+| Obstacle MVC + PhysX | ObstacleController가 Config 물성·`Continuous`, 대여/반환 Sleep/Wake와 GroundSurface 충돌 뒤 targetable 해제를 소유한다. ObstacleView는 Pool·Collision 이벤트만 발행한다. |
+| 클릭 발사 + Cannon | WorldPointerInput이 중앙 UpdateTick에서 Obstacle 전용 mask로 Raycast하고 FixedTick에서 Ball Z 경계를 전달한다. ShotDirector와 Raycaster는 Registry에서 Controller를 조회한다. CannonController가 Model→View 조준을 연결하고 CannonView/CannonHead는 yawRoot의 world Y만 표현한다. |
 
-View의 비활성 Bind는 모델 참조만 보관한다. 활성화 때 한 번 구독·갱신하고 비활성화 때 기본/추가 모델 구독을 해제하되 모델 참조는 유지한다. Model 교체·Unbind는 옛 연결을 정리한다. 구체 풀링 객체는 반환/폐기에서 Controller의 구독 정리와 View.Unbind를 호출한다. 파생 Unity 수명 콜백은 base를 호출한다. 같은 모델의 재연결도 이전 관찰의 갱신·실패 정리가 새 관찰을 건드리지 않게 보호했다. 같은 모델의 재귀 NotifyChanged는 기존 Observer 계약대로 거절한다.
+Controller는 View가 활성일 때 Model을 정확히 한 번 관찰하고 최신 상태를 View에 전달한다. 비활성화·파괴·Registry 종료에서 관찰과 View 이벤트를 끊는다. 생성 실패는 부분 구독을 남기지 않으며, Registry가 Pool보다 먼저 끝나도 활성 lease를 반환한다. Controller가 없는 생산 View의 pool rent/return은 조용히 통과하지 않는다.
 
-Ball과 Obstacle의 Model은 대여 여부와 0이 아닌 사용 세대를 관리한다. Rigidbody가 런타임 물리 상태를 소유하며 Controller는 발사/초기화 명령만 내린다. 각 View는 같은 Model/Controller를 재대여하며 관찰은 활성 중 한 번만 연결한다. 씬 계층이 Factory보다 먼저 파괴될 때 Unity OnDestroy가 즉시 묶음을 정리하고 lease도 즉시 무효다. 공통 ObController는 여전히 빈 기반이다. Cannon은 객체 수명 동안 Model/Controller를 한 번 조립하고 Model의 명령 방향만 View에 통지하며 Ball 물리 상태를 복제하지 않는다. Obstacle의 실제 HP·파괴·충돌 규칙·표현은 미구현이며 테스트용 Probe를 실제 게임 흐름으로 해석하지 않는다.
+Ball과 Obstacle의 Model은 대여 여부와 0이 아닌 사용 세대를 관리한다. Rigidbody가 런타임 물리 상태를 소유하고 Controller가 Config 적용·명령·초기화를 맡는다. 각 풀 인스턴스는 같은 Model/Controller를 재대여하며 View는 이를 보관하지 않는다. 씬 계층이 Factory보다 먼저 파괴될 때 Unity OnDestroy가 즉시 묶음을 정리하고 lease도 무효화한다. Cannon 조준 표현 실패는 Model 방향까지 이전 값으로 롤백한다.
 
 ## 검증 증거와 한계
 
@@ -54,9 +65,10 @@ Ball과 Obstacle의 Model은 대여 여부와 0이 아닌 사용 세대를 관�
 | Observer·Loop·GameClock | 명시적 Editor 메뉴에서 수명/상태 검사 통과. 조건을 고정한 반복 구간의 관리 할당 0바이트. 상세 조건은 REVIEW와 각 원자료 참조. |
 | DI·UI Pause | Play Mode 25개 검사 통과. Loop·물리·scaled Tween/파티클의 정지/재개와 수명 정리를 포함한다. [결과](Prototype/evidence/raw/di-pause-playmode.json) |
 | Pool | 과거 Play Mode 66개 검사 통과. 이번에 callback 중 Unity 객체 파괴를 격리하는 생산 코드와 회귀 2개를 추가했으나 새 전체 Pool Runtime은 아직 재실행하지 않았다. [과거 결과](Prototype/evidence/raw/pool-runtime-validation.json) |
-| Model–View | Unity 6000.3.10f1 Play Mode 58개 검사 통과. 활성/교체/해제·훅 예외/재진입, 실제 PoolFactory DI와 묶음 유지/재생성·반환/종료를 임시 객체로 확인했다. [결과](Prototype/evidence/raw/mvc-runtime-validation.json) |
-| Ball MVC | Unity 6000.3.10f1 Play Mode **19개 검사 통과**. Controller/PoolLease 정상 반환, 같은 묶음 재대여, 이전 세대 거절, 활성 Pool Dispose와 계층 선파괴 정리를 임시 BallView로 확인했다. [결과](Prototype/evidence/raw/ball-mvc-runtime-validation.json) |
-| Obstacle MVC | Unity 6000.3.10f1 Play Mode **25개 검사 통과**. Ball과 같은 수명 경계에 더해 잘못된 lease 준비 실패 롤백, 생성 후 미대여 파괴와 파괴 오류 로그 부재를 임시 ObstacleView로 확인했다. [결과](Prototype/evidence/raw/obstacle-mvc-runtime-validation.json) |
+| MVC Controller 소유 정정 | View/Model 역참조 제거, 외부 Registry 조립과 기존 Probe API 이식을 정적 검증한다. 아래 58/19/25개 결과는 변경 전 구조의 역사적 근거이며 새 Play Mode 통과로 간주하지 않는다. |
+| 과거 Model–View | 변경 전 Play Mode 58개 검사 통과. [과거 결과](Prototype/evidence/raw/mvc-runtime-validation.json) |
+| 과거 Ball MVC | 변경 전 Play Mode **19개 검사 통과**. [과거 결과](Prototype/evidence/raw/ball-mvc-runtime-validation.json) |
+| 과거 Obstacle MVC | 변경 전 Play Mode **25개 검사 통과**. [과거 결과](Prototype/evidence/raw/obstacle-mvc-runtime-validation.json) |
 | PhysX 수명 | 1차 Play Mode는 assertion 10·시뮬레이션 0회에서 실패. 활성화 뒤 상태 재적용과 검사 분리 후 Daniel의 수정본 실행이 **42 assertions, 15 simulated steps, contact 1회, Obstacle displacement 0.6153807**로 통과. [통과](Prototype/evidence/raw/physx-lifecycle-runtime-passed-20260909T064144Z.json) · [1차 실패](Prototype/evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json) |
 | 클릭 발사 | 1차 격리 Probe는 assertion 5·시뮬레이션 0회에서 경계 fixture 가정 실패. 생산 투영식은 유지하고 Probe만 수정했으며 Unity compiler error 0, 변경 Probe warning/error 0/0. 수정본 재실행과 실제 Game 클릭 대기. [1차 실패](Prototype/evidence/raw/click-launch-runtime-failed-20260909T074802Z.json) · [수정 정적 근거](Prototype/evidence/raw/click-launch-projection-fixture-fix-static.json) |
 | 최신 비행 물리 | Config CCD·yaw-only·Straight 직접 충돌 또는 Z 경계와 Layer Matrix를 구현. 최신 Unity 스크립트 진단 4개 warning/error 0, Console error 0. 최신 disposable Click/PhysX Probe와 실제 Game Play Mode는 아직 미실행 |
@@ -77,10 +89,10 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
 
 ## 다음 작업·미결정과 분담
 
-바로 다음 체크포인트는 Daniel이 Play Mode에서 **(1) `Tools/Smesh Fest/Validation/PhysX Lifecycle Runtime`, (2) `Tools/Smesh Fest/Validation/Click Launch Runtime`, (3) 실제 Game**을 차례로 확인하는 것이다. 실제 Game에서는 얇은 Obstacle을 뚫지 않는지, Cannon의 Y만 바뀌는지, Straight가 같은 GameObject의 Obstacle 직접 충돌 또는 Z>0 뒤 중력을 받되 Z=0에서는 꺼져 있는지, Curve가 발사부터 중력을 받는지 본다.
+바로 다음 체크포인트는 Daniel이 MVC 정정 뒤 Play Mode에서 **(1) `MVC Runtime`, (2) `Ball MVC Runtime`, (3) `Obstacle MVC Runtime`, (4) `Pool Runtime`, (5) `PhysX Lifecycle Runtime`, (6) `Click Launch Runtime`, (7) `Level Editor and Spawn`, (8) 실제 Game**을 확인하는 것이다. 실제 Game에서는 Registry 조립 오류 없이 Level이 생성되고, 클릭→Cannon Yaw→Ball 발사→충돌/중력→Fade→반환이 유지되는지 본다.
 
-- Daniel: 두 검증 메뉴와 실제 씬 조작을 실행하고 CCD·Yaw-only·Straight/Curve 중력 시점을 판단한다. 제거한 Cannon Collider와 Ball Prefab `Use Gravity=false`는 그대로 유지한다.
-- AI: 결과가 실패면 첫 assertion/Console과 실제 장면을 기준으로 최소 수정한다. 둘 다 통과하면 다음 계약으로 고정 Blocks의 HP/파괴·결과·재도전 수명을 설계한다. 발사 속도 10, 머즐 offset 0.16, 목표 로컬 center (0, 0.225)/extents (0.225, 0.3), 반환 4초/y=-1은 첫 체감 조정값이며 Inspector에서 바꿀 수 있다.
+- Daniel: 위 검증 메뉴와 실제 씬 조작을 실행하고 첫 실패 assertion/Console을 전달한다. 제거한 Cannon Collider와 현재 Prefab·Config 값은 그대로 유지한다.
+- AI: 실패하면 첫 assertion/Console과 실제 장면을 기준으로 MVC 정정 범위 안에서 최소 수정한다. 새 호환 경로나 fallback을 추가하지 않는다.
 - 현재 관측 자산 기준: Ball Prefab은 MeshRenderer·SphereCollider·dynamic Rigidbody·BallView, Ball PoolConfig는 Prefab 연결·Min 3·Max 7·200초이고 Game PoolContainer에 등록돼 있다. Cube Prefab은 MeshRenderer·BoxCollider·dynamic Rigidbody·ObstacleView다. Cube PoolConfig의 Prefab 참조는 별도 저장 변경으로 연결됐지만 Game 목록에는 아직 없다. 이 변경의 작성자 의도는 추정하지 않는다.
 - 현재 Game 씬의 ObstacleView 24개는 Pool `OnPoolCreated`를 거치지 않지만 GameLifetimeScope가 Blocks 하이어라키에 ObstacleConfig를 주입한다. HP·파괴·재도전용 MVC 수명 연결은 여전히 후속이다.
 - 후속 세부 계약: 화면별 MVP, HP/파괴/결과, SO 런타임 상태 범위, Addressables 로드/취소/해제 핸들. 대표 PhysX 플레이 뒤 물리 권위 전환과 직접 구현 Physics의 동일 입력/fixed step/초기조건/측정 지표를 별도 문서화한다. O-001~O-008과 R-021~R-023을 처음부터 다시 질문하지 않는다.
@@ -125,7 +137,6 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
     "Assets/Scripts/Framework/Observer/Observable.cs",
     "Assets/Scripts/Framework/Object/ObModel.cs",
     "Assets/Scripts/Framework/Object/ObView.cs",
-    "Assets/Scripts/Framework/Object/ObViewOfT.cs",
     "Assets/Scripts/Framework/Object/ObController.cs",
     "Assets/Scripts/Framework/Pool/Pool.cs",
     "Assets/Scripts/Framework/Pool/PoolConfig.cs",
@@ -134,6 +145,7 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
     "Assets/Scripts/Framework/Pool/IPoolLifecycle.cs",
     "Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs",
     "Assets/Scripts/Framework/Pool/PoolLease.cs",
+    "Assets/Scripts/Framework/Pool/IPoolObjectComposer.cs",
     "Assets/Scripts/Framework/Screen/ScreenPauseScope.cs",
     "Assets/Scripts/InGame/Ball/BallModel.cs",
     "Assets/Scripts/InGame/Ball/BallController.cs",
@@ -141,6 +153,8 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
     "Assets/Scripts/InGame/Obstacle/ObstacleModel.cs",
     "Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
     "Assets/Scripts/InGame/Obstacle/ObstacleView.cs",
+    "Assets/Scripts/InGame/DI/WorldObjectControllerRegistry.cs",
+    "Assets/Scripts/Test/TestPoolObjectComposer.cs",
     "Assets/Scripts/Test/MvcRuntimeProbe.cs",
     "Assets/Editor/Validation/MvcValidation.cs",
     "Assets/Scripts/Test/BallMvcRuntimeProbe.cs",
@@ -270,3 +284,22 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
 - built-in URP/Lit는 Transparent Material을 검증할 때 ShadowCaster pass를 다시 끈다. 따라서 Material YAML을 직접 고치는 방식은 사용하지 않고, `GroundFadeReturn.OnPoolCreated()`가 공유 Fade Material의 `ShadowCaster` pass를 활성화하고 실패 시 즉시 예외를 낸다. 두 Prefab Renderer의 Cast Shadows는 켜져 있다. 실제 그림자는 Play Mode 재확인 대기다.
 - `ShotDirector`는 대기/Fade 중인 Ball을 lifetime·y 경계로 먼저 반환하지 않는다. Game 씬 `GameLifetimeScope.groundFadeSettings` 참조와 두 Prefab 컴포넌트 연결은 재로딩 뒤 확인했다.
 - Unity compile·관련 진단·Console은 오류 0, Sol High 최종 P0/P1 없음. Play Mode에서는 `Ground 충돌 → 1초 유지 → 1초 Fade → 반환`, 재대여 복구, 여러 Cube 겹침 표현을 Daniel이 확인해야 한다.
+
+## 최신 인계 — MVC Controller 소유 정정
+
+- 사용자 결정 R-024: Controller만 View+Model을 안다. View는 Model/Controller를, Model은 View/Controller를 참조하지 않는다.
+- `ObController<TView,TModel>`가 타입과 Model 관찰을 강제한다. `ObView<TModel>`·Bind/Unbind·View-owned Model/Controller API는 삭제했으며 생산 fallback은 없다.
+- `PoolFactory`는 clone DI 직후 `IPoolObjectComposer`를 호출한다. `WorldObjectControllerRegistry`가 Ball/Obstacle Model+Controller를 `OnPoolCreated` 전에 한 번 만들고 Cannon도 조립한다.
+- Ball/Obstacle View는 Pool·충돌 이벤트만 발행한다. 각 Controller가 Config 적용, lease/epoch, Rigidbody 명령, targetable/중력 전환과 정리를 소유한다. ShotDirector·ObstacleTargetRaycaster는 Registry로 Controller를 조회한다.
+- 생성 실패 구독 누수, Registry 선행 종료의 활성 lease, Controller 없는 rent/return, Cannon 렌더 실패 뒤 Model 방향 불일치를 명시적으로 막았다.
+- Scene·Prefab·Material·Config 저장값은 이 단위에서 수정하지 않았다. solution 빌드는 error 0(기존 MCPForUnity assembly 충돌 warning 4), Unity Editor는 2026-09-10 04:36 KST 최신 스크립트 컴파일과 domain reload를 통과했고 금지된 역참조·legacy 패턴은 0건이다. Daniel이 MVC/Ball/Obstacle/Pool/PhysX/Click/Level 검증 메뉴와 실제 Game을 순서대로 재실행한다. 새 핵심 Probe의 성공 예정 카운터 MVC 62·PhysX 66·Click 39는 미실행 값이며, 과거 58/19/25/42 assertion도 이 새 구조의 통과 증거가 아니다.
+
+### 계층 선파괴 시 Pool 분리 보완
+
+Play Mode 종료처럼 `Cube(Clone)`의 Unity 파괴가 먼저 시작된 경로에서 `ObView.OnDestroy`가 Controller를 정리하며 일반 `PoolLease.Return()`을 호출했고, 이 반환 경로가 파괴 중인 Transform을 다시 Pool root 아래로 옮기려 해 오류가 발생했다. 파괴 중에는 일반 반환·재부모화·`OnPoolReturn`을 실행하지 않고, 현재 lease의 Pool entry와 version만 무효화해 제거하도록 Ball/Obstacle 공통 계약을 보완했다. 정상 반환 경로는 바꾸지 않았고 legacy/fallback도 추가하지 않았다.
+
+solution 정적 빌드는 error 0, 기존 MCPForUnity 참조 충돌 warning 4이며 독립 검토에서 P0/P1은 없었다. Scene·Prefab·Material·Config 저장값은 수정하지 않았다. Play Mode Probe는 사용자 요청에 따라 실행하지 않았으며, 다음 확인은 실제 Game의 Play 시작 후 종료에서 같은 `SetParent while it is being destroyed` 오류가 사라졌는지 한 번 재현하는 것이다.
+
+발표용 [Project Overview](Presentation/PROJECT_OVERVIEW.html)도 최신 Controller 소유 MVC와 정상 반환/계층 선파괴 분기를 한 화면에서 비교하도록 갱신했다. 현재 Config 자산 값과 과거 실행 근거·최신 정적 근거·재확인 대기를 분리했고, HTML 정적 검사와 데스크톱 브라우저 렌더를 확인했다.
+
+면접관에게 직접 보여주는 문서라는 사용자 피드백에 따라 설명·주석·검증 한계·30초 발표문을 모두 자연스러운 `합니다/했습니다`체로 교정했다. 제목·도식·표의 짧은 레이블만 명사형으로 유지하고, 방어적인 내부 검증 문구도 발표용 표현으로 정리했다.

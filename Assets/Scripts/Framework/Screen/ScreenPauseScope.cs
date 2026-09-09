@@ -5,7 +5,6 @@ using VContainer;
 
 namespace Framework.Screen
 {
-    /// <summary>Put on a screen root: active screens own a game-pause request, with no UI clock.</summary>
     [DisallowMultipleComponent]
     public sealed class ScreenPauseScope : MonoBehaviour
     {
@@ -42,7 +41,6 @@ namespace Framework.Screen
         private void AcquireIfOpen()
         {
             if (_held || _pause == null || !isActiveAndEnabled) return;
-            // Notification can synchronously close this screen; OnDisable must already own the request.
             _held = true;
             _pause.Pause(this);
         }

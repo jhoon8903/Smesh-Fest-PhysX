@@ -5,9 +5,6 @@ using UnityEngine;
 
 namespace Framework.Loop
 {
-    /// <summary>
-    /// Holds requested game time scale and ownership-based pause state for an external time adapter.
-    /// </summary>
     public sealed class GameClock : IGamePause, IDisposable
     {
         private sealed class ReferenceComparer : IEqualityComparer<object>
@@ -17,29 +14,29 @@ namespace Framework.Loop
         }
 
         private readonly HashSet<object> _pauseOwners = new(new ReferenceComparer());
-        private bool _isRunning;
         private bool _isDisposed;
 
         public event Action StateChanged;
 
         public float RequestedTimeScale { get; private set; } = 1f;
-        public float EffectiveTimeScale => _isRunning && !IsPaused ? RequestedTimeScale : 0f;
-        public bool IsRunning => _isRunning;
+        public float EffectiveTimeScale => IsRunning && !IsPaused ? RequestedTimeScale : 0f;
+        public bool IsRunning { get; private set; }
+
         public bool IsPaused => _pauseOwners.Count > 0;
         public int PauseCount => _pauseOwners.Count;
 
         public void StartLoop()
         {
             ThrowIfDisposed();
-            if (_isRunning) return;
-            _isRunning = true;
+            if (IsRunning) return;
+            IsRunning = true;
             NotifyStateChanged();
         }
 
         public void StopLoop()
         {
-            if (_isDisposed || !_isRunning) return;
-            _isRunning = false;
+            if (_isDisposed || !IsRunning) return;
+            IsRunning = false;
             NotifyStateChanged();
         }
 
@@ -74,7 +71,7 @@ namespace Framework.Loop
             if (_isDisposed) return;
 
             _isDisposed = true;
-            _isRunning = false;
+            IsRunning = false;
             _pauseOwners.Clear();
             StateChanged = null;
         }

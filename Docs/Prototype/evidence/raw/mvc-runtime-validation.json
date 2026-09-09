@@ -1,11 +1,11 @@
 {
-    "recordedAtUtc": "2026-09-08T15:56:48.3065190Z",
+    "recordedAtUtc": "2026-09-09T19:53:53.9253260Z",
     "unityVersion": "6000.3.10f1",
     "success": true,
-    "assertions": 58,
+    "assertions": 62,
     "error": "",
     "notificationAllocationBytes": 0,
     "reconnectionAllocationBytes": 0,
     "allocationMeasured": true,
-    "allocationCondition": "Unity Editor current thread; precreated model/view/cached callbacks; 100 warmups, 1000 synchronous updates or Unbind/Bind pairs; includes a single extra model event; excludes object creation, pool rent/return, logging/assertions and real game rendering."
+    "allocationCondition": "Unity Editor current thread; precreated Model/View/Controller and cached callbacks; 100 warmups, then 1000 synchronous notifications or View disable/enable observation pairs; excludes object creation, pool rent/return, logging/assertions, and rendering."
 }

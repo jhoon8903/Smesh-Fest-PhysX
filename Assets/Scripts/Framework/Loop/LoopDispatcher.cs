@@ -3,24 +3,15 @@ using Framework.Observer;
 
 namespace Framework.Loop
 {
-    /// <summary>
-    /// Synchronously dispatches caller-supplied deltas on the main thread.
-    /// </summary>
-    /// <remarks>
-    /// StopLoop preserves subscriptions and allows the current dispatch to finish. Dispose is final
-    /// cleanup: it removes subscriptions and prevents later setup.
-    /// </remarks>
     public sealed class LoopDispatcher : ILoopEvents, IDisposable
     {
         private readonly Observable<float> _updateTicks = new();
         private readonly Observable<float> _fixedTicks = new();
         private readonly Observable<float> _lateTicks = new();
-
-        private bool _isRunning;
         private bool _isDisposed;
         private bool _isTicking;
 
-        public bool IsRunning => _isRunning;
+        public bool IsRunning { get; private set; }
 
         public event Action<float> UpdateTick
         {
@@ -64,13 +55,13 @@ namespace Framework.Loop
         public void StartLoop()
         {
             ThrowIfDisposed();
-            _isRunning = true;
+            IsRunning = true;
         }
 
         public void StopLoop()
         {
             if (_isDisposed) return;
-            _isRunning = false;
+            IsRunning = false;
         }
 
         public void TickUpdate(float deltaTime)
@@ -93,7 +84,7 @@ namespace Framework.Loop
             if (_isDisposed) return;
 
             _isDisposed = true;
-            _isRunning = false;
+            IsRunning = false;
             _updateTicks.Clear();
             _fixedTicks.Clear();
             _lateTicks.Clear();
@@ -101,10 +92,9 @@ namespace Framework.Loop
 
         private void Tick(Observable<float> ticks, float deltaTime)
         {
-            if (_isDisposed || !_isRunning) return;
+            if (_isDisposed || !IsRunning) return;
             if (_isTicking) throw new InvalidOperationException("LoopDispatcher does not support reentrant Tick calls.");
             if (float.IsNaN(deltaTime) || float.IsInfinity(deltaTime) || deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
-
             _isTicking = true;
             try
             {

@@ -1,0 +1,22 @@
+{
+  "id": "presentation-overview-pool-fix-final-checkpoint-20260910",
+  "stage": "document",
+  "kind": "checkpoint",
+  "actor": "main",
+  "task_id": "presentation-overview-update-002",
+  "status": "done",
+  "summary": "Final wording aligned High stripping claims with the exact historical and pending build evidence",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/raw/presentation-overview-pool-fix-validation-20260910.json"
+  ],
+  "metadata": {
+    "recorded_at_kst": "2026-09-10T05:18:59+09:00",
+    "validation_level": "static",
+    "reason": "replace ambiguous High Player wording with Managed Stripping Level=High WebGL build wording",
+    "html_parse": "passed",
+    "desktop_browser_visual_review": "passed after the final wording correction",
+    "unity_play_mode_run": false,
+    "scene_prefab_material_config_edits": false
+  }
+}

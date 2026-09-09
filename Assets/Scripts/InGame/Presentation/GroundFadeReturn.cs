@@ -12,78 +12,78 @@ namespace InGame.Presentation
     [DisallowMultipleComponent]
     public sealed class GroundFadeReturn : MonoBehaviour, IPoolLifecycle
     {
+        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+        private static readonly int Surface = Shader.PropertyToID("_Surface");
+        private static readonly int BlendModePreserveSpecular = Shader.PropertyToID("_BlendModePreserveSpecular");
+        private static readonly int SrcBlend = Shader.PropertyToID("_SrcBlend");
+        private static readonly int DstBlend = Shader.PropertyToID("_DstBlend");
+
         private enum Phase : byte { Idle, Waiting, Fading, Terminal }
 
         [SerializeField] private Renderer targetRenderer;
         [SerializeField] private Material fadeMaterial;
 
-        private ILoopEvents loopEvents;
-        private GroundFadeConfig settings;
-        private IPoolable owner;
-        private PoolLease lease;
-        private Color originalBaseColor;
-        private MaterialPropertyBlock originalRendererPropertyBlock;
-        private MaterialPropertyBlock originalIndexPropertyBlock;
-        private MaterialPropertyBlock workingRendererPropertyBlock;
-        private MaterialPropertyBlock workingIndexPropertyBlock;
-        private bool fadeUsesIndexPropertyBlock;
-        private Phase phase;
-        private float elapsed;
-        private bool subscribed;
-        private bool initialized;
+        private ILoopEvents _loopEvents;
+        private GroundFadeConfig _settings;
+        private IPoolable _owner;
+        private PoolLease _lease;
+        private Color _originalBaseColor;
+        private MaterialPropertyBlock _originalRendererPropertyBlock;
+        private MaterialPropertyBlock _originalIndexPropertyBlock;
+        private MaterialPropertyBlock _workingRendererPropertyBlock;
+        private MaterialPropertyBlock _workingIndexPropertyBlock;
+        private bool _fadeUsesIndexPropertyBlock;
+        private Phase _phase;
+        private float _elapsed;
+        private bool _subscribed;
+        private bool _initialized;
 
-        public bool IsFading => phase == Phase.Waiting || phase == Phase.Fading;
+        public bool IsFading => _phase == Phase.Waiting || _phase == Phase.Fading;
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(ILoopEvents injectedLoopEvents, GroundFadeConfig injectedSettings)
         {
-            if (loopEvents != null || settings != null)
-                throw new InvalidOperationException("GroundFadeReturn was already configured.");
-            loopEvents = injectedLoopEvents ?? throw new ArgumentNullException(nameof(injectedLoopEvents));
-            settings = injectedSettings ?? throw new ArgumentNullException(nameof(injectedSettings));
-            settings.Validate();
+            if (_loopEvents != null || _settings != null) throw new InvalidOperationException("GroundFadeReturn was already configured.");
+            _loopEvents = injectedLoopEvents ?? throw new ArgumentNullException(nameof(injectedLoopEvents));
+            _settings = injectedSettings ?? throw new ArgumentNullException(nameof(injectedSettings));
+            _settings.Validate();
         }
 
         public void OnPoolCreated(IPoolable poolOwner)
         {
-            owner = poolOwner ?? throw new ArgumentNullException(nameof(poolOwner));
-            if (targetRenderer == null || fadeMaterial == null)
-                throw new InvalidOperationException("GroundFadeReturn requires an explicit Renderer and fade Material.");
-            if (targetRenderer.transform != transform || targetRenderer.sharedMaterials.Length != 1)
-                throw new InvalidOperationException("GroundFadeReturn requires exactly one Renderer material slot on its pooled root.");
+            _owner = poolOwner ?? throw new ArgumentNullException(nameof(poolOwner));
+            if (targetRenderer == null || fadeMaterial == null) throw new InvalidOperationException("GroundFadeReturn requires an explicit Renderer and fade Material.");
+            if (targetRenderer.transform != transform || targetRenderer.sharedMaterials.Length != 1) throw new InvalidOperationException("GroundFadeReturn requires exactly one Renderer material slot on its pooled root.");
             ValidateFadeMaterial();
             fadeMaterial.SetShaderPassEnabled("ShadowCaster", true);
-            if (!fadeMaterial.GetShaderPassEnabled("ShadowCaster"))
-                throw new InvalidOperationException("GroundFadeReturn could not enable the fade Material ShadowCaster pass.");
-            if (targetRenderer.sharedMaterial != fadeMaterial)
-                throw new InvalidOperationException("GroundFadeReturn requires the Renderer to already use its configured fade Material.");
-            originalRendererPropertyBlock = new MaterialPropertyBlock();
-            originalIndexPropertyBlock = new MaterialPropertyBlock();
-            workingRendererPropertyBlock = new MaterialPropertyBlock();
-            workingIndexPropertyBlock = new MaterialPropertyBlock();
-            targetRenderer.GetPropertyBlock(originalRendererPropertyBlock);
-            targetRenderer.GetPropertyBlock(originalIndexPropertyBlock, 0);
-            fadeUsesIndexPropertyBlock = !originalIndexPropertyBlock.isEmpty;
-            originalBaseColor = fadeUsesIndexPropertyBlock && originalIndexPropertyBlock.HasColor("_BaseColor")
-                ? originalIndexPropertyBlock.GetColor("_BaseColor")
-                : !fadeUsesIndexPropertyBlock && originalRendererPropertyBlock.HasColor("_BaseColor")
-                    ? originalRendererPropertyBlock.GetColor("_BaseColor")
-                    : fadeMaterial.GetColor("_BaseColor");
-            initialized = true;
+            if (!fadeMaterial.GetShaderPassEnabled("ShadowCaster")) throw new InvalidOperationException("GroundFadeReturn could not enable the fade Material ShadowCaster pass.");
+            if (targetRenderer.sharedMaterial != fadeMaterial) throw new InvalidOperationException("GroundFadeReturn requires the Renderer to already use its configured fade Material.");
+            _originalRendererPropertyBlock = new MaterialPropertyBlock();
+            _originalIndexPropertyBlock = new MaterialPropertyBlock();
+            _workingRendererPropertyBlock = new MaterialPropertyBlock();
+            _workingIndexPropertyBlock = new MaterialPropertyBlock();
+            targetRenderer.GetPropertyBlock(_originalRendererPropertyBlock);
+            targetRenderer.GetPropertyBlock(_originalIndexPropertyBlock, 0);
+            _fadeUsesIndexPropertyBlock = !_originalIndexPropertyBlock.isEmpty;
+            _originalBaseColor = _fadeUsesIndexPropertyBlock && _originalIndexPropertyBlock.HasColor(BaseColor)
+                ? _originalIndexPropertyBlock.GetColor(BaseColor)
+                : !_fadeUsesIndexPropertyBlock && _originalRendererPropertyBlock.HasColor(BaseColor)
+                    ? _originalRendererPropertyBlock.GetColor(BaseColor)
+                    : fadeMaterial.GetColor(BaseColor);
+            _initialized = true;
         }
 
         public void OnPoolRent(PoolLease rentalLease)
         {
-            if (!initialized || owner == null || !ReferenceEquals(owner.PoolObject, gameObject))
-                throw new InvalidOperationException("GroundFadeReturn must be created by its owning pool before rental.");
-            if (!rentalLease.IsValid)
-                throw new InvalidOperationException("GroundFadeReturn requires the current PoolLease.");
+            if (!_initialized || _owner == null || !ReferenceEquals(_owner.PoolObject, gameObject)) throw new InvalidOperationException("GroundFadeReturn must be created by its owning pool before rental.");
+            if (!rentalLease.IsValid) throw new InvalidOperationException("GroundFadeReturn requires the current PoolLease.");
 
             Unsubscribe();
             RestoreVisual();
-            lease = rentalLease;
-            phase = Phase.Idle;
-            elapsed = 0f;
+            _lease = rentalLease;
+            _phase = Phase.Idle;
+            _elapsed = 0f;
         }
 
         public void OnPoolReturn() => ResetRental();
@@ -92,73 +92,67 @@ namespace InGame.Presentation
         private void OnDestroy()
         {
             Unsubscribe();
-            lease = default;
-            elapsed = 0f;
-            phase = Phase.Terminal;
+            _lease = default;
+            _elapsed = 0f;
+            _phase = Phase.Terminal;
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (phase != Phase.Idle || !lease.IsValid || collision.collider == null
+            if (_phase != Phase.Idle || !_lease.IsValid || collision.collider == null
                 || !collision.collider.TryGetComponent(out GroundSurface _))
                 return;
-            phase = Phase.Waiting;
-            elapsed = 0f;
+            _phase = Phase.Waiting;
+            _elapsed = 0f;
             Subscribe();
         }
 
         private void HandleUpdate(float deltaTime)
         {
-            if (!IsFading || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime) || deltaTime < 0f)
-                return;
+            if (!IsFading || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime) || deltaTime < 0f) return;
 
-            elapsed += deltaTime;
-            if (phase == Phase.Waiting)
+            _elapsed += deltaTime;
+            if (_phase == Phase.Waiting)
             {
-                if (elapsed < settings.DelaySeconds)
-                    return;
-                phase = Phase.Fading;
-                elapsed -= settings.DelaySeconds;
+                if (_elapsed < _settings.DelaySeconds) return;
+                _phase = Phase.Fading;
+                _elapsed -= _settings.DelaySeconds;
             }
 
-            ApplyFade(Mathf.Clamp01(1f - elapsed / settings.FadeSeconds));
-            if (elapsed >= settings.FadeSeconds)
-                CompleteReturn();
+            ApplyFade(Mathf.Clamp01(1f - _elapsed / _settings.FadeSeconds));
+            if (_elapsed >= _settings.FadeSeconds) CompleteReturn();
         }
 
         private void ApplyFade(float alpha)
         {
             MaterialPropertyBlock workingBlock;
-            if (fadeUsesIndexPropertyBlock)
+            if (_fadeUsesIndexPropertyBlock)
             {
-                workingIndexPropertyBlock.Clear();
-                targetRenderer.SetPropertyBlock(originalIndexPropertyBlock, 0);
-                targetRenderer.GetPropertyBlock(workingIndexPropertyBlock, 0);
-                workingBlock = workingIndexPropertyBlock;
+                _workingIndexPropertyBlock.Clear();
+                targetRenderer.SetPropertyBlock(_originalIndexPropertyBlock, 0);
+                targetRenderer.GetPropertyBlock(_workingIndexPropertyBlock, 0);
+                workingBlock = _workingIndexPropertyBlock;
             }
             else
             {
-                workingRendererPropertyBlock.Clear();
-                targetRenderer.SetPropertyBlock(originalRendererPropertyBlock);
-                targetRenderer.GetPropertyBlock(workingRendererPropertyBlock);
-                workingBlock = workingRendererPropertyBlock;
+                _workingRendererPropertyBlock.Clear();
+                targetRenderer.SetPropertyBlock(_originalRendererPropertyBlock);
+                targetRenderer.GetPropertyBlock(_workingRendererPropertyBlock);
+                workingBlock = _workingRendererPropertyBlock;
             }
-            Color fadeColor = originalBaseColor;
+            Color fadeColor = _originalBaseColor;
             fadeColor.a *= alpha;
-            workingBlock.SetColor("_BaseColor", fadeColor);
-            if (fadeUsesIndexPropertyBlock)
-                targetRenderer.SetPropertyBlock(workingBlock, 0);
-            else
-                targetRenderer.SetPropertyBlock(workingBlock);
+            workingBlock.SetColor(BaseColor, fadeColor);
+            if (_fadeUsesIndexPropertyBlock) targetRenderer.SetPropertyBlock(workingBlock, 0);
+            else targetRenderer.SetPropertyBlock(workingBlock);
         }
 
         private void CompleteReturn()
         {
-            if (phase == Phase.Terminal)
-                return;
-            phase = Phase.Terminal;
+            if (_phase == Phase.Terminal) return;
+            _phase = Phase.Terminal;
             Unsubscribe();
-            PoolLease currentLease = lease;
+            PoolLease currentLease = _lease;
             currentLease.Return();
         }
 
@@ -166,47 +160,43 @@ namespace InGame.Presentation
         {
             Unsubscribe();
             RestoreVisual();
-            lease = default;
-            phase = Phase.Idle;
-            elapsed = 0f;
+            _lease = default;
+            _phase = Phase.Idle;
+            _elapsed = 0f;
         }
 
         private void RestoreVisual()
         {
-            if (!initialized || targetRenderer == null)
-                return;
-            targetRenderer.SetPropertyBlock(originalRendererPropertyBlock.isEmpty ? null : originalRendererPropertyBlock);
-            targetRenderer.SetPropertyBlock(originalIndexPropertyBlock.isEmpty ? null : originalIndexPropertyBlock, 0);
+            if (!_initialized || targetRenderer == null) return;
+            targetRenderer.SetPropertyBlock(_originalRendererPropertyBlock.isEmpty ? null : _originalRendererPropertyBlock);
+            targetRenderer.SetPropertyBlock(_originalIndexPropertyBlock.isEmpty ? null : _originalIndexPropertyBlock, 0);
         }
 
         private void Unsubscribe()
         {
-            if (!subscribed)
-                return;
-            subscribed = false;
-            if (loopEvents != null)
-                loopEvents.UpdateTick -= HandleUpdate;
+            if (!_subscribed) return;
+            _subscribed = false;
+            if (_loopEvents != null) _loopEvents.UpdateTick -= HandleUpdate;
         }
 
         private void Subscribe()
         {
-            if (subscribed)
-                return;
-            loopEvents.UpdateTick += HandleUpdate;
-            subscribed = true;
+            if (_subscribed) return;
+            _loopEvents.UpdateTick += HandleUpdate;
+            _subscribed = true;
         }
 
         private void ValidateFadeMaterial()
         {
-            if (fadeMaterial.shader == null || !fadeMaterial.HasProperty("_BaseColor")
-                || !fadeMaterial.HasProperty("_Surface") || !fadeMaterial.HasProperty("_ZWrite")
-                || !fadeMaterial.HasProperty("_BlendModePreserveSpecular")
-                || !fadeMaterial.HasProperty("_SrcBlend") || !fadeMaterial.HasProperty("_DstBlend")
-                || !Mathf.Approximately(fadeMaterial.GetFloat("_Surface"), 1f)
-                || !Mathf.Approximately(fadeMaterial.GetFloat("_ZWrite"), 0f)
-                || !Mathf.Approximately(fadeMaterial.GetFloat("_BlendModePreserveSpecular"), 0f)
-                || !Mathf.Approximately(fadeMaterial.GetFloat("_SrcBlend"), 5f)
-                || !Mathf.Approximately(fadeMaterial.GetFloat("_DstBlend"), 10f)
+            if (fadeMaterial.shader == null || !fadeMaterial.HasProperty(BaseColor)
+                || !fadeMaterial.HasProperty(Surface) || !fadeMaterial.HasProperty(ZWrite)
+                || !fadeMaterial.HasProperty(BlendModePreserveSpecular)
+                || !fadeMaterial.HasProperty(SrcBlend) || !fadeMaterial.HasProperty(DstBlend)
+                || !Mathf.Approximately(fadeMaterial.GetFloat(Surface), 1f)
+                || !Mathf.Approximately(fadeMaterial.GetFloat(ZWrite), 0f)
+                || !Mathf.Approximately(fadeMaterial.GetFloat(BlendModePreserveSpecular), 0f)
+                || !Mathf.Approximately(fadeMaterial.GetFloat(SrcBlend), 5f)
+                || !Mathf.Approximately(fadeMaterial.GetFloat(DstBlend), 10f)
                 || fadeMaterial.renderQueue < (int)RenderQueue.Transparent
                 || !fadeMaterial.IsKeywordEnabled("_SURFACE_TYPE_TRANSPARENT")
                 || fadeMaterial.GetTag("RenderType", false, string.Empty) != "Transparent")

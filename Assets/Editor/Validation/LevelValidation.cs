@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using Editor.Level;
 using Framework.Pool;
+using Framework.Test;
 using InGame.Level;
 using InGame.Obstacle;
 using UnityEditor;
@@ -45,7 +46,7 @@ namespace Framework.EditorValidation
                 PoolContainer container = fixtures.AddComponent<PoolContainer>();
                 SetContainerConfigs(container, poolConfig);
                 resolver = new ContainerBuilder().Build();
-                factory = new PoolFactory(container, resolver, retainMinimum: true);
+                factory = new PoolFactory(container, resolver, new TestPoolObjectComposer(), retainMinimum: true);
                 factory.Initialize(startMaintenance: false);
 
                 Transform runtimeRoot = new GameObject("RuntimeRoot").transform;

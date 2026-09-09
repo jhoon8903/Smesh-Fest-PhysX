@@ -1,4 +1,5 @@
 using System;
+using Framework.Log;
 using Framework.Loop;
 using InGame.Level;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace InGame.Flow
             if (_loop == null || _levelSession == null) throw new InvalidOperationException("GameFlow requires GameLifetimeScope injection before starting.");
             if (!_levelSession.TryStart(out string failure))
             {
-                Debug.LogError("[GameFlow] Level start failed: " + failure, this);
+                GameLog.D("[GameFlow] Level start failed: " + failure, this);
                 return;
             }
             _started = true;

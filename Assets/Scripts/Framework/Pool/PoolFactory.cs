@@ -8,7 +8,6 @@ using VContainer.Unity;
 
 namespace Framework.Pool
 {
-    /// <summary>Owns one scene's pools, their cloned objects, and idle maintenance.</summary>
     public sealed class PoolFactory : IDisposable
     {
         private sealed class Registration
@@ -17,17 +16,19 @@ namespace Framework.Pool
             public Transform Root;
             public Transform ConstructionRoot;
             public IObjectResolver Resolver;
+            public IPoolObjectComposer Composer;
             public Pool Pool;
 
             public IPoolable Create()
             {
-                // An inactive parent prevents OnEnable before injection. Never toggle the source prefab.
                 MonoBehaviour clone = UnityEngine.Object.Instantiate(Config.Prefab, ConstructionRoot, false);
                 try
                 {
                     clone.gameObject.SetActive(false);
                     Resolver.InjectGameObject(clone.gameObject);
-                    return (IPoolable)clone;
+                    IPoolable owner = (IPoolable)clone;
+                    Composer.Compose(owner);
+                    return owner;
                 }
                 catch
                 {
@@ -39,7 +40,6 @@ namespace Framework.Pool
 
             public void Destroy(IPoolable value)
             {
-                // Scene teardown may destroy the component before the separate DI scope is disposed.
                 if (value is UnityEngine.Object unityObject && unityObject == null)
                     return;
                 if (value == null || value.PoolObject == null)
@@ -49,79 +49,70 @@ namespace Framework.Pool
             }
         }
 
-        private readonly PoolContainer container;
-        private readonly IObjectResolver resolver;
-        private readonly bool retainMinimum;
-        private readonly Func<double> now;
-        private readonly Dictionary<PoolConfig, Registration> registrations = new Dictionary<PoolConfig, Registration>();
-        private Registration[] ordered = Array.Empty<Registration>();
-        private CancellationTokenSource maintenanceCancellation;
-        private bool initializing;
-        private bool initialized;
-        private bool disposed;
-        private bool collecting;
+        private readonly PoolContainer _container;
+        private readonly IObjectResolver _resolver;
+        private readonly IPoolObjectComposer _composer;
+        private readonly bool _retainMinimum;
+        private readonly Func<double> _now;
+        private readonly Dictionary<PoolConfig, Registration> _registrations = new Dictionary<PoolConfig, Registration>();
+        private Registration[] _ordered = Array.Empty<Registration>();
+        private CancellationTokenSource _maintenanceCancellation;
+        private bool _initializing;
+        private bool _initialized;
+        private bool _disposed;
+        private bool _collecting;
 
         public PoolFactory(PoolContainer container, IObjectResolver resolver,
-            bool retainMinimum, Func<double> now = null)
+            IPoolObjectComposer composer, bool retainMinimum, Func<double> now = null)
         {
-            this.container = container != null ? container : throw new ArgumentNullException(nameof(container));
-            this.resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
-            this.retainMinimum = retainMinimum;
-            this.now = now ?? ReadRealtime;
+            _container = container != null ? container : throw new ArgumentNullException(nameof(container));
+            _resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
+            _composer = composer ?? throw new ArgumentNullException(nameof(composer));
+            _retainMinimum = retainMinimum;
+            _now = now ?? ReadRealtime;
         }
 
         public void Initialize(bool startMaintenance = true)
         {
-            if (disposed)
-                throw new ObjectDisposedException(nameof(PoolFactory));
-            if (initialized)
-                return;
-            if (initializing)
-                throw new InvalidOperationException("PoolFactory initialization is already in progress.");
+            if (_disposed) throw new ObjectDisposedException(nameof(PoolFactory));
+            if (_initialized) return;
+            if (_initializing) throw new InvalidOperationException("PoolFactory initialization is already in progress.");
 
-            initializing = true;
+            _initializing = true;
             try
             {
-                // Check the whole catalog before creating any roots or invoking prefab lifecycle code.
-                IReadOnlyList<PoolConfig> configs = container.Configs;
-                if (configs == null)
-                    throw new InvalidOperationException("PoolContainer requires a config collection.");
-                ordered = new Registration[configs.Count];
+                IReadOnlyList<PoolConfig> configs = _container.Configs;
+                if (configs == null) throw new InvalidOperationException("PoolContainer requires a config collection.");
+                _ordered = new Registration[configs.Count];
                 for (int i = 0; i < configs.Count; i++)
                 {
                     PoolConfig config = configs[i];
-                    if (config == null)
-                        throw new InvalidOperationException("PoolContainer contains a missing PoolConfig.");
+                    if (config == null) throw new InvalidOperationException("PoolContainer contains a missing PoolConfig.");
                     config.Validate();
-                    if (registrations.ContainsKey(config))
-                        throw new InvalidOperationException("PoolContainer contains the same PoolConfig more than once.");
-                    Registration registration = new Registration { Config = config, Resolver = resolver };
-                    registrations.Add(config, registration);
-                    ordered[i] = registration;
+                    if (_registrations.ContainsKey(config)) throw new InvalidOperationException("PoolContainer contains the same PoolConfig more than once.");
+                    Registration registration = new Registration { Config = config, Resolver = _resolver, Composer = _composer };
+                    _registrations.Add(config, registration);
+                    _ordered[i] = registration;
                 }
 
-                for (int i = 0; i < ordered.Length; i++)
+                for (int i = 0; i < _ordered.Length; i++)
                 {
-                    Registration registration = ordered[i];
+                    Registration registration = _ordered[i];
                     registration.Root = new GameObject(registration.Config.PoolRootName).transform;
-                    registration.Root.SetParent(container.transform, false);
+                    registration.Root.SetParent(_container.transform, false);
                     GameObject construction = new GameObject("Construction");
                     construction.SetActive(false);
                     construction.transform.SetParent(registration.Root, false);
                     registration.ConstructionRoot = construction.transform;
-                    registration.Pool = new Pool(registration.Config, registration.Root,
-                        registration.Create, registration.Destroy, now);
+                    registration.Pool = new Pool(registration.Config, registration.Root, registration.Create, registration.Destroy, _now);
                     registration.Pool.Prewarm();
-                    if (disposed)
-                        throw new ObjectDisposedException(nameof(PoolFactory));
+                    if (_disposed) throw new ObjectDisposedException(nameof(PoolFactory));
                 }
 
-                initialized = true;
-                if (startMaintenance && ordered.Length > 0)
-                {
-                    maintenanceCancellation = new CancellationTokenSource();
-                    MaintainIdleAsync(maintenanceCancellation.Token).Forget();
-                }
+                _initialized = true;
+                if (!startMaintenance || _ordered.Length <= 0) return;
+                _maintenanceCancellation = new CancellationTokenSource();
+                MaintainIdleAsync(_maintenanceCancellation.Token).Forget();
             }
             catch
             {
@@ -131,78 +122,67 @@ namespace Framework.Pool
             }
             finally
             {
-                initializing = false;
+                _initializing = false;
             }
         }
 
         public bool TryRent(PoolConfig config, in PoolSpawnArgs args, out PoolLease lease)
         {
             lease = default;
-            return !disposed && initialized && config != null
-                   && registrations.TryGetValue(config, out Registration registration)
+            return !_disposed && _initialized && config != null
+                   && _registrations.TryGetValue(config, out Registration registration)
                    && registration.Pool.TryRent(args, out lease);
         }
 
         public IPool GetPool(PoolConfig config)
         {
-            if (disposed)
-                throw new ObjectDisposedException(nameof(PoolFactory));
-            if (!initialized)
-                throw new InvalidOperationException("Initialize the PoolFactory before querying a pool.");
-            if (config == null || !registrations.TryGetValue(config, out Registration registration))
-                throw new ArgumentException("The PoolConfig is not registered in this container.", nameof(config));
+            if (_disposed) throw new ObjectDisposedException(nameof(PoolFactory));
+            if (!_initialized) throw new InvalidOperationException("Initialize the PoolFactory before querying a pool.");
+            if (config == null || !_registrations.TryGetValue(config, out Registration registration)) throw new ArgumentException("The PoolConfig is not registered in this container.", nameof(config));
             return registration.Pool;
         }
 
         public int CollectIdle()
         {
-            if (disposed || !initialized || collecting)
-                return 0;
-
-            collecting = true;
+            if (_disposed || !_initialized || _collecting) return 0;
+            _collecting = true;
             int removed = 0;
             Exception failure = null;
             try
             {
-                for (int i = 0; i < ordered.Length && !disposed; i++)
+                for (int i = 0; i < _ordered.Length && !_disposed; i++)
                 {
-                    try { removed += ordered[i].Pool.TrimIdle(retainMinimum); }
+                    try { removed += _ordered[i].Pool.TrimIdle(_retainMinimum); }
                     catch (Exception exception) { failure ??= exception; }
                 }
             }
             finally
             {
-                collecting = false;
+                _collecting = false;
             }
 
-            if (failure != null)
-                throw failure;
-            return removed;
+            return failure != null ? throw failure : removed;
         }
 
         public void Dispose()
         {
-            if (disposed)
-                return;
-            disposed = true;
-            maintenanceCancellation?.Cancel();
-            maintenanceCancellation?.Dispose();
-            maintenanceCancellation = null;
+            if (_disposed) return;
+            _disposed = true;
+            _maintenanceCancellation?.Cancel();
+            _maintenanceCancellation?.Dispose();
+            _maintenanceCancellation = null;
 
             Exception failure = null;
-            for (int i = ordered.Length - 1; i >= 0; i--)
+            for (int i = _ordered.Length - 1; i >= 0; i--)
             {
-                Registration registration = ordered[i];
-                if (registration == null)
-                    continue;
+                Registration registration = _ordered[i];
+                if (registration == null) continue;
                 try { registration.Pool?.Dispose(); }
                 catch (Exception exception) { failure ??= exception; }
-                if (registration.Root != null)
-                    UnityEngine.Object.Destroy(registration.Root.gameObject);
+                if (registration.Root != null) UnityEngine.Object.Destroy(registration.Root.gameObject);
             }
-            registrations.Clear();
-            if (failure != null)
-                throw failure;
+            _registrations.Clear();
+            if (failure != null) throw failure;
         }
 
         private async UniTask MaintainIdleAsync(CancellationToken token)

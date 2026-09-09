@@ -1,6 +1,7 @@
 #if UNITY_EDITOR || SMESH_VALIDATION
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Framework.Loop;
 using Framework.Object;
@@ -10,7 +11,7 @@ using VContainer;
 
 namespace Framework.Test
 {
-    /// <summary>Transient, explicit checks. No game scene, prefab or gameplay state is configured here.</summary>
+    /// <summary>Play Mode evidence for Controller-owned model observation and pool composition.</summary>
     public sealed class MvcRuntimeProbe : MonoBehaviour
     {
         [Serializable]
@@ -30,8 +31,8 @@ namespace Framework.Test
         public sealed class StateModel : ObModel
         {
             public int Value { get; private set; }
-            public event Action Selected;
             public int SelectionSubscribers { get; private set; }
+            public event Action Selected;
 
             public void SetValue(int value)
             {
@@ -40,383 +41,513 @@ namespace Framework.Test
                 NotifyChanged();
             }
 
-            public void AddSelection(Action callback) { Selected += callback; SelectionSubscribers++; }
-            public void RemoveSelection(Action callback) { Selected -= callback; SelectionSubscribers--; }
+            public void AddSelection(Action callback)
+            {
+                Selected += callback;
+                SelectionSubscribers++;
+            }
+
+            public void RemoveSelection(Action callback)
+            {
+                Selected -= callback;
+                SelectionSubscribers--;
+            }
+
             public void Select() => Selected?.Invoke();
         }
 
-        public class ProbeView : ObView<StateModel>
+        public class ProbeView : ObView
         {
-            private Action selected;
             public int RefreshCount { get; private set; }
             public int ShownValue { get; private set; }
             public int SelectionCount { get; private set; }
-            public Action<StateModel> BoundAction;
-            public Action<StateModel> UnboundAction;
-            public Action<StateModel> RefreshAction;
+            public Action<StateModel> RefreshAction { get; set; }
 
-            protected override void OnModelBound(StateModel model)
-            {
-                selected ??= OnSelected;
-                model.AddSelection(selected);
-                BoundAction?.Invoke(model);
-            }
-
-            protected override void OnModelUnbound(StateModel model)
-            {
-                model.RemoveSelection(selected);
-                UnboundAction?.Invoke(model);
-            }
-
-            protected override void RefreshView(StateModel model)
+            internal void Show(StateModel model)
             {
                 RefreshCount++;
                 ShownValue = model.Value;
                 RefreshAction?.Invoke(model);
             }
 
-            private void OnSelected() => SelectionCount++;
+            internal void ShowSelection() => SelectionCount++;
         }
 
-        // Object-specific controller lifetime; the common Model/View code does not own this policy.
-        public sealed class ProbeController : IDisposable
+        public sealed class ProbeController : ObController<ProbeView, StateModel>
         {
-            private readonly ILoopEvents loop;
-            private readonly StateModel model;
-            private readonly Action<float> tick;
-            public bool IsRunning { get; private set; }
+            private readonly ILoopEvents _loop;
+            private readonly Action<float> _tick;
+            private readonly Action _selected;
+            private readonly PooledView _pooledView;
+            private bool _running;
+
+            public ProbeController(ProbeView view, StateModel model, ILoopEvents loop)
+                : base(view, model)
+            {
+                _loop = loop ?? throw new ArgumentNullException(nameof(loop));
+                _tick = HandleTick;
+                _selected = HandleSelected;
+                _pooledView = view as PooledView;
+                if (_pooledView != null) _pooledView.Created += HandlePoolCreated;
+
+                try
+                {
+                    Activate();
+                }
+                catch
+                {
+                    try { Dispose(); }
+                    catch { }
+                    throw;
+                }
+            }
+
             public int TickCount { get; private set; }
+            public bool IsRunning => _running;
+            public bool PoolCreationObserved { get; private set; }
 
-            public ProbeController(ILoopEvents loop, StateModel model)
+            protected override void OnViewEnabled()
             {
-                this.loop = loop;
-                this.model = model;
-                tick = OnTick;
+                if (_running) throw new InvalidOperationException("ProbeController duplicated its active subscriptions.");
+                _loop.UpdateTick += _tick;
+                Model.AddSelection(_selected);
+                _running = true;
             }
 
-            public void Start()
+            protected override void OnViewDisabled() => StopRunning();
+
+            protected override void DisposeController()
             {
-                if (IsRunning) return;
-                loop.UpdateTick += tick;
-                IsRunning = true;
+                StopRunning();
+                if (_pooledView != null) _pooledView.Created -= HandlePoolCreated;
             }
 
-            public void Stop()
-            {
-                if (!IsRunning) return;
-                IsRunning = false;
-                loop.UpdateTick -= tick;
-            }
+            protected override void RefreshView(StateModel model) => View.Show(model);
 
-            public void Dispose() => Stop();
-            private void OnTick(float delta)
+            private void HandleTick(float deltaTime)
             {
-                if (!IsRunning) return;
+                if (!_running) return;
                 TickCount++;
-                model.SetValue(model.Value + 1);
+                Model.SetValue(Model.Value + 1);
+            }
+
+            private void HandleSelected()
+            {
+                if (_running) View.ShowSelection();
+            }
+
+            private void HandlePoolCreated() => PoolCreationObserved = true;
+
+            private void StopRunning()
+            {
+                if (!_running) return;
+                _running = false;
+                _loop.UpdateTick -= _tick;
+                Model.RemoveSelection(_selected);
             }
         }
 
         public sealed class PooledView : ProbeView, IPoolable
         {
-            private ILoopEvents loop;
-            public bool RecreateOnRent;
-            public StateModel OwnedModel { get; private set; }
-            public ProbeController Controller { get; private set; }
-            public bool InjectedBeforeCreation { get; private set; }
+            public bool FailNextRent { get; set; }
             public GameObject PoolObject => gameObject;
-
-            [Inject, UnityEngine.Scripting.Preserve]
-            private void Construct(ILoopEvents events) => loop = events;
+            internal event Action Created;
 
             public void OnPoolCreated(IPoolable owner)
             {
-                InjectedBeforeCreation = loop != null;
-                if (!InjectedBeforeCreation) throw new InvalidOperationException("Missing DI before creation.");
-                CreateBundle();
+                if (!ReferenceEquals(owner, this)) throw new InvalidOperationException("PooledView must own its PoolObject.");
+                if (Created == null) throw new InvalidOperationException("PooledView requires Controller composition before OnPoolCreated.");
+                Created.Invoke();
             }
 
             public void OnPoolRent(PoolLease lease)
             {
-                if (RecreateOnRent) { Controller.Dispose(); CreateBundle(); }
-                OwnedModel.SetValue(0);
-                Bind(OwnedModel);
-                Controller.Start();
+                if (!lease.IsValid) throw new InvalidOperationException("PooledView requires the current PoolLease.");
+                if (!FailNextRent) return;
+                FailNextRent = false;
+                throw new InvalidOperationException("Expected rental preparation failure.");
             }
 
-            public void OnPoolReturn()
-            {
-                Controller.Stop();
-                Unbind();
-                OwnedModel.SetValue(0);
-            }
-
-            public void OnPoolDestroy()
-            {
-                Controller?.Dispose();
-                Unbind();
-            }
-
-            private void CreateBundle()
-            {
-                OwnedModel = new StateModel();
-                Controller = new ProbeController(loop, OwnedModel);
-            }
+            public void OnPoolReturn() { }
+            public void OnPoolDestroy() => NotifyDestroying();
         }
 
-        private readonly Result result = new Result();
-        private GameObject fixtureRoot;
-        private PoolFactory factory;
-        private PoolConfig[] configs;
-        private IObjectResolver resolver;
-        private LoopDispatcher loop;
-        private string outputPath;
+        private readonly Result _result = new Result();
+        private readonly Dictionary<ProbeView, ProbeController> _controllers = new Dictionary<ProbeView, ProbeController>();
+        private GameObject _fixtureRoot;
+        private PoolFactory _factory;
+        private PoolConfig[] _configs;
+        private IObjectResolver _resolver;
+        private LoopDispatcher _loop;
+        private string _outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig[] poolConfigs, string output)
         {
-            fixtureRoot = root;
-            configs = poolConfigs;
-            outputPath = output;
+            _fixtureRoot = root;
+            _configs = poolConfigs;
+            _outputPath = output;
             StartCoroutine(Run(container));
         }
 
         private IEnumerator Run(PoolContainer container)
         {
-            result.recordedAtUtc = DateTime.UtcNow.ToString("O");
-            result.unityVersion = Application.unityVersion;
+            _result.recordedAtUtc = DateTime.UtcNow.ToString("O");
+            _result.unityVersion = Application.unityVersion;
             try
             {
-                CheckViewLifetime();
-                CheckHooksAndExceptions();
+                CheckStandaloneControllerLifetime();
+                CheckRefreshFailureAndReentrantDispose();
                 CheckAllocation();
-                loop = new LoopDispatcher();
-                loop.StartLoop();
-                ContainerBuilder builder = new ContainerBuilder();
-                builder.RegisterInstance<ILoopEvents>(loop);
-                resolver = builder.Build();
-                factory = new PoolFactory(container, resolver, true);
-                factory.Initialize(false);
-                CheckPool(configs[0], false);
-                CheckPool(configs[1], true);
-
-                Assert(factory.TryRent(configs[0], new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease active), "Final rent failed.");
-                PooledView view = (PooledView)active.Value;
-                StateModel model = view.OwnedModel;
-                ProbeController controller = view.Controller;
-                factory.Dispose();
-                factory = null;
-                Assert(!active.IsValid && model.ObserverCount == 0 && model.SelectionSubscribers == 0 && !controller.IsRunning,
-                    "Factory disposal left model/controller subscriptions alive.");
-                result.success = true;
+                _factory = new PoolFactory(container, _resolver, new TestPoolObjectComposer(Compose), true);
+                _factory.Initialize(false);
+                CheckComposerRequiredBeforeCreate();
+                CheckPoolReuse(_configs[0]);
+                CheckPoolReuse(_configs[1]);
+                CheckInvalidRentRollback(_configs[1]);
+                CheckHierarchyFirstDestroy(_configs[1]);
+                CheckActiveFactoryDispose(_configs[0]);
+                _result.success = true;
             }
-            catch (Exception exception) { result.error = exception.ToString(); }
+            catch (Exception exception)
+            {
+                _result.success = false;
+                _result.error = exception.ToString();
+            }
             finally
             {
-                try { factory?.Dispose(); }
-                catch (Exception exception) { result.success = false; result.error += "\nCleanup: " + exception; }
-                loop?.Dispose();
-                resolver?.Dispose();
-                if (fixtureRoot != null) Destroy(fixtureRoot);
-                if (configs != null)
-                    for (int i = 0; i < configs.Length; i++) if (configs[i] != null) Destroy(configs[i]);
+                try { _factory?.Dispose(); }
+                catch (Exception exception) { RecordCleanupFailure("PoolFactory", exception); }
+                DisposeRemainingControllers();
+                _loop?.Dispose();
+                _resolver?.Dispose();
+                if (_fixtureRoot != null) Destroy(_fixtureRoot);
+                if (_configs != null)
+                {
+                    for (int i = 0; i < _configs.Length; i++)
+                    {
+                        if (_configs[i] != null) Destroy(_configs[i]);
+                    }
+                }
             }
 
             yield return null;
             yield return null;
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-            File.WriteAllText(outputPath, JsonUtility.ToJson(result, true));
-            if (result.success) Debug.Log("[MvcValidation] Passed " + result.assertions + " assertions.");
-            else Debug.LogError("[MvcValidation] " + result.error);
+            Directory.CreateDirectory(Path.GetDirectoryName(_outputPath));
+            File.WriteAllText(_outputPath, JsonUtility.ToJson(_result, true));
+            if (_result.success) Debug.Log("[MvcValidation] Passed " + _result.assertions + " assertions.");
+            else Debug.LogError("[MvcValidation] " + _result.error);
             Destroy(gameObject);
         }
 
-        private ProbeView NewView()
+        private void Compose(IPoolable owner)
         {
-            GameObject target = new GameObject("__MvcValidation_View");
-            target.transform.SetParent(fixtureRoot.transform, false);
+            if (!(owner is PooledView view)) throw new InvalidOperationException("MVC validation only composes PooledView owners.");
+            if (_controllers.ContainsKey(view)) throw new InvalidOperationException("PooledView already has a Controller.");
+            ProbeController controller = new ProbeController(view, new StateModel(), _loop);
+            try
+            {
+                _controllers.Add(view, controller);
+                controller.Disposed += HandleControllerDisposed;
+            }
+            catch
+            {
+                controller.Dispose();
+                throw;
+            }
+        }
+
+        private void HandleControllerDisposed(ObView view) => _controllers.Remove((ProbeView)view);
+
+        private ProbeView NewView(string name)
+        {
+            GameObject target = new GameObject(name);
+            target.transform.SetParent(_fixtureRoot.transform, false);
             target.SetActive(false);
             return target.AddComponent<ProbeView>();
         }
 
-        private void CheckViewLifetime()
+        private void CheckStandaloneControllerLifetime()
         {
-            GameObject standalone = new GameObject("__MvcValidation_Standalone");
-            standalone.transform.SetParent(fixtureRoot.transform, false);
-            Assert(!(standalone.AddComponent<ObView>() is IPoolable), "Base ObView requires pooling.");
-            ProbeView view = NewView();
-            StateModel first = new StateModel();
-            StateModel second = new StateModel();
-            first.SetValue(7);
-            view.Bind(first);
-            Assert(view.Model == first && !view.IsObserving && first.ObserverCount == 0 && view.RefreshCount == 0,
-                "Inactive Bind observed or refreshed early.");
+            ProbeView view = NewView("__MvcValidation_Standalone");
+            Assert(!(view is IPoolable), "Standalone ObView unexpectedly requires pooling.");
+            StateModel model = new StateModel();
+            model.SetValue(7);
+            ProbeController controller = new ProbeController(view, model, RequireLoop());
+            Assert(ReferenceEquals(controller.Model, model) && !controller.IsObserving && !controller.IsRunning
+                   && model.ObserverCount == 0 && model.SelectionSubscribers == 0 && view.RefreshCount == 0,
+                "An inactive View began Controller-owned observation or refresh early.");
+
             view.gameObject.SetActive(true);
-            Assert(view.IsObserving && first.ObserverCount == 1 && first.SelectionSubscribers == 1 && view.ShownValue == 7 && view.RefreshCount == 1,
-                "Enable did not observe and display the current state exactly once.");
-            view.Bind(first);
-            Assert(first.ObserverCount == 1 && view.RefreshCount == 1, "Same Model Bind duplicated work.");
-            first.SetValue(8);
-            Assert(view.ShownValue == 8 && view.RefreshCount == 2, "State notification did not refresh View.");
-            first.Select();
-            Assert(view.SelectionCount == 1, "Custom model subscription was not connected.");
-            view.Bind(second);
-            Assert(first.ObserverCount == 0 && first.SelectionSubscribers == 0 && second.ObserverCount == 1 && view.Model == second,
-                "Model replacement leaked the old model subscription.");
-            int refreshes = view.RefreshCount;
-            first.SetValue(9);
-            first.Select();
-            Assert(view.RefreshCount == refreshes && view.SelectionCount == 1, "Old model still drove the View.");
+            Assert(controller.IsObserving && controller.IsRunning && model.ObserverCount == 1
+                   && model.SelectionSubscribers == 1 && view.ShownValue == 7 && view.RefreshCount == 1,
+                "Enable did not establish one Controller-owned observation and initial refresh.");
+            model.SetValue(7);
+            Assert(view.RefreshCount == 1, "An unchanged Model value triggered a duplicate refresh.");
+            model.SetValue(8);
+            Assert(view.ShownValue == 8 && view.RefreshCount == 2, "Model notification did not flow through Controller to View.");
+            model.Select();
+            Assert(view.SelectionCount == 1, "Controller-owned custom Model observation was not connected.");
+
             view.gameObject.SetActive(false);
-            Assert(view.Model == second && !view.IsObserving && second.ObserverCount == 0 && second.SelectionSubscribers == 0,
-                "Disable did not suspend both standard and custom observation.");
-            second.SetValue(42);
-            second.Select();
-            Assert(view.RefreshCount == refreshes && view.SelectionCount == 1, "Disabled View received notifications.");
+            Assert(ReferenceEquals(controller.Model, model) && !controller.IsObserving && !controller.IsRunning
+                   && model.ObserverCount == 0 && model.SelectionSubscribers == 0,
+                "Disable did not suspend standard and custom Controller observation.");
+            int disabledRefreshes = view.RefreshCount;
+            model.SetValue(42);
+            model.Select();
+            _loop.TickUpdate(.02f);
+            Assert(view.RefreshCount == disabledRefreshes && view.SelectionCount == 1 && controller.TickCount == 0,
+                "A disabled View still received Model or Loop work.");
+
             view.gameObject.SetActive(true);
-            Assert(view.ShownValue == 42 && view.RefreshCount == refreshes + 1 && second.ObserverCount == 1 && second.SelectionSubscribers == 1,
-                "Re-enable did not restore a single observation of latest state.");
+            Assert(view.ShownValue == 42 && view.RefreshCount == disabledRefreshes + 1 && controller.IsObserving
+                   && model.ObserverCount == 1 && model.SelectionSubscribers == 1,
+                "Re-enable did not restore one observation of the latest state.");
             view.enabled = false;
-            Assert(second.ObserverCount == 0 && second.SelectionSubscribers == 0, "Component disable leaked observation.");
+            Assert(!controller.IsObserving && model.ObserverCount == 0 && model.SelectionSubscribers == 0,
+                "Component disable leaked Controller observation.");
             view.enabled = true;
-            Assert(second.ObserverCount == 1 && second.SelectionSubscribers == 1, "Component re-enable duplicated observation.");
-            view.Unbind();
-            view.Unbind();
-            Assert(view.Model == null && second.ObserverCount == 0 && second.SelectionSubscribers == 0, "Unbind was not idempotent.");
-            Expect<ArgumentNullException>(() => view.Bind(null), "Null Bind was accepted.");
-            view.Bind(first);
-            view.gameObject.SetActive(false);
-            // Destruction is deferred; OnDisable must already have disconnected both subscriptions.
+            Assert(controller.IsObserving && model.ObserverCount == 1 && model.SelectionSubscribers == 1,
+                "Component re-enable duplicated or omitted Controller observation.");
+
+            int shownBeforeDispose = view.ShownValue;
+            controller.Dispose();
+            controller.Dispose();
+            model.SetValue(100);
+            model.Select();
+            _loop.TickUpdate(.02f);
+            Assert(controller.IsDisposed && !controller.IsObserving && !controller.IsRunning
+                   && model.ObserverCount == 0 && model.SelectionSubscribers == 0 && view.ShownValue == shownBeforeDispose,
+                "Controller Dispose was not idempotent or left active subscriptions.");
             Destroy(view.gameObject);
-            Assert(first.ObserverCount == 0 && first.SelectionSubscribers == 0, "Destroy/disable leaked subscription.");
         }
 
-        private void CheckHooksAndExceptions()
+        private void CheckRefreshFailureAndReentrantDispose()
         {
-            ProbeView view = NewView();
-            view.gameObject.SetActive(true);
-            StateModel first = new StateModel();
-            StateModel replacement = new StateModel();
-            replacement.SetValue(21);
-            view.BoundAction = model => { view.BoundAction = null; view.Unbind(); };
-            view.Bind(first);
-            Assert(view.Model == null && first.ObserverCount == 0 && first.SelectionSubscribers == 0 && view.RefreshCount == 0,
-                "Unbind during OnModelBound produced stale observation/refresh.");
-            view.Bind(first);
-            view.RefreshAction = model => { view.RefreshAction = null; view.Bind(replacement); };
-            first.SetValue(1);
-            Assert(view.Model == replacement && first.ObserverCount == 0 && replacement.ObserverCount == 1 && view.ShownValue == 21,
-                "Replacing the model inside Refresh retained the old model.");
-            view.RefreshAction = model => { view.RefreshAction = null; view.Unbind(); };
-            replacement.SetValue(22);
-            Assert(view.Model == null && replacement.ObserverCount == 0 && replacement.SelectionSubscribers == 0,
-                "Unbind during notification leaked the listener.");
+            ProbeView failedView = NewView("__MvcValidation_RefreshFailure");
+            failedView.gameObject.SetActive(true);
+            StateModel failedModel = new StateModel();
+            failedView.RefreshAction = _ => throw new InvalidOperationException("Expected initial refresh failure.");
+            Expect<InvalidOperationException>(() => new ProbeController(failedView, failedModel, RequireLoop()),
+                "Initial Controller refresh failure did not propagate.");
+            Assert(failedModel.ObserverCount == 0 && failedModel.SelectionSubscribers == 0,
+                "Failed Controller activation retained Model subscriptions.");
+            failedView.RefreshAction = null;
+            ProbeController recovered = new ProbeController(failedView, failedModel, _loop);
+            Assert(recovered.IsObserving && failedModel.ObserverCount == 1,
+                "View could not reconnect after a failed Controller activation.");
+            recovered.Dispose();
+            Destroy(failedView.gameObject);
 
-            view.BoundAction = model => throw new InvalidOperationException("Expected bound failure.");
-            Expect<InvalidOperationException>(() => view.Bind(first), "Binding failure did not propagate.");
-            Assert(view.Model == null && first.ObserverCount == 0 && first.SelectionSubscribers == 0, "Failed binding retained subscriptions.");
-            view.BoundAction = null;
-            view.RefreshAction = model => throw new InvalidOperationException("Expected initial refresh failure.");
-            Expect<InvalidOperationException>(() => view.Bind(first), "Initial refresh failure did not propagate.");
-            Assert(view.Model == null && first.ObserverCount == 0 && first.SelectionSubscribers == 0, "Failed initial refresh retained subscriptions.");
-            view.RefreshAction = null;
-            view.Bind(first);
-            view.UnboundAction = model => throw new InvalidOperationException("Expected unbound failure.");
-            Expect<InvalidOperationException>(() => view.Unbind(), "Unbind failure did not propagate.");
-            Assert(view.Model == null && first.ObserverCount == 0 && first.SelectionSubscribers == 0, "Unbind exception retained subscriptions.");
-            view.UnboundAction = null;
-            view.Bind(replacement);
-            Assert(view.ShownValue == replacement.Value && replacement.ObserverCount == 1, "View could not reconnect after hook failure.");
-            view.Unbind();
-
-            int beforeRefresh = view.RefreshCount;
-            view.BoundAction = model => { view.BoundAction = null; view.Unbind(); view.Bind(model); };
-            view.Bind(first);
-            Assert(view.RefreshCount == beforeRefresh + 1 && first.ObserverCount == 1 && first.SelectionSubscribers == 1,
-                "Same-model reconnect during binding caused an obsolete initial refresh.");
-            view.Unbind();
-            beforeRefresh = view.RefreshCount;
-            view.BoundAction = model => { view.BoundAction = null; view.enabled = false; view.enabled = true; };
-            view.Bind(first);
-            Assert(view.RefreshCount == beforeRefresh + 1 && first.ObserverCount == 1 && first.SelectionSubscribers == 1,
-                "Disable/re-enable during binding caused an obsolete initial refresh.");
-            view.Unbind();
-            view.BoundAction = model =>
+            ProbeView reentrantView = NewView("__MvcValidation_ReentrantDispose");
+            reentrantView.gameObject.SetActive(true);
+            StateModel reentrantModel = new StateModel();
+            ProbeController reentrantController = new ProbeController(reentrantView, reentrantModel, _loop);
+            reentrantView.RefreshAction = _ =>
             {
-                view.BoundAction = null;
-                view.Unbind();
-                view.Bind(model);
-                throw new InvalidOperationException("Expected obsolete binding failure.");
+                reentrantView.RefreshAction = null;
+                reentrantController.Dispose();
             };
-            Expect<InvalidOperationException>(() => view.Bind(first), "Obsolete binding failure did not propagate.");
-            Assert(view.Model == first && view.IsObserving && first.ObserverCount == 1 && first.SelectionSubscribers == 1,
-                "Obsolete failure destroyed the newly established observation.");
-            view.Unbind();
+            reentrantModel.SetValue(1);
+            Assert(reentrantController.IsDisposed && reentrantModel.ObserverCount == 0
+                   && reentrantModel.SelectionSubscribers == 0,
+                "Dispose during Model notification left Controller observation connected.");
+            Destroy(reentrantView.gameObject);
         }
 
         private void CheckAllocation()
         {
-            ProbeView view = NewView();
+            ProbeView view = NewView("__MvcValidation_Allocation");
             view.gameObject.SetActive(true);
             StateModel model = new StateModel();
-            view.Bind(model);
+            ProbeController controller = new ProbeController(view, model, RequireLoop());
             for (int i = 0; i < 100; i++) model.SetValue(i);
             long before = GC.GetAllocatedBytesForCurrentThread();
             for (int i = 100; i < 1100; i++) model.SetValue(i);
-            result.notificationAllocationBytes = GC.GetAllocatedBytesForCurrentThread() - before;
-            for (int i = 0; i < 100; i++) { view.Unbind(); view.Bind(model); }
+            _result.notificationAllocationBytes = GC.GetAllocatedBytesForCurrentThread() - before;
+            for (int i = 0; i < 100; i++)
+            {
+                view.enabled = false;
+                view.enabled = true;
+            }
             before = GC.GetAllocatedBytesForCurrentThread();
-            for (int i = 0; i < 1000; i++) { view.Unbind(); view.Bind(model); }
-            result.reconnectionAllocationBytes = GC.GetAllocatedBytesForCurrentThread() - before;
-            result.allocationMeasured = true;
-            result.allocationCondition = "Unity Editor current thread; precreated model/view/cached callbacks; 100 warmups, 1000 synchronous updates or Unbind/Bind pairs; includes a single extra model event; excludes object creation, pool rent/return, logging/assertions and real game rendering.";
-            Assert(result.notificationAllocationBytes == 0, "Stable notifications allocated managed memory.");
-            Assert(result.reconnectionAllocationBytes == 0, "Warmed model reconnection allocated managed memory.");
-            view.Unbind();
+            for (int i = 0; i < 1000; i++)
+            {
+                view.enabled = false;
+                view.enabled = true;
+            }
+            _result.reconnectionAllocationBytes = GC.GetAllocatedBytesForCurrentThread() - before;
+            _result.allocationMeasured = true;
+            _result.allocationCondition = "Unity Editor current thread; precreated Model/View/Controller and cached callbacks; 100 warmups, then 1000 synchronous notifications or View disable/enable observation pairs; excludes object creation, pool rent/return, logging/assertions, and rendering.";
+            Assert(_result.notificationAllocationBytes == 0, "Stable Controller-owned Model notifications allocated managed memory.");
+            Assert(_result.reconnectionAllocationBytes == 0, "Warmed View observation reconnection allocated managed memory.");
+            controller.Dispose();
+            Destroy(view.gameObject);
         }
 
-        private void CheckPool(PoolConfig config, bool recreate)
+        private void CheckComposerRequiredBeforeCreate()
+        {
+            GameObject target = new GameObject("__MvcValidation_Uncomposed");
+            target.transform.SetParent(_fixtureRoot.transform, false);
+            target.SetActive(false);
+            PooledView view = target.AddComponent<PooledView>();
+            Expect<InvalidOperationException>(() => view.OnPoolCreated(view),
+                "PooledView accepted OnPoolCreated before Controller composition.");
+            Destroy(target);
+        }
+
+        private void CheckPoolReuse(PoolConfig config)
         {
             PoolSpawnArgs args = new PoolSpawnArgs(Vector3.zero, Quaternion.identity);
-            Assert(factory.TryRent(config, args, out PoolLease first), "Initial pool rent failed.");
-            PooledView view = (PooledView)first.Value;
-            StateModel model = view.OwnedModel;
-            ProbeController controller = view.Controller;
-            Assert(view.InjectedBeforeCreation && view.Model == model && model.ObserverCount == 1 && controller.IsRunning,
-                "DI or pooled MVC connection was incomplete before activation.");
-            loop.TickUpdate(0.02f);
-            Assert(model.Value == 1 && view.ShownValue == 1 && controller.TickCount == 1, "Loop -> Controller -> Model -> View path failed.");
-            Assert(first.Return(), "Pool return failed.");
-            Assert(view.Model == null && model.ObserverCount == 0 && model.SelectionSubscribers == 0 && !controller.IsRunning && model.Value == 0,
-                "Return did not disconnect/reset the MVC bundle.");
+            IPool pool = _factory.GetPool(config);
+            Assert(pool.CountAll == 1 && pool.CountInactive == 1 && pool.CountActive == 0,
+                "Prewarm did not create one inactive composed PooledView.");
+            Assert(_factory.TryRent(config, args, out PoolLease first), "Initial pool rent failed.");
+            PooledView view = first.Value as PooledView;
+            ProbeController controller = null;
+            Assert(view != null && _controllers.TryGetValue(view, out controller), "Pool composer did not expose the Controller it owns.");
+            StateModel model = controller.Model;
+            Assert(controller.PoolCreationObserved && controller.IsObserving && controller.IsRunning
+                   && model.ObserverCount == 1 && model.SelectionSubscribers == 1,
+                "Controller composition did not precede creation and activation.");
+            _loop.TickUpdate(.02f);
+            Assert(model.Value == 1 && view.ShownValue == 1 && controller.TickCount == 1,
+                "Loop to Controller to Model to View path failed.");
+            model.Select();
+            Assert(view.SelectionCount == 1, "Pooled Controller did not own the custom Model observation.");
+
+            Assert(first.Return(), "Initial PoolLease return failed.");
+            Assert(!first.IsValid && !controller.IsObserving && !controller.IsRunning
+                   && model.ObserverCount == 0 && model.SelectionSubscribers == 0,
+                "Pool return did not suspend Controller-owned observations.");
             int refreshes = view.RefreshCount;
             int ticks = controller.TickCount;
             model.SetValue(90);
-            loop.TickUpdate(0.02f);
-            Assert(view.RefreshCount == refreshes && controller.TickCount == ticks, "Returned MVC still received model/loop work.");
-            Assert(factory.TryRent(config, args, out PoolLease next), "Pool re-rent failed.");
-            Assert(ReferenceEquals(next.Value, view), "View was not reused.");
-            Assert(ReferenceEquals(model, view.OwnedModel) != recreate && ReferenceEquals(controller, view.Controller) != recreate,
-                "Object-specific retain/recreate policy was overridden.");
+            model.Select();
+            _loop.TickUpdate(.02f);
+            Assert(view.RefreshCount == refreshes && view.SelectionCount == 1 && controller.TickCount == ticks,
+                "Returned MVC bundle still received Model or Loop work.");
+
+            Assert(_factory.TryRent(config, args, out PoolLease second), "Pool re-rent failed.");
+            Assert(ReferenceEquals(second.Value, view) && _controllers.TryGetValue(view, out ProbeController reused)
+                   && ReferenceEquals(reused, controller) && ReferenceEquals(reused.Model, model),
+                "Re-rent did not reuse the same View, Controller, and Model.");
             int beforeRefresh = view.RefreshCount;
-            int beforeTicks = view.Controller.TickCount;
-            loop.TickUpdate(0.02f);
-            Assert(view.OwnedModel.Value == 1 && view.ShownValue == 1 && view.RefreshCount == beforeRefresh + 1 && view.Controller.TickCount == beforeTicks + 1,
-                "Re-rent caused duplicate update/refresh or stale state.");
-            Assert(!first.Return() && next.IsValid, "Old lease returned the new rental.");
-            Assert(next.Return(), "Second return failed.");
+            int beforeTicks = controller.TickCount;
+            _loop.TickUpdate(.02f);
+            Assert(model.Value == 91 && view.ShownValue == 91 && view.RefreshCount == beforeRefresh + 1
+                   && controller.TickCount == beforeTicks + 1,
+                "Re-rent caused duplicate work or lost retained Model state.");
+            Assert(!first.Return() && second.IsValid, "A stale PoolLease returned the newer rental.");
+            Assert(second.Return(), "Current re-rent PoolLease return failed.");
+        }
+
+        private void CheckInvalidRentRollback(PoolConfig config)
+        {
+            PoolSpawnArgs args = new PoolSpawnArgs(Vector3.zero, Quaternion.identity);
+            Assert(_factory.TryRent(config, args, out PoolLease first), "Invalid-rent fixture initial rent failed.");
+            PooledView view = first.Value as PooledView;
+            ProbeController controller = null;
+            Assert(view != null && _controllers.TryGetValue(view, out controller),
+                "Invalid-rent fixture was not composed.");
+            StateModel model = controller.Model;
+            view.FailNextRent = true;
+            Assert(first.Return(), "Invalid-rent fixture could not be returned before failure injection.");
+
+            PoolLease failedLease = default;
+            Expect<InvalidOperationException>(() => _factory.TryRent(config, args, out failedLease),
+                "Rental preparation failure did not propagate.");
+            Assert(!failedLease.IsValid && controller.IsDisposed && model.ObserverCount == 0
+                   && model.SelectionSubscribers == 0 && !_controllers.ContainsKey(view)
+                   && _factory.GetPool(config).CountAll == 0,
+                "Failed rent was not rolled back and quarantined with Controller cleanup.");
+            Assert(_factory.TryRent(config, args, out PoolLease recoveredLease),
+                "Pool did not recover after quarantining the failed rental.");
+            PooledView recoveredView = recoveredLease.Value as PooledView;
+            Assert(recoveredView != null && !ReferenceEquals(recoveredView, view)
+                   && _controllers.TryGetValue(recoveredView, out ProbeController recoveredController)
+                   && !ReferenceEquals(recoveredController, controller) && recoveredController.IsObserving,
+                "Recovered rent reused the quarantined bundle or missed composition.");
+            Assert(recoveredLease.Return(), "Recovered rental return failed.");
+        }
+
+        private void CheckHierarchyFirstDestroy(PoolConfig config)
+        {
+            Assert(_factory.TryRent(config, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease lease),
+                "Hierarchy-first rent failed.");
+            PooledView view = lease.Value as PooledView;
+            ProbeController controller = null;
+            Assert(view != null && _controllers.TryGetValue(view, out controller),
+                "Hierarchy-first fixture was not composed.");
+            StateModel model = controller.Model;
+            DestroyImmediate(view.gameObject);
+            Assert(controller.IsDisposed && !controller.IsObserving && !controller.IsRunning
+                   && model.ObserverCount == 0 && model.SelectionSubscribers == 0
+                   && !_controllers.ContainsKey(view) && !lease.IsValid && !lease.Return(),
+                "Hierarchy-first destruction left Controller, Model, or stale lease state alive.");
+        }
+
+        private void CheckActiveFactoryDispose(PoolConfig config)
+        {
+            Assert(_factory.TryRent(config, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease lease),
+                "Active-dispose rent failed.");
+            PooledView view = lease.Value as PooledView;
+            ProbeController controller = null;
+            Assert(view != null && _controllers.TryGetValue(view, out controller),
+                "Active-dispose fixture was not composed.");
+            StateModel model = controller.Model;
+
+            _factory.Dispose();
+            _factory = null;
+            Assert(!lease.IsValid && controller.IsDisposed && !controller.IsObserving
+                   && !controller.IsRunning && model.ObserverCount == 0
+                   && model.SelectionSubscribers == 0,
+                "Active PoolFactory disposal left MVC state alive.");
+            Assert(_controllers.Count == 0, "Active PoolFactory disposal left Controller ownership entries alive.");
+        }
+
+        private LoopDispatcher RequireLoop()
+        {
+            if (_loop != null) return _loop;
+            _loop = new LoopDispatcher();
+            _loop.StartLoop();
+            _resolver = new ContainerBuilder().Build();
+            return _loop;
+        }
+
+        private void DisposeRemainingControllers()
+        {
+            ProbeController[] controllers = new ProbeController[_controllers.Count];
+            _controllers.Values.CopyTo(controllers, 0);
+            for (int i = 0; i < controllers.Length; i++)
+            {
+                try { controllers[i].Dispose(); }
+                catch (Exception exception) { RecordCleanupFailure("ProbeController", exception); }
+            }
+            _controllers.Clear();
         }
 
         private void Assert(bool condition, string message)
         {
-            result.assertions++;
+            _result.assertions++;
             if (!condition) throw new InvalidOperationException(message);
         }
 
         private void Expect<T>(Action action, string message) where T : Exception
         {
             try { action(); }
-            catch (T) { result.assertions++; return; }
+            catch (T)
+            {
+                _result.assertions++;
+                return;
+            }
             throw new InvalidOperationException(message);
+        }
+
+        private void RecordCleanupFailure(string label, Exception exception)
+        {
+            _result.success = false;
+            _result.error = (_result.error ?? string.Empty) + "\nCleanup " + label + ": " + exception;
         }
     }
 }

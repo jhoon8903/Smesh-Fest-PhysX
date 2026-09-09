@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Framework.Loop
 {
-    /// <summary>Owns Unity's game time for one scene scope; UI does not receive a separate clock.</summary>
     public sealed class UnityGameTime : IDisposable
     {
         private readonly GameClock _clock;
@@ -28,7 +27,6 @@ namespace Framework.Loop
 
         private void Apply()
         {
-            // Preserve fixedDeltaTime: physics keeps the existing step in game seconds.
             Time.timeScale = _clock.EffectiveTimeScale;
         }
     }

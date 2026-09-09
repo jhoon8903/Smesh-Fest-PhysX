@@ -1,0 +1,29 @@
+{
+  "recordedAtKst": "2026-09-10T05:18:59+09:00",
+  "document": "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Presentation/PROJECT_OVERVIEW.html",
+  "sha256": "a2614ea91f9c5056cac222628c395e3c95767cea5a73b8fe9f39284ef47d254e",
+  "checks": {
+    "htmlParser": "pass",
+    "duplicateIds": [],
+    "externalDependencies": [],
+    "missingRequiredSections": [],
+    "inlineSvgCount": 1,
+    "desktopBrowserVisualReview": "pass",
+    "responsiveCssPresent": true,
+    "a4LandscapePrintCssPresent": true
+  },
+  "contentChecks": {
+    "controllerOwnsViewAndModel": true,
+    "viewAndModelReverseReferencesAbsent": true,
+    "registryCompositionBeforeOnPoolCreated": true,
+    "normalReturnAndHierarchyFirstDestroySeparated": true,
+    "destroyingPathSkipsOnPoolReturnReparentAndDoubleDestroy": true,
+    "currentGroundFadeAssetValues": "delay 1.0 seconds, fade 0.5 seconds",
+    "historicalRuntimeEvidenceSeparated": true,
+    "latestRuntimeRecheckMarkedPending": true
+  },
+  "limitations": [
+    "This validates the standalone HTML structure, content consistency, and desktop rendering only.",
+    "It does not rerun Unity Play Mode, the actual Game, the updated High WebGL build, a device run, or performance measurements."
+  ]
+}

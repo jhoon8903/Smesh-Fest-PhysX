@@ -1,8 +1,8 @@
 # 제작 계획
 
-> **2026-09-09 최신 계약:** Obstacle Collider 직접 hit만 발사한다. Cannon은 Yaw만 회전하고 child의 수동 회전은 보존한다. Straight Ball은 같은 GameObject의 `ObstacleView` 직접 충돌 또는 월드 Z가 Config 경계를 **엄격히 초과**하는 첫 FixedTick 중 먼저 발생한 조건에서 중력을 켠다. Curve는 고정 비행시간·발사 즉시 중력이다. tag·name·parent 검색 fallback과 legacy 경로는 두지 않는다. Ball/Obstacle Config가 Rigidbody 물성과 CCD를 적용하고, Ball·Ground·Obstacle 전용 Layer Matrix는 필요한 gameplay 조합만 허용한다. 최신 Unity 스크립트 진단 4개는 warning/error 0, Console error 0이며 Play Mode 재확인은 아직이다.
+> **2026-09-10 종료 상태:** Daniel이 프로젝트 완료를 선언했다. 발표와 인계를 위한 최종 구조는 [Project Overview](../Presentation/PROJECT_OVERVIEW.html)에서 본다. 이 아래는 제작 중의 계획·변경·검증 이력으로 보존한다.
 
-현재 단계: **CCD·Layer Matrix 최적화 + Cannon Yaw-only + Straight 직접 충돌 또는 Z 경계 중력 연결 → 사용자 Play Mode 재확인 대기**. 첫 물리는 Unity PhysX로 유지하며 위치·회전·선속도·각속도의 권위는 Rigidbody다. HP·파괴·결과·재도전은 실제 충돌 체감 확인 뒤의 다음 단위다.
+최종 빌드 근거: Unity 6000.3.10f1, WebGL Managed Stripping High, Editor 로그 결과 `Succeeded`(2026-09-10 02:31:24–02:36:00 KST, 276초). 단계별 검증과 최종 문서화 범위는 [REVIEW](REVIEW.md)의 `V-FINAL-001`을 따른다.
 
 ## 현재 순서 — 사용자 정정 반영
 
@@ -42,7 +42,9 @@
 | W-000-POOL-CONTRACT-001 | Main 계약·검증안 / Terra Medium 기존 코드·API 조사 | R-015~R-017 답변 반영 완료; O-006~O-008 해결 |
 | W-000-POOL-001 | Main 통합·기록 / Terra Medium 초안 / Sol High 수명 검토·검증 보완 | R-018 인터페이스 구조·씬 DI 연결 완료; Pool Play Mode 66개 및 DI/Pause 25개 통과; High Player 미실행 |
 | W-000-MVC-REFERENCE-001 | Main: Core·Observer·View와 적용 기준 / Terra Medium: Pool·DI·실제 호출 비교 | R-019 참고 비교·간소화 기준 문서화. 코드 변경·Unity 실행 없음 |
-| W-000-MVC-001 | Terra Medium: Model/View 제작 / Main: 통합·검사·기록 / Sol High: 수명 읽기 검토 | 공통 연결·Play Mode 58개 검사·두 반복 구간 0바이트 확인. 실제 Ball 연결·High Player 미실행 |
+| W-000-MVC-001 | Terra Medium: Model/View 제작 / Main: 통합·검사·기록 / Sol High: 수명 읽기 검토 | 변경 전 View-owned 관찰의 역사적 결과. Play Mode 58개와 두 반복 구간 0바이트는 R-024 구조의 최신 실행 근거가 아님 |
+| W-000-MVC-CONTROLLER-001 | Main: 생산 통합·기록 / Terra·Sol: Probe 이식·독립 수명 검토 / Daniel: Unity 실행 확인 | Controller가 View+Model을 소유하는 방향으로 교체. solution 정적 검증 후 Play Mode Probe·실제 Game 확인 대기 |
+| W-000-POOL-DESTROYING-001 | Main: 파괴 경로 수정·기록 / Luna·Terra: 원인 추적·독립 검토 / Daniel: 실제 Game 종료 확인 | 파괴 중 객체는 일반 반환 대신 Pool entry·lease를 즉시 분리. solution 정적 빌드 통과, Play 시작→종료 재확인 대기 |
 | W-000-BALL-MVC-001 | Main: 계약·통합·기록 / Terra Medium: 수명 조사·검사 코드 / Sol High: 수명·파괴 순서 검토 / Daniel: Prefab·PoolConfig·씬 값 | 완료. Play Mode 19개 검사, 씬·Ball/Cube Prefab·PoolConfig 저장 파일 보존. 물리/입력 제외 |
 | W-000-OBSTACLE-MVC-001 | Main: 계약·통합·실행·기록 / Luna Low: 수명 조사 / Terra Medium: 검사 코드 / Sol High: 독립 검토 / Daniel: 자산·씬 값 | 완료. Play Mode 25개 검사. 씬·SO는 동일하며 작업 중 외부에서 Ball/Cube Prefab에 추가된 Rigidbody는 보존. 물리/HP/파괴 제외 |
 | W-001-AI | 발사 기능 구현의 사전 시작 기록 | 구현 전 철회; 코드 수정 없음 |
@@ -256,3 +258,19 @@ Daniel이 Cube PoolConfig `MaxPool`을 100으로 바꾸고 `Assets/Project/Level
 구현 범위는 공통 `GroundFadeReturn`, `GroundFadeConfig`, Ball/Cube 전용 Transparent Material, 두 Prefab 연결, `GameLifetimeScope` 등록, `ShotDirector`의 Fade 중 조기 반환 차단이다. 두 Prefab은 시작부터 전용 Material을 Renderer에 사용하고 런타임에는 Material·shadow를 바꾸지 않은 채 `_BaseColor.a`만 조절한다. Ground 직접 충돌 뒤 Config의 대기·Fade 시간을 순서대로 적용하고 현재 lease를 한 번만 반환하며 legacy/fallback은 만들지 않는다.
 
 분담은 다음 체크포인트로 닫는다. AI는 구현·독립 검토·Unity 정적 컴파일과 연결 확인을 맡았다. Daniel은 Play Mode에서 (1) Ground 충돌 뒤 1초 유지와 다음 1초 Fade, (2) 완료 후 반환, (3) 재대여 시 alpha 복구, (4) 여러 Cube가 겹칠 때 투명 정렬 표현을 확인한다. 실제 시간·시각 검증 전까지 상태는 **정적 완료 / 런타임 확인 대기**다.
+
+## W-000-MVC-CONTROLLER-001 — Controller 소유 참조 방향 정정
+
+[DECISION:user / R-024 / 2026-09-10 KST] Controller가 View와 Model을 알고, View·Model은 Controller와 서로를 모르는 구조로 정정한다. 기능별 Config·현재 Pool/PhysX/Level/Fade 동작은 유지하고, 옛 View-owned Model/Controller API나 호환 fallback은 남기지 않는다.
+
+| 분담 | 이번 단위 |
+|---|---|
+| Daniel | 확정한 MVC 참조 방향과 Scene·Prefab·Material·Config 수동값을 소유한다. AI 변경 뒤 Unity Play Mode 메뉴와 실제 Game 흐름을 확인한다. |
+| AI | `ObController<TView,TModel>` 공통 계약, View의 중립 생명주기 이벤트, Pool 생성 직후 외부 Registry 조립, Ball/Obstacle/Cannon·Shot 호출 전환, 기존 Probe의 API 이식과 정적 검증·기록을 맡는다. |
+| 함께 확인할 결과 | View/Model에 역참조가 없고, clone 생성 때 Controller가 `OnPoolCreated`보다 먼저 붙으며, 반환·재대여·Registry/Pool 종료·계층 선파괴에서 lease와 관찰이 남지 않는가. Cannon 조준 실패 뒤 Model/View가 어긋나지 않는가. |
+
+구현은 생산 Prefab/Scene 컴포넌트를 추가하지 않고 진행한다. `PoolFactory`가 clone DI 뒤 `IPoolObjectComposer`를 호출하고, `WorldObjectControllerRegistry`가 Ball/Obstacle의 Model+Controller를 한 번 조립한다. View는 Pool·충돌 이벤트만 발행하고 Controller가 Config 적용, Model 관찰, Rigidbody 명령과 정리를 소유한다. ShotDirector와 Obstacle raycast는 View의 Controller 속성 대신 Registry 조회를 사용한다.
+
+실패 경로도 명시적으로 닫는다. 생성 중 활성화 실패는 View 이벤트 구독을 남기지 않고, Registry가 Pool보다 먼저 종료되면 활성 lease를 반환한 뒤 Controller를 폐기한다. Controller가 없는 생산 View의 rent/return은 조용히 통과하지 않는다. Cannon View 렌더가 실패하면 Model 방향을 롤백해 같은 방향 재시도가 렌더를 건너뛰지 못한다.
+
+검증 순서: (1) solution 정적 컴파일, (2) View/Model 역참조와 레거시 API 정적 검색, (3) `Mvc Runtime`, `Ball MVC Runtime`, `Obstacle MVC Runtime`, `Pool Runtime`, `PhysX Lifecycle Runtime`, `Click Launch Runtime`, `Level Editor and Spawn` 재실행, (4) 실제 Game의 클릭→발사→충돌/중력→Fade→반환 확인. 1–2는 solution error 0, Unity Editor 최신 컴파일 성공, 금지 패턴 0건으로 완료했다. 새 구조로 이식한 핵심 Probe의 성공 예정 카운터는 MVC 62, PhysX 66, Click Launch 39이지만 아직 Play Mode에서 실행하지 않았으므로 통과 수치가 아니다. 3–4는 Daniel 실행 확인으로 넘긴다.
