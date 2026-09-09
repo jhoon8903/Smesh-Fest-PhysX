@@ -5,7 +5,7 @@ namespace InGame.Obstacle
 {
     /// <summary>
     /// Physics-independent lifetime state for one pooled Obstacle bundle.
-    /// Durability, destruction, position and collision authority are deferred to later units.
+    /// Unity's Rigidbody owns runtime Transform and velocity; durability and destruction are deferred.
     /// </summary>
     public sealed class ObstacleModel : ObModel
     {

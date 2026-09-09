@@ -1,6 +1,6 @@
 # 제작 계획
 
-현재 단계: **W-000-OBSTACLE-MVC-001 완료, 다음은 물리 권위 계약과 구현 단위**. Ball과 Obstacle은 풀 객체별 View·Model·Controller 묶음을 유지하고, 현재는 물리 비종속 대여 상태와 사용 세대만 소유한다. Unity Play Mode 격리 검사는 Ball 19개, Obstacle 25개를 통과했다. 다음은 위치·속도·충돌·Rigidbody의 권위와 Unity Physics/직접 구현 Physics 비교 조건을 정한 뒤 작은 구현으로 진행한다.
+현재 단계: **W-003-PHYSX-LIFECYCLE-001 사용자 Play Mode 1차 실패 확인 → 활성화 순서 수정·컴파일 완료 → 재실행 대기**. 채용 공고의 PhysX 요구에 맞춰 첫 물리는 Unity PhysX로 정했고, 현재 런타임 위치·회전·선속도·각속도의 권위는 Rigidbody다. Model은 대여 상태와 세대만 유지한다. Ball 초기 발사와 Ball/Obstacle 풀 반환·재대여 물리 초기화까지 연결했으며, 클릭 입력·Cannon·HP/파괴·결과/재도전은 다음 작은 단위다.
 
 ## 현재 순서 — 사용자 정정 반영
 
@@ -46,7 +46,8 @@
 | W-001-AI | 발사 기능 구현의 사전 시작 기록 | 구현 전 철회; 코드 수정 없음 |
 | W-001 | Block 영역 클릭 발사·충돌 + Cannon 방향 회전 | 아키텍처 마련 후 진행; 별도 조준 단계 없음 |
 | W-002 | 파괴·결과·재도전 | 후속 |
-| W-003 | Unity 물리와 직접 구현 물리 비교 | 대상 설명 수신; 구조·측정 조건은 후속 합의 |
+| W-003-PHYSX-LIFECYCLE-001 | Main: 통합·컴파일·기록 / Luna Low: 수명 조사 / Terra Medium: 격리 검사 / Sol High: 수명·물리 독립 검토 / Daniel: Rigidbody·Collider·씬 값과 Play Mode 실행 | 1차 실행은 assertion 10에서 실패해 충돌 시뮬레이션 전 중단. 비활성 rent callback 뒤 활성화되는 순서에 맞춰 Ball Sleep/Obstacle Wake를 `OnEnable`에서 재적용하고 진단을 분리했다. 수정본 컴파일 완료, 재실행 대기 |
+| W-003 | Unity PhysX 기준 구현과 이후 직접 구현 물리 비교 | 첫 PhysX 수직 슬라이스 진행 중. 직접 구현 비교 조건과 물리 권위 문서는 대표 플레이 확인 뒤 별도 작성 |
 
 ## W-001 — 아키텍처 이후 함께 볼 플레이 결과
 
@@ -60,7 +61,7 @@ Daniel은 현재 씬·카메라·Block/Ball/Cannon 배치와 조작감을 맡고
 
 Main은 실제 실행 메타데이터에서 Astra·Ultra를 확인했다. 초기 코드 조사, 최신 조사·검토, 이번 작은 제작에 Terra·Medium을 사용했다. 보조는 명시 배정과 fork_turns: none으로 시작했고 기존 보조를 재사용했다. 단순 확인 Luna·Low, 합의된 작은 제작 Terra·Medium, 복잡한 검토 Sol·High 정책을 유지한다. 보조 최대 2개, 재위임 없음. 실제 사용량·비용은 미제공이다.
 
-GameFlow·UpdateLoop·Pool과 최소 Model–View 연결, Ball/Obstacle 객체별 MVC 수명을 마련했다. 다음 행동은 물리 상태와 Rigidbody의 권위·비교 조건을 정해 이 묶음에 연결하는 것이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
+GameFlow·UpdateLoop·Pool과 최소 Model–View 연결, Ball/Obstacle 객체별 MVC 수명과 첫 PhysX 수명 연결을 마련했다. 다음 행동은 수정된 격리 PhysX Probe를 Daniel이 Play Mode에서 재확인한 뒤, 실제 클릭 → 목표점 → Ball 대여/발사와 Cannon 회전을 연결하는 것이다. DI·동적 생성·리소스 로딩을 설계할 때 A-10의 High Stripping 보존 관리와 Player 검증을 함께 반영한다. 확정된 10개 기준은 반복 질문하지 않는다.
 
 ## W-000-CORE-001 — 첫 기반 단위의 당시 계획
 
@@ -198,3 +199,23 @@ Ball에서 확인한 객체별 원칙을 Obstacle에 필요한 만큼만 적용�
 AI는 Scene·Prefab·PoolConfig를 편집하지 않았다. 검사 전후 Game 씬과 Ball/Cube PoolConfig는 동일하다. 작업 도중 AI/보조의 소유 범위 밖에서 Ball/Cube Prefab에 Rigidbody가 추가된 저장 변경을 발견했고, 출처를 추정하거나 되돌리지 않고 최신 사용자 소유 상태로 보존했다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
 
 다음 단위는 실제 위치·속도·충돌·Rigidbody 권위와 Unity Physics/직접 구현 Physics의 동일 비교 조건이다. 현재 Obstacle MVC의 대여 상태는 실제 HP·파괴·충돌·렌더 동작을 뜻하지 않는다. Cube Prefab의 ObstacleView 연결, Cube PoolConfig Prefab/목록 연결, Inspector·배치·게임 감각은 Daniel 소유이며 이번 격리 검사에서 자동 완성하지 않았다.
+
+## W-003-PHYSX-LIFECYCLE-001 — 첫 PhysX 발사·충돌 수명
+
+[DECISION:user / R-023 / 2026-09-09 KST] 채용 공고가 PhysX를 명시하므로 첫 플레이 물리는 Unity PhysX로 만들고, 물리 권위와 직접 구현 물리 비교 방법은 이후 별도 문서로 남긴다. 현재 단위에서는 Rigidbody가 위치·회전·선속도·각속도의 유일한 런타임 권위다. Model에 같은 값을 복사하지 않는다.
+
+| 분담 | 이번 단위 |
+|---|---|
+| Daniel | Ball·Obstacle에 연결한 Rigidbody/Collider, Game 씬 배치와 Inspector 물리값, 최종 조작감을 소유한다. 마지막 Play Mode 메뉴 실행으로 실제 충돌 결과를 확인한다. |
+| AI | Ball 1회 초기속도 명령, Ball/Obstacle 대여·반환·폐기 물리 초기화, 오래된 세대/lease 거절, 동적 Rigidbody 계약, 격리 PhysX 충돌 Probe와 문서·증거를 맡는다. |
+| 함께 확인할 결과 | 저장 씬을 바꾸지 않는 임시 PhysicsScene에서 Ball이 한 번 발사되어 Obstacle과 충돌·이동하고, 반환/재대여/활성 풀 종료 뒤 속도와 이전 세대가 남지 않는가. |
+
+구현 범위는 `BallController.TryLaunch(epoch, velocity)`와 두 Controller의 Rigidbody 초기화, 같은 GameObject의 Rigidbody/Collider 요구, 파괴된 Unity 객체의 오래된 PoolLease 즉시 거절이다. kinematic Rigidbody를 코드가 임의로 dynamic으로 바꾸지 않고 초기화 단계에서 명확히 거절한다. 질량·중력·제약·충돌 검출·보간·감쇠 등 Inspector 값은 읽기만 하고 보존한다.
+
+검증 원본은 `Tools/Smesh Fest/Validation/PhysX Lifecycle Runtime`이다. 별도 `LocalPhysicsMode.Physics3D` 씬과 임시 소스/PoolConfig만 만들며 저장 Scene·Prefab·SO를 편집하지 않는다. Unity 6000.3.10f1의 최초 일반 컴파일과 14개 변경 스크립트 정적 진단은 오류·경고 0건이었다. Daniel의 1차 Play Mode 실행은 **assertion 10, 시뮬레이션 0회**에서 Ball Sleep/Obstacle Wake 복합 검사 실패로 중단됐다. 따라서 접촉·변위·반환 수명은 아직 통과가 아니다. [1차 실패 근거](evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json).
+
+원인은 Pool의 `OnPoolRent`가 비활성 clone에서 실행되고 그 뒤 `SetActive(true)`가 호출되는 순서인데, 검증과 생산 코드가 비활성 Rigidbody에서 설정한 Sleep/Wake가 활성화 뒤에도 그대로 관측된다고 전제한 것이다. BallView/ObstacleView의 `OnEnable`이 현재 대여 세대를 확인한 뒤 각각 발사 전 Sleep과 충돌 대기 Wake를 재적용하도록 수정했다. Probe는 두 상태와 속도 초기화를 각각 검사하고, 임시 소스의 Rigidbody Inspector 기준을 Factory 초기화 **전**에 저장해 첫 대여부터 비교한다. 수정된 5개 스크립트의 Unity 정적 진단은 warning 0, error 0이며 프로젝트 compiler error도 0이다. **수정본 Play Mode 재실행 전이므로 성공으로 승격하지 않는다.** [수정 컴파일 근거](evidence/raw/physx-activation-fix-editor-compile.json) · [보존 근거](evidence/raw/physx-lifecycle-preservation-check.json).
+
+현재 Game 씬의 24개 ObstacleView는 씬 배치 객체라 Pool의 `OnPoolCreated`를 자동으로 거치지 않는다. 따라서 Rigidbody 자체의 PhysX 반응은 가능하지만 Obstacle MVC/대여 수명은 아직 게임 플레이에 연결되지 않았다. Cube PoolConfig의 prefab과 Game PoolContainer 등록도 비어 있다. 격리 Probe 통과 뒤 W-001에서 **현재 씬 Blocks를 고정 스테이지 배치로 쓸지, Cube PoolConfig로 생성할지** 실제 게임 흐름에 맞춰 연결한다. 이 선택 전에는 사용자 씬을 재구성하지 않는다.
+
+다음 구현 순서는 (1) Daniel의 수정된 격리 Probe 재확인, (2) 클릭 위치를 월드 목표점으로 변환, (3) Ball Pool 대여와 `TryLaunch`, (4) 같은 발사 방향으로 Cannon 회전, (5) 첫 실제 충돌 확인이다. HP/파괴/결과/재도전과 직접 구현 물리 비교는 그 다음이다. 대표 플레이가 확인되면 별도 `Docs/Prototype/PHYSICS_AUTHORITY.md`에 PhysX 권위 경계, 수명 전환, 직접 구현 방식의 대안 권위, 같은 입력·fixed step·초기조건·측정 항목을 정리한다.

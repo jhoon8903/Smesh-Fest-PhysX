@@ -28,7 +28,7 @@ namespace Framework.Test
 
         private readonly Result result = new Result
         {
-            scope = "Isolated PoolFactory + temporary BallView source only; does not edit a Scene, Prefab, PoolConfig asset, physics, Rigidbody, or input."
+            scope = "Isolated PoolFactory plus a temporary BallView source with required Rigidbody and SphereCollider; does not edit a saved Scene, Prefab, PoolConfig asset, or input, and does not simulate physics."
         };
 
         private GameObject fixtureRoot;
@@ -123,6 +123,9 @@ namespace Framework.Test
                        !hierarchyController.IsCurrentRental(hierarchyEpoch) &&
                        hierarchyModel.ObserverCount == 0,
                     "Hierarchy-first destruction left the Ball MVC bundle active before pool disposal.");
+                Assert(!hierarchyLease.IsValid && !hierarchyLease.Return() &&
+                       !hierarchyController.TryLaunch(hierarchyEpoch, Vector3.right),
+                    "A destroyed Ball remained reachable through its lease or controller before pool disposal.");
 
                 hierarchyFirstPool.Dispose();
                 Assert(!hierarchyLease.IsValid,

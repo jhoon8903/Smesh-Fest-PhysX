@@ -133,6 +133,12 @@ namespace Framework.Pool
                 throw failure;
             }
 
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
+
             if (!TryGetEntryIndex(entry, out int entryIndex))
                 return false;
 
@@ -242,7 +248,8 @@ namespace Framework.Pool
 
         internal bool IsCurrentRental(IPoolable value, uint version)
         {
-            if (disposed || ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (disposed || ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -253,7 +260,8 @@ namespace Framework.Pool
 
         internal bool ShouldContinueRentCallbacks(IPoolable value, uint version)
         {
-            if (ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -309,6 +317,12 @@ namespace Framework.Pool
             if (entry.State != EntryState.Returning || entry.Version != returnVersion)
                 return false;
 
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
+
             try
             {
                 FinalizeInactive(entry, index);
@@ -352,6 +366,12 @@ namespace Framework.Pool
             if (disposed || !TryGetEntryIndex(entry, out currentIndex)
                 || entry.State != EntryState.Returning || entry.Version != returnVersion)
                 return false;
+
+            if (IsDestroyedUnityObject(entry.Value))
+            {
+                Quarantine(entry);
+                return false;
+            }
 
             try
             {
@@ -438,6 +458,8 @@ namespace Framework.Pool
                 failure = EndLifecycle(failure);
                 if (failure != null)
                     throw failure;
+                if (IsDestroyedUnityObject(entry.Value))
+                    throw new InvalidOperationException("Pooled object was destroyed during OnPoolCreated.");
 
                 if (disposed || !TryGetEntryIndex(entry, out int index) || entry.State != EntryState.Initializing)
                     return null;
@@ -490,7 +512,8 @@ namespace Framework.Pool
 
         internal bool IsReturning(IPoolable value, uint version)
         {
-            if (disposed || ReferenceEquals(value, null) || !entryIndices.TryGetValue(value, out int index))
+            if (disposed || ReferenceEquals(value, null) || IsDestroyedUnityObject(value)
+                || !entryIndices.TryGetValue(value, out int index))
                 return false;
 
             Entry entry = entries[index];
@@ -622,6 +645,9 @@ namespace Framework.Pool
             version++;
             return version == 0 ? 1u : version;
         }
+
+        private static bool IsDestroyedUnityObject(IPoolable value) =>
+            value is UnityEngine.Object unityObject && unityObject == null;
 
         private void ThrowIfDisposed()
         {

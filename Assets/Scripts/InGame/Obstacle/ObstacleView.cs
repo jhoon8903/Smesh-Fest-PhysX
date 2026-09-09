@@ -25,9 +25,15 @@ namespace InGame.Obstacle
                 throw new InvalidOperationException("ObstacleView must be the owner of its PoolObject.");
             if (ownedModel != null || controller != null)
                 throw new InvalidOperationException("Obstacle MVC bundle was already created.");
+            if (!TryGetComponent(out Rigidbody body))
+                throw new InvalidOperationException("ObstacleView requires a Rigidbody on the same GameObject.");
+            if (!TryGetComponent(out Collider _))
+                throw new InvalidOperationException("ObstacleView requires a Collider on the same GameObject.");
+            if (body.isKinematic)
+                throw new InvalidOperationException("ObstacleView requires a dynamic Rigidbody; it does not override Inspector physics settings.");
 
             ownedModel = new ObstacleModel();
-            controller = new ObstacleController(ownedModel);
+            controller = new ObstacleController(ownedModel, body);
         }
 
         public void OnPoolRent(PoolLease lease)
@@ -51,6 +57,13 @@ namespace InGame.Obstacle
         public void OnPoolReturn() => ResetRental();
 
         public void OnPoolDestroy() => DestroyBundle();
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            // OnPoolRent runs while the clone is inactive; wake the body after activation.
+            controller?.OnRentalActivated();
+        }
 
         protected override void OnDestroy()
         {
@@ -82,8 +95,8 @@ namespace InGame.Obstacle
 
         protected override void RefreshView(ObstacleModel model)
         {
-            // Rental state has no visual representation. Damage, destruction and Physics-driven
-            // Transform presentation are connected after their state authority is decided.
+            // Rental state has no visual representation. PhysX drives this Transform directly;
+            // damage, destruction and impact presentation remain follow-up units.
         }
 
         private void ResetRental()

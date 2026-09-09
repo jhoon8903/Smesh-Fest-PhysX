@@ -1,0 +1,32 @@
+{
+  "recordedAtUtc": "2026-09-09T06:36:02Z",
+  "handoff": {
+    "path": "Docs/HANDOFF.md",
+    "manifestBlocks": 1,
+    "manifestPaths": 84,
+    "manifestMissing": 0,
+    "tracked": true,
+    "ignored": false
+  },
+  "documentation": {
+    "documentsChecked": 7,
+    "localLinks": 151,
+    "missingLinks": 0,
+    "scopedDiffWhitespaceErrors": 0,
+    "excludedFromWhitespaceCheck": "Assets/Scenes/Game.unity user-owned pre-existing diff"
+  },
+  "workflowVerify": {
+    "status": "verified",
+    "unchangedHistoricalEvidence": 145,
+    "changedHistoricalEvidence": 149,
+    "missing": 0,
+    "unavailable": 0,
+    "nowAvailable": 0,
+    "unverified": 0,
+    "note": "Changed items are expected historical snapshots compared with the current continuing worktree; the latest activation-fix finish evidence was unchanged."
+  },
+  "runtime": {
+    "firstPhysXProbeSuccess": false,
+    "fixedPhysXProbeRun": false
+  }
+}

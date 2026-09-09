@@ -5,7 +5,7 @@ namespace InGame.Ball
 {
     /// <summary>
     /// Physics-independent lifetime state for one pooled Ball bundle.
-    /// Position, velocity and collision authority are intentionally deferred to the Physics unit.
+    /// Unity's Rigidbody owns the runtime Transform and velocity state in the current PhysX slice.
     /// </summary>
     public sealed class BallModel : ObModel
     {

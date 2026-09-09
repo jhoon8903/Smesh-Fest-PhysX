@@ -29,6 +29,8 @@ namespace Framework.EditorValidation
             sourceRoot.SetActive(false);
             GameObject source = new GameObject("Temporary_BallView_Source");
             source.transform.SetParent(sourceRoot.transform, false);
+            source.AddComponent<Rigidbody>().useGravity = false;
+            source.AddComponent<SphereCollider>();
             BallView view = source.AddComponent<BallView>();
 
             PoolConfig config = ScriptableObject.CreateInstance<PoolConfig>();

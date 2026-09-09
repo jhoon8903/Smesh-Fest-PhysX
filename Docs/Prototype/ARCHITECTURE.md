@@ -1,6 +1,6 @@
 # 기본 아키텍처 — 확정 기준
 
-상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View 기반에 이어 Ball과 Obstacle의 객체별 MVC 묶음을 구현했다. 2026-09-09 Play Mode 격리 검사 Ball 19개·Obstacle 25개 통과. 물리 권위·MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
+상태: **사용자 기준 확정 / 세부 설계·아키텍처 제작 진행 중**. 결정일: 2026-09-08. Observable·LoopDispatcher·VContainer·게임 시간/UI Pause·Pool·공통 Model–View와 Ball/Obstacle 객체별 MVC에 이어 첫 Unity PhysX 수명 연결을 구현했다. 2026-09-09 Play Mode의 이전 Ball 19개·Obstacle 25개는 과거 수명 결과다. 새 PhysX 충돌 Probe의 1차 사용자 실행은 시뮬레이션 전 Sleep/Wake 검사에서 실패했고 활성화 순서 수정·컴파일 뒤 재실행 대기다. MVP·SO/Addressables 수명 연결과 High 설정 빌드 검증은 후속이며 단위별 실행 결과는 REVIEW에 남긴다.
 
 출처: Daniel이 “내가 만드는 게임들은 대부분 아래 설명한 아키텍처 기반으로 작동해”라고 제시한 1–8번과 “문서에 기록하여 다음부터 질문하지 않도록” 요청한 메시지, 이후 “추가로 나는 DI 의존성 주입으로 코드 작성을 해”라는 추가 기준과 “Code Stripping을 High로 하기 때문에 관리도 해야해”라는 후속 기준. 이 문서는 해당 기준의 단일 원본이다.
 
@@ -186,7 +186,7 @@ W-000-MVC-REFERENCE-001은 비교·설계만 수행했다. 후속 진행 요청(
 
 OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므로, 파생 View의 추가 모델 이벤트도 여기서 쌍으로 관리한다. 단순 비활성화를 풀 반환으로 취급하지 않는다. 실제 반환 시 Controller의 Loop 구독을 끊고 View.Unbind 후 객체별 상태를 초기화한다. Model/Controller 묶음 유지와 재생성 두 방식은 임시 객체로 모두 검사했으며 공통부에서 하나를 강제하지 않았다.
 
-현재 공통 ObController는 빈 기반이고 Cannon별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball과 Obstacle의 객체별 수명 계약은 아래 절에서 실제 코드로 연결했다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
+현재 공통 ObController는 빈 기반이고 Cannon별 Model·Controller는 골격이다. W-000-MVC-001의 ProbeController는 주입받은 ILoopEvents → Model 변경 → View 갱신과 구독 소유권을 보여주는 최소 테스트 구현이며 게임 Controller 구현 완료를 의미하지 않는다. Ball과 Obstacle의 객체별 수명 계약은 아래 절에서 실제 코드로 연결했고, 첫 PhysX 명령·초기화 계약은 R-023 절을 따른다. 새로운 DI 모듈·리플렉션 기반 모델 생성·패키지는 추가하지 않았다. [공통 코드](../../Assets/Scripts/Framework/Object/ObViewOfT.cs), [공통 실행 결과](evidence/raw/mvc-runtime-validation.json).
 
 ### Ball 객체별 MVC 묶음 계약 — W-000-BALL-MVC-001
 
@@ -201,7 +201,7 @@ OnModelBound/OnModelUnbound는 활성 관찰 시작·종료마다 대응되므�
 | `OnPoolReturn` | Controller의 현재 lease/세대 해제 → View.Unbind → Model 대여 상태 해제. Model/Controller 인스턴스와 마지막 세대 값은 다음 대여까지 유지한다. |
 | 풀 종료 / 계층 선파괴 | 풀 콜백과 Unity `OnDestroy`가 같은 idempotent 정리 경로를 사용한다. 씬 계층이 Factory보다 먼저 파괴돼도 Controller·Model·관찰을 즉시 끊고, 뒤이은 Pool Dispose는 안전하게 중복 정리한다. |
 
-BallController에는 실제 입력·Loop·물리 구독을 넣지 않았다. 구독할 권위가 정해지기 전에 빈 Tick을 등록하면 구현 완료처럼 보이면서 반환 누수만 늘기 때문이다. 물리 단위에서 구독을 추가할 때는 대여 세대를 캡처하고 모든 늦은 충돌·Tween·UniTask 완료가 `IsCurrentRental(epoch)`를 확인해야 한다.
+Ball MVC 단위 당시에는 실제 입력·Loop·물리 구독을 넣지 않았다. 현재 R-023에서 초기 PhysX 속도 명령만 추가했으며, 매 프레임 Rigidbody 값을 Model에 복사하거나 빈 Tick을 등록하지 않는다. 이후 늦은 충돌·Tween·UniTask 완료는 대여 세대를 캡처하고 `IsCurrentRental(epoch)`를 확인해야 한다.
 
 Ball MVC 단위 종료 당시 Daniel 소유 Ball Prefab은 MeshRenderer·SphereCollider·BallView를 가지고 Rigidbody는 없었다. Ball PoolConfig는 Prefab 연결, Min 3, Max 7, 비활성 정리 200초이고 Game 씬 PoolContainer에 등록돼 있었다. 격리된 임시 PoolFactory 검사에서 Controller 정상 반환, PoolLease 정상 반환, 같은 묶음 재대여, 오래된 세대 거절, 활성 풀 종료, 씬 계층 선파괴 후 정리를 포함해 19개 assertion을 통과했다. [Ball 코드](../../Assets/Scripts/InGame/Ball/BallView.cs), [실행 결과](evidence/raw/ball-mvc-runtime-validation.json), [당시 사용자 자산 보존](evidence/raw/ball-mvc-preservation-check.json).
 
@@ -214,6 +214,27 @@ Ball MVC 단위 종료 당시 Daniel 소유 Ball Prefab은 MeshRenderer·SphereC
 Unity 6000.3.10f1의 임시 PoolFactory/ObstacleView 검사에서 같은 묶음 재대여, 세대 전진, 오래된 lease/Controller 거절, 정상 반환, 활성 Pool Dispose, 계층 선파괴, 생성 후 미대여 파괴, 잘못된 lease 준비 실패 롤백과 파괴 오류 로그 부재를 포함해 25개 assertion을 통과했다. [Obstacle 코드](../../Assets/Scripts/InGame/Obstacle/ObstacleView.cs), [실행 결과](evidence/raw/obstacle-mvc-runtime-validation.json).
 
 이 작업은 Cube Prefab·PoolConfig·Game 목록을 연결하지 않았다. 작업 중 외부에서 Ball/Cube Prefab에 Rigidbody가 추가된 저장 변경을 감지했지만 AI/보조가 만든 것으로 귀속하지 않고 사용자 소유 최신 상태로 보존했다. 다음 물리 단위에서는 이 실제 Rigidbody 구성과 Daniel의 의도를 다시 읽고, 상태 권위·초기화 책임·Unity Physics 대 직접 구현 Physics의 동일 비교 조건을 정한다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
+
+## Unity PhysX 런타임 권위와 풀 수명 — R-023
+
+[DECISION:user / 2026-09-09 KST] 채용 공고의 PhysX 요구에 맞춰 첫 플레이는 Unity PhysX로 구현한다. 직접 구현 물리와의 비교 및 물리 권위 설명은 대표 PhysX 플레이를 확인한 뒤 별도 문서로 남긴다.
+
+| 책임 | 현재 계약 |
+|---|---|
+| 런타임 물리 권위 | Rigidbody가 위치·회전·선속도·각속도를 소유한다. BallModel/ObstacleModel에는 이를 복제하지 않고 대여 상태·세대만 둔다. |
+| 컴포넌트 계약 | 풀 소스의 BallView/ObstacleView와 같은 루트에 Collider와 **dynamic Rigidbody**가 있어야 한다. 코드는 `AddComponent`하거나 `isKinematic`, mass, gravity, constraints, collision detection, interpolation, damping을 덮어쓰지 않는다. |
+| Ball 대여 | 비활성 `OnPoolRent`에서 속도·각속도를 0으로 만들고, 활성화 `OnEnable`에서 현재 lease·epoch를 확인해 발사 전 Sleep을 재적용한다. finite·0이 아닌 초기속도를 현재 대여에 한 번만 적용하고 WakeUp한다. |
+| Obstacle 대여 | 비활성 `OnPoolRent`에서 속도·각속도를 0으로 만들고, 활성화 `OnEnable`에서 현재 lease·epoch를 확인해 충돌 대기 상태로 WakeUp한다. |
+| 반환·활성 풀 종료 | 두 Rigidbody의 속도·각속도를 0으로 만들고 Sleep한다. Controller의 lease/epoch와 View/Model 연결도 같은 수명 경계에서 해제한다. |
+| 충돌 결과 | 현재 단위는 PhysX 접촉과 Obstacle의 물리 이동만 다룬다. 피해·HP·파괴·점수·결과·연출은 뒤의 게임 규칙 계층이다. |
+
+Ball 발사는 Controller가 Rigidbody에 명령하지만, 충돌 후의 Transform/velocity를 Controller가 다시 계산해 덮어쓰지 않는다. 따라서 현재 권위는 “Controller가 명령, PhysX Rigidbody가 상태 소유”다. 직접 구현 물리를 붙일 때는 이 구현과 동시에 같은 Transform을 쓰게 하지 않고, 별도의 물리 백엔드가 권위를 넘겨받는 경계를 문서와 동일 조건 Probe로 정의한다.
+
+계층이 Factory보다 먼저 파괴되는 경로에서는 Unity의 파괴된 객체가 CLR 참조로 남아 있어도 PoolLease가 즉시 무효다. 해당 lease의 Return은 false이고 죽은 객체를 비활성 재고로 넣지 않는다. Pool의 Count는 최종 Dispose 때 정리되므로 계층 선파괴는 정상 재사용 흐름이 아니라 씬 종료용 방어 경로다.
+
+격리 검증은 별도 local PhysicsScene에서 임시 dynamic Ball/Obstacle을 대여하고 발사 → `PhysicsScene.Simulate` → `OnCollisionEnter` → Obstacle 변위를 확인한다. 정상 반환·동일 body 재대여·오래된 lease/epoch 거절·활성 Factory Dispose와 Inspector 물리값 보존도 함께 검사한다. 1차 사용자 실행은 충돌 시뮬레이션 전 대여 직후 Sleep/Wake 복합 검사에서 실패했다. Pool은 비활성 clone의 `OnPoolRent` 뒤 활성화하므로, 활성화 시점에 두 View가 의도한 Sleep/Wake를 재적용하도록 수정했다. 검증은 이제 두 상태를 분리하고 임시 원본의 Rigidbody 설정을 Factory 초기화 전부터 비교한다. 이 Probe는 실제 Game Prefab의 질량·중력·배치·조작감을 대표하지 않으며 수정본 Play Mode 재실행 대기다. [검증 코드](../../Assets/Scripts/Test/PhysXRuntimeProbe.cs) · [1차 실패](evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json) · [수정 컴파일](evidence/raw/physx-activation-fix-editor-compile.json).
+
+향후 `PHYSICS_AUTHORITY.md`는 대표 플레이 뒤 작성한다. 최소 내용은 권위 전환 표, PhysX/직접 구현 각각의 입력·fixed step·초기 상태·충돌 처리, 비교 지표(재현성·오차·CPU·GC·조작감), 혼합 금지 규칙과 Player/기기 검증 범위다. 문서 계획은 직접 구현 방식 채택이나 비교 통과를 뜻하지 않는다.
 
 ## 성능 근거를 기록하는 방법
 

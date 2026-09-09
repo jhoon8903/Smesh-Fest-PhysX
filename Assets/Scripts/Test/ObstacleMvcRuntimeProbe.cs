@@ -28,7 +28,7 @@ namespace Framework.Test
 
         private readonly Result result = new Result
         {
-            scope = "Isolated PoolFactory + temporary ObstacleView source only; does not edit a Scene, Prefab, PoolConfig asset, physics, HP, destruction, or input."
+            scope = "Isolated PoolFactory plus a temporary ObstacleView source with required Rigidbody and BoxCollider; does not edit a saved Scene, Prefab, PoolConfig asset, HP, destruction, or input, and does not simulate physics."
         };
 
         private GameObject fixtureRoot;
@@ -124,6 +124,8 @@ namespace Framework.Test
                        !hierarchyController.IsCurrentRental(hierarchyEpoch) &&
                        hierarchyModel.ObserverCount == 0,
                     "Hierarchy-first destruction left the Obstacle MVC bundle active before pool disposal.");
+                Assert(!hierarchyLease.IsValid && !hierarchyLease.Return(),
+                    "A destroyed Obstacle remained reachable through its lease before pool disposal.");
 
                 hierarchyFirstPool.Dispose();
                 Assert(!hierarchyLease.IsValid,
@@ -131,6 +133,9 @@ namespace Framework.Test
 
                 GameObject invalidLeaseObject = new GameObject("__ObstacleMvcValidation_InvalidLease");
                 invalidLeaseObject.SetActive(false);
+                Rigidbody invalidLeaseBody = invalidLeaseObject.AddComponent<Rigidbody>();
+                invalidLeaseBody.useGravity = false;
+                invalidLeaseObject.AddComponent<BoxCollider>();
                 ObstacleView invalidLeaseView = invalidLeaseObject.AddComponent<ObstacleView>();
                 invalidLeaseView.OnPoolCreated(invalidLeaseView);
                 ObstacleModel invalidLeaseModel = invalidLeaseView.OwnedModel;
@@ -148,6 +153,9 @@ namespace Framework.Test
 
                 GameObject neverRentedObject = new GameObject("__ObstacleMvcValidation_CreatedNeverRented");
                 neverRentedObject.SetActive(false);
+                Rigidbody neverRentedBody = neverRentedObject.AddComponent<Rigidbody>();
+                neverRentedBody.useGravity = false;
+                neverRentedObject.AddComponent<BoxCollider>();
                 ObstacleView neverRentedView = neverRentedObject.AddComponent<ObstacleView>();
                 neverRentedView.OnPoolCreated(neverRentedView);
                 Assert(neverRentedView != null && neverRentedView.OwnedModel != null &&

@@ -1,6 +1,6 @@
 # 확인·검증 기록
 
-초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-000-OBSTACLE-MVC-001은 Obstacle별 묶음 재사용의 Play Mode 25개 검사 결과다. Ball 19개, 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개와 조건을 구분하며 High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
+초기 조사일: 2026-09-08. 각 절은 해당 시점의 기록이다. 최신 W-003-PHYSX-LIFECYCLE-001은 사용자 Play Mode 1차 실행에서 활성화 직후 Sleep/Wake 복합 검사가 실패했고, 활성화 순서 수정·Unity 컴파일 뒤 재실행 대기다. Ball 19개·Obstacle 25개, 앞선 공통 MVC 58개·Pool 66개·DI/UI Pause 25개는 이전 실행 결과이므로 새 PhysX 런타임 근거로 합산하지 않는다. High 설정 빌드 검증은 계속 미실행이다. 초기 상태 스냅샷은 [startup-baseline.json](evidence/raw/startup-baseline.json).
 
 | 검증 ID / 관련 요구·작업 | 실제 확인 방법·담당 | 관측 결과 | 상태·한계 |
 |---|---|---|---|
@@ -10,7 +10,7 @@
 | V-004 / R-002, SF-START-001-CODE | 보조: Assets/Scripts의 실제 C# 읽기 | GameFlow는 MonoBehaviour와 빈 Awake. 나머지 Ball/Obstacle·Object·Screen·Pool·Navigator·UpdateLoop는 빈 선언. A안 기능과 물리 비교 코드 없음. | 통과: 코드 조사. Unity 컴파일/실행 미검증. |
 | V-101 / W-001 | Unity 현재 소스 컴파일 | 실행하지 않음. 기존 Editor.log에는 옛 ObjectView/TView 파일명의 CS8773 이력이 있음. | 미실행: 과거 오류를 현재 실패로 단정하지 않음. |
 | V-102 / W-001 | Unity Play Mode에서 조준·발사·충돌 | 첫 목표·역할 답변 후 구현·확인 예정 | 미실행 |
-| V-103 / W-003 | 물리 비교 측정 | 비교 대상·조건이 미정 | 미실행 |
+| V-103 / W-003 | 물리 비교 측정 | 첫 PhysX 수명 Probe 1차 Play Mode 실행은 assertion 10·시뮬레이션 0회에서 실패. 활성화 순서 수정·컴파일 완료. 직접 구현 비교 조건은 대표 플레이 뒤 별도 문서화 | PhysX 수정본 재실행·비교 모두 미완료 |
 
 ## 코드 근거
 
@@ -255,3 +255,33 @@ Ball 단위 종료 당시 실제 Ball 발사·이동·충돌·Cannon 회전, Obs
 AI 검증은 임시 GameObject·메모리상 PoolConfig만 사용했고 Scene·Prefab·PoolConfig를 저장하지 않았다. Game.unity와 Ball/Cube PoolConfig는 시작·종료 해시가 같다. 작업 도중 Ball/Cube Prefab에 Rigidbody가 추가된 외부 저장 변경이 나타났으며 Main과 보조의 파일 소유 범위 밖이었다. 저자를 추정하거나 되돌리지 않고 사용자 소유 최신 상태로 보존했다. [보존 기록](evidence/raw/obstacle-mvc-preservation-check.json).
 
 이 25개는 Obstacle의 대여/반환 수명 격리 검사다. Cube Prefab의 ObstacleView 연결, Cube PoolConfig와 Game 목록 연결, 실제 Rigidbody 초기화, HP·파괴·충돌·렌더·입력·게임 플레이는 확인하지 않았다. Ball 19개와 공통 MVC/Pool/DI 검사를 이번 최종 실행에서 함께 재실행한 것도 아니다. High 설정 Player 빌드·Android IL2CPP/AOT·기기 실행은 계속 미실행이다. 커밋·푸시·브랜치 전환도 하지 않았다.
+
+## W-003-PHYSX-LIFECYCLE-001 — Rigidbody 권위와 격리 충돌 Probe
+
+2026-09-09 KST / R-023. Daniel이 Ball과 Obstacle에 Rigidbody/Collider를 연결했고, 채용 공고의 PhysX 요구를 따라 첫 구현을 Unity PhysX로 진행하도록 결정했다. Main은 최신 씬·Prefab·PoolConfig와 코드를 읽고 사용자 Inspector 값 보존 기준을 잡았다. Luna Low는 Pool callback/활성화 순서를, Terra Medium은 격리 검증 파일을, Sol High는 물리·풀 파괴 수명을 읽기 전용으로 검토했다. ControlBox/MenuPresenter는 이 프로젝트 코드로 사용하지 않았다.
+
+### 구현과 정적 확인
+
+- BallController는 현재 Model epoch와 PoolLease가 모두 유효하고 아직 발사하지 않은 경우에만 finite·0이 아닌 초기 `linearVelocity`를 한 번 적용한다. 각속도를 지우고 WakeUp하며, 오래된/중복/kinematic 명령은 거절한다.
+- Ball은 대여와 반환/폐기에서 선속도·각속도를 지우고 Sleep한다. Obstacle은 대여 때 지우고 WakeUp, 반환/폐기 때 지우고 Sleep한다. 위치·회전·속도는 Model에 복제하지 않아 Rigidbody가 유일한 런타임 물리 권위다.
+- BallView/ObstacleView는 같은 루트의 Collider와 dynamic Rigidbody를 요구한다. 빠져 있거나 kinematic이면 묶음 생성 전에 실패하며, 코드는 `AddComponent` 또는 Inspector의 mass/gravity/constraints/collision detection/interpolation/damping 변경으로 숨기지 않는다.
+- PoolLease는 Unity 파괴 객체를 즉시 무효로 본다. Sol High 1차 검토가 계층 선파괴 뒤 lease가 raw CLR 참조로 유효하던 결함을 찾았고, 2차 검토가 OnPoolRent/OnPoolReturn callback 중 파괴된 객체가 성공 또는 inactive로 확정될 수 있는 전이 사각지대를 찾았다. Main은 조회와 생성/대여/반환/return-pending 완료 경계를 보완하고 Pool Runtime 회귀를 추가했다. 최종 재검토에서는 합의 범위의 추가 correctness 결함을 찾지 못했다.
+- PhysX Probe는 별도 `LocalPhysicsMode.Physics3D` 씬에서 임시 Ball/Obstacle과 메모리 PoolConfig를 만든다. kinematic source 거절, 초기 Sleep/Wake, 유효·무효 발사, `PhysicsScene.Simulate`의 `OnCollisionEnter`, Obstacle 변위, 정상 반환, 같은 body 재대여, 오래된 lease/epoch, 활성 Factory Dispose, 속도/Sleep과 Inspector 속성 보존을 검사한다. setup 실패·개별 cleanup·증거 쓰기 실패에도 임시 scene 정리를 시도한다.
+
+Unity 6000.3.10f1에서 최종 일반 컴파일이 완료됐고 compiler error 0개다. 변경 스크립트 14개의 정적 진단도 warnings 0, errors 0이다. 컴파일 보완 이력은 누락된 Probe assertion helper/definite assignment, `UnityEngine.Object` namespace 명시이며 최종본에는 모두 반영됐다. Console의 경고 3개는 MCP bridge 포트 reload 재시도와 6401 fallback뿐이다. Game 씬은 Play Mode가 아닌 상태로 dirty=false·루트 4개다. [컴파일 원자료](evidence/raw/physx-lifecycle-editor-compile.json).
+
+### 사용자 Play Mode 1차 실패와 활성화 순서 수정
+
+Daniel이 2026-09-09T06:11:36Z에 실행한 첫 Probe는 assertion 10에서 `Rent did not leave the Ball asleep until launch or wake the reset Obstacle.`로 실패했다. `simulatedSteps=0`, 접촉과 변위도 0이므로 이는 충돌 실패가 아니라 **충돌 시뮬레이션 전에 발견된 대여 활성화 계약 실패**다. 당시 하나의 복합식이어서 Ball Sleep과 Obstacle Wake 중 어느 항이 실패했는지는 결과만으로 분리할 수 없다. [보존한 1차 실패](evidence/raw/physx-lifecycle-runtime-failed-20260909T061136Z.json).
+
+코드 순서는 비활성 clone에서 `OnPoolRent` → Controller의 속도 초기화와 Sleep/Wake → `SetActive(true)`였다. 비활성 Rigidbody에 내린 Sleep/Wake 의도가 활성화 뒤에도 그대로 유지된다고 전제하지 않도록, BallView/ObstacleView의 `OnEnable`에서 현재 PoolLease·epoch를 확인한 뒤 Ball은 발사 전 Sleep, Obstacle은 Wake를 재적용했다. 씬 배치형 View처럼 Controller가 아직 없는 경우에는 아무 작업도 하지 않는다. Inspector 값은 변경하지 않는다.
+
+검증기도 Ball Sleep, Ball 속도, Obstacle Wake, Obstacle 속도를 별도 assertion으로 나눴다. Sol High 재검토가 Inspector 보존 기준을 첫 대여 뒤에 잡던 사각지대를 발견해, 임시 원본 Rigidbody 값을 Factory 초기화 전에 저장하고 첫 대여 직후부터 비교하도록 보완했다. 최종 재검토에서 이 수정 범위의 추가 correctness 문제는 발견되지 않았다. 수정된 5개 스크립트 정적 진단 warning 0·error 0, 프로젝트 compiler error 0을 확인했다. 현재 Console의 reload 경고는 MCP 연결에만 해당하며 정리 후 항목 0개다. [수정 컴파일 근거](evidence/raw/physx-activation-fix-editor-compile.json).
+
+### 보존과 미실행 범위
+
+시작·종료 시 Game.unity, Ball/Cube Prefab, Ball/Cube PoolConfig SO의 SHA256은 각각 동일하다. 기존 Git dirty인 Game.unity는 Daniel이 23개 명시 블록에 Rigidbody/ObstacleView를 추가한 저장 변경이며 AI는 되돌리거나 다시 저장하지 않았다. live Unity 해석 결과는 ObstacleView 24개, Rigidbody 25개로 prefab-backed Obstacle와 Ball을 포함한다. [보존 원자료](evidence/raw/physx-lifecycle-preservation-check.json) · [시작 기준](evidence/raw/physx-lifecycle-baseline.json).
+
+**새 PhysX Runtime Probe는 1차 실행했지만 수정본은 재실행하지 않았고, 새 Pool callback 파괴 회귀도 재실행하지 않았다.** 따라서 충돌 성공, 최종 assertion 수, 실제 Prefab의 질량·중력·배치·조작감, 실제 Game 씬의 HP/파괴/결과를 통과로 기록하지 않는다. 기존 Pool 66개·Ball MVC 19개·Obstacle MVC 25개 결과는 변경 전의 과거 근거다. High 설정 Player 빌드·IL2CPP/AOT·기기 실행도 미실행이다.
+
+현재 Game 씬의 ObstacleView는 씬 배치 컴포넌트라 Pool의 `OnPoolCreated`가 자동 호출되지 않는다. native Rigidbody는 PhysX에 참여할 수 있지만 MVC Controller/Model은 아직 게임 흐름에서 초기화되지 않는다. Cube PoolConfig의 prefab과 Game PoolContainer 등록도 비어 있다. 이 상태를 오류로 자동 수정하거나 씬을 풀 생성 구조로 바꾸지 않았다. PhysX 격리 Probe가 통과하면 W-001에서 고정 씬 Blocks와 pooled Cube 중 실제 게임 구조를 정하고 클릭 발사·Cannon 회전을 연결한다.

@@ -29,6 +29,8 @@ namespace Framework.EditorValidation
             sourceRoot.SetActive(false);
             GameObject source = new GameObject("Temporary_ObstacleView_Source");
             source.transform.SetParent(sourceRoot.transform, false);
+            source.AddComponent<Rigidbody>().useGravity = false;
+            source.AddComponent<BoxCollider>();
             ObstacleView view = source.AddComponent<ObstacleView>();
 
             PoolConfig config = CreateConfig("__ObstacleMvcValidation_Pool", view);

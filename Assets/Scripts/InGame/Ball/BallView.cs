@@ -25,9 +25,15 @@ namespace InGame.Ball
                 throw new InvalidOperationException("BallView must be the owner of its PoolObject.");
             if (ownedModel != null || controller != null)
                 throw new InvalidOperationException("Ball MVC bundle was already created.");
+            if (!TryGetComponent(out Rigidbody body))
+                throw new InvalidOperationException("BallView requires a Rigidbody on the same GameObject.");
+            if (!TryGetComponent(out Collider _))
+                throw new InvalidOperationException("BallView requires a Collider on the same GameObject.");
+            if (body.isKinematic)
+                throw new InvalidOperationException("BallView requires a dynamic Rigidbody; it does not override Inspector physics settings.");
 
             ownedModel = new BallModel();
-            controller = new BallController(ownedModel);
+            controller = new BallController(ownedModel, body);
         }
 
         public void OnPoolRent(PoolLease lease)
@@ -51,6 +57,13 @@ namespace InGame.Ball
         public void OnPoolReturn() => ResetRental();
 
         public void OnPoolDestroy() => DestroyBundle();
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            // OnPoolRent runs while the clone is inactive; enforce the intended state after activation.
+            controller?.OnRentalActivated();
+        }
 
         protected override void OnDestroy()
         {
@@ -82,8 +95,8 @@ namespace InGame.Ball
 
         protected override void RefreshView(BallModel model)
         {
-            // The current lifecycle state has no visual representation. Physics-driven Transform,
-            // trail and impact presentation are connected after their state authority is decided.
+            // Rental state has no visual representation. PhysX drives this Transform directly;
+            // trail and impact presentation remain separate follow-up units.
         }
 
         private void ResetRental()

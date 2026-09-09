@@ -1,20 +1,25 @@
 using System;
 using Framework.Object;
 using Framework.Pool;
+using UnityEngine;
 
 namespace InGame.Obstacle
 {
     /// <summary>
-    /// Owns the current rental token for one ObstacleModel. Physics and gameplay subscriptions are
-    /// added only after their authority is defined; this unit does not register no-op callbacks.
+    /// Owns the current rental token and resets the authoritative Rigidbody for one ObstacleModel.
+    /// Gameplay collision consequences remain outside this lifecycle unit.
     /// </summary>
     public sealed class ObstacleController : ObController, IDisposable
     {
         private PoolLease lease;
+        private readonly Rigidbody body;
 
-        public ObstacleController(ObstacleModel model)
+        public ObstacleController(ObstacleModel model, Rigidbody body)
         {
             Model = model ?? throw new ArgumentNullException(nameof(model));
+            this.body = body != null ? body : throw new ArgumentNullException(nameof(body));
+            if (this.body.isKinematic)
+                throw new InvalidOperationException("ObstacleController requires a dynamic Rigidbody.");
         }
 
         public ObstacleModel Model { get; }
@@ -45,10 +50,25 @@ namespace InGame.Obstacle
             uint rentalEpoch = Model.RentalEpoch;
             if (!Model.IsCurrentRental(rentalEpoch))
                 throw new InvalidOperationException("ObstacleModel must begin its rental before ObstacleController.");
+            if (body == null || body.isKinematic)
+                throw new InvalidOperationException("ObstacleController requires a live dynamic Rigidbody for every rental.");
 
             lease = rentalLease;
             RentalEpoch = rentalEpoch;
             IsRented = true;
+            ResetMotion(true);
+        }
+
+        /// <summary>
+        /// Wakes the reset body after the pooled GameObject becomes active.
+        /// WakeUp while inactive is not a reliable observable PhysX state.
+        /// </summary>
+        internal void OnRentalActivated()
+        {
+            if (!IsCurrentRental(RentalEpoch) || body == null || body.isKinematic)
+                return;
+
+            body.WakeUp();
         }
 
         internal void EndRental()
@@ -56,8 +76,22 @@ namespace InGame.Obstacle
             IsRented = false;
             RentalEpoch = 0;
             lease = default;
+            ResetMotion(false);
         }
 
         public void Dispose() => EndRental();
+
+        private void ResetMotion(bool wake)
+        {
+            if (body == null || body.isKinematic)
+                return;
+
+            body.linearVelocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
+            if (wake)
+                body.WakeUp();
+            else
+                body.Sleep();
+        }
     }
 }

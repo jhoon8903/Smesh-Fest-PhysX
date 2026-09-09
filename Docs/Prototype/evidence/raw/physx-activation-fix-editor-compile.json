@@ -1,0 +1,44 @@
+{
+  "recordedAtUtc": "2026-09-09T06:30:21Z",
+  "unityVersion": "6000.3.10f1",
+  "branch": "MVC-Obstacle",
+  "head": "ca1c6914da43ff094c47ab8dc8275521b5dfd3cd",
+  "scope": "Activation-order correction after the user-executed PhysX probe failed before simulation.",
+  "scriptCompilationRequested": true,
+  "compilerErrors": 0,
+  "validatedScripts": 5,
+  "scriptWarnings": 0,
+  "scriptErrors": 0,
+  "validatedPaths": [
+    "Assets/Scripts/InGame/Ball/BallController.cs",
+    "Assets/Scripts/InGame/Ball/BallView.cs",
+    "Assets/Scripts/InGame/Obstacle/ObstacleController.cs",
+    "Assets/Scripts/InGame/Obstacle/ObstacleView.cs",
+    "Assets/Scripts/Test/PhysXRuntimeProbe.cs"
+  ],
+  "review": {
+    "activationFixRemainingCorrectnessIssues": 0,
+    "inspectorBaselineIssueFoundAndFixed": true,
+    "finalReviewRemainingCorrectnessIssues": 0
+  },
+  "editor": {
+    "playModeEnteredByAgent": false,
+    "activeScene": "Assets/Scenes/Game.unity",
+    "sceneDirty": false,
+    "rootCount": 4,
+    "consoleEntriesAfterClear": 0,
+    "domainReloadWarnings": "MCP bridge port retry/fallback only; not compiler diagnostics."
+  },
+  "runtime": {
+    "firstUserRun": "failed at assertion 10 before PhysicsScene.Simulate",
+    "fixedProbeRun": false,
+    "collisionValidated": false
+  },
+  "preservedAssetSha256": {
+    "Assets/Scenes/Game.unity": "b00cdcf6acb4b9242b00a6a6688c827f22cff34184ea437ae1be5d2fda8cc321",
+    "Assets/Project/Prefabs/Ball.prefab": "c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff",
+    "Assets/Project/Prefabs/Cube.prefab": "a584b305abfcd3efa8a174300c1b0f5de3ac27f3fa80462ec10e2343a51503a0",
+    "Assets/Project/So/Ball.asset": "5d145c8f94b96ccfd0e922e3fc75c3fd7c55f44abb6fe6ce3be5b786ab61cfb1",
+    "Assets/Project/So/Cube.asset": "83c992e56df0a9c320e17be9c0edd2c78f0a60642160bb75d3c06ce7a419a579"
+  }
+}

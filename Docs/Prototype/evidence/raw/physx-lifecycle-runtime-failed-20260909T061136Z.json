@@ -1,0 +1,12 @@
+{
+  "recordedAtUtc": "2026-09-09T06:11:36.9714750Z",
+  "unityVersion": "6000.3.10f1",
+  "success": false,
+  "assertions": 10,
+  "simulatedSteps": 0,
+  "collisionContacts": 0,
+  "obstacleDisplacement": 0.0,
+  "error": "System.InvalidOperationException: Rent did not leave the Ball asleep until launch or wake the reset Obstacle.\n  at Framework.Test.PhysXRuntimeProbe.Assert (System.Boolean condition, System.String message) in Assets/Scripts/Test/PhysXRuntimeProbe.cs:237\n  at Framework.Test.PhysXRuntimeProbe+<Run>d__8.MoveNext () in Assets/Scripts/Test/PhysXRuntimeProbe.cs:87",
+  "scope": "Temporary inactive sources plus in-memory PoolConfig instances in an isolated LocalPhysicsMode.Physics3D scene. No saved Scene, Prefab, PoolConfig, or ScriptableObject asset is edited.",
+  "classification": "User-executed Play Mode failure captured before the activation-order fix. The composite assertion did not identify which sleep-state term failed."
+}
