@@ -359,3 +359,25 @@ Unity 6000.3.10f1 스크립트 refresh 뒤 Console error 0, 변경 6개 스크�
 Terra Medium builder 구현과 Sol High 검토 뒤 `LevelConfig`은 순서/transform/PoolConfig 및 PoolConfig별 필요 개수≤MaxPool을 검증한다. 창은 직접 child `ObstacleView`만 Capture하고 명시 Bake에서만 SO를 저장하며, 선택 변경 시 미리보기를 폐기한다. `LevelSpawner`는 명시 `TrySpawn`과 `ReturnAll`만 제공하고 대여 실패는 보유 lease를 원자적으로 반환한다.
 
 신규 스크립트 4개 Unity 정적 진단은 warning/error 0, Console error 0이다. `Tools/Smesh Fest/Validation/Level Editor and Spawn`과 실제 Bake는 **미실행**이다. 현재 24 Blocks는 Cube MaxPool=8·미등록 catalog 상태라 Bake/spawn 거절이 기대 동작이며, Scene/Prefab/기존 config/Blocks 제거는 수행하지 않았다.
+
+## W-002-LEVEL-EDITOR-002 — Level1 Bake와 Game 통합 정적 확인
+
+Daniel이 Cube PoolConfig `MaxPool=100`으로 변경한 뒤 `Assets/Project/Level/Level1.asset`을 Bake했고 Cube 24개 항목과 local TRS가 저장돼 있다. Game 씬에는 authored `Blocks`의 sibling `RuntimeBlocks`가 있고 local position은 `(0, 0.29, 0)`이며 authored Blocks와 local TRS가 일치한다. `WorldObjects`에는 `LevelSpawner`·`LevelSession`, `PoolContainer`에는 Ball·Cube가 연결돼 있다.
+
+`GameFlow`는 `LevelSession.TryStart` 성공 뒤에만 loop를 시작한다. authored Blocks는 runtime에서 비활성화되고 시작 실패 또는 `ReturnAll` 시 복원된다. fallback/parallel pool은 없으며 `LevelSession`은 nested/ancestor root를 거절한다. 5개 스크립트 정적 진단 warning/error 0, Console 0이다. Level Editor validation 메뉴와 Play Mode는 아직 실행하지 않아 런타임은 미검증이다.
+
+첫 validation 실행은 `OnPoolRent` 뒤 일반 `OnEnable`까지 Edit Mode preview scene에서 관측하려 해 false negative가 발생했다. 사용자 관측상 RuntimeBlocks 생성은 성공했다. 생산 코드는 유지하고 fixture를 `OnPoolRent` 시 inactive+world P/R, 완료 시 active+최종 local P/R/S 검증으로 교정했다. 기존 Play Mode Pool probe가 rent-before-enable 순서를 담당하며, 교정된 메뉴 재실행은 대기 중이다.
+
+## W-004-GROUND-FADE-RETURN-001 — 정적 검증
+
+Terra Medium 구현과 Sol High 독립 재검토를 사용했다. 첫 검토에서 material-index property block이 renderer override를 가릴 수 있는 경계, hierarchy-first 파괴 시 Loop 구독, 기존 runtime fixture의 새 필수 의존성 누락을 찾아 보완했고 최종 P0/P1은 없다.
+
+Unity 6000.3.10f1 강제 refresh·compile 뒤 `GroundFadeReturn`, 공통 validation fixture, `ObstacleMvcRuntimeProbe` 진단은 warning/error 0이며 Console error 0이다. 생성된 runtime/editor C# 프로젝트 빌드는 각각 error 0이고 MCPForUnity 참조의 기존 `System.Net.Http`·`System.IO.Compression` 버전 충돌 warning 4개가 남는다. live Game 씬은 dirty=false이며 `WorldObjects/GameLifetimeScope`가 `Assets/Project/Config/GroundFadeConfig.asset`을 참조한다. Ball/Cube Prefab 모두 `GroundFadeReturn`을 한 개씩 가진다.
+
+두 Fade Material은 임포트된 URP/Lit에서 Transparent surface, SrcAlpha/OneMinusSrcAlpha, ZWrite off, preserve specular off를 확인했다. 원본 opaque Material은 수정하지 않았다. 이번 단계는 Play Mode를 실행하지 않았으므로 Ground 접촉 뒤 1초 대기·1초 Fade·exactly-once Return, 재대여 복구와 겹친 Cube의 투명 정렬은 아직 런타임 근거가 없다.
+
+### Ground Fade 시각 교정
+
+Daniel이 Ball/Cube Prefab Renderer를 각 GroundFade Material로 직접 연결한 현재 값을 권위로 삼았다. 두 Prefab의 Renderer와 `fadeMaterial`이 같은 자산을 참조함을 확인했고, 두 Material만 URP/Lit Transparent alpha 상태로 변경하되 기존 그림자가 Fade 시작에 끊기지 않도록 ShadowCaster pass는 유지했다. `GroundFadeReturn`의 런타임 Material 교체와 shadow 상태 저장·변경·복구를 제거하여 Fade 동안 `_BaseColor.a` PropertyBlock만 변한다. Unity 정적 진단과 Console error는 0이며 실제 시각 결과는 Play Mode 확인 대기다.
+
+사용자 런타임 관측에서 alpha 값은 감소하지만 화면은 opaque로 유지되고 alpha 0의 Pool 반환 때만 사라졌다. `RestoreVisual()`이 원래 비어 있던 material-index-0 범위에도 빈 `MaterialPropertyBlock`을 설정해 renderer-level alpha block보다 우선한 것이 원인이었다. 빈 원본 범위는 `null`로 제거했다. 이어진 Play Mode 확인에서 그림자는 여전히 없었고 두 Material에 `SHADOWCASTER` 비활성화가 다시 직렬화된 것을 확인했다. URP 17.3 `BaseShaderGUI.UpdateMaterialSurfaceOptions()`가 `_CastShadows` 속성이 없는 built-in Lit의 Transparent 상태를 검사할 때 ShadowCaster를 강제로 끄므로, YAML 제거 방식은 유지될 수 없었다. 현재는 `GroundFadeReturn.OnPoolCreated()`가 공유 Fade Material의 `ShadowCaster` pass를 활성화하고 결과를 검증한다. Prefab Renderer의 Cast Shadows/Receive Shadows, Directional Light, Ground Receive Shadows, URP shadow 지원은 모두 켜져 있다. 정적 진단·Console error는 0이고 실제 그림자 결과는 Play Mode 재확인 대기다.

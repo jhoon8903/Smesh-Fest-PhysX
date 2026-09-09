@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Framework.Pool;
+using Framework.Loop;
 using InGame.Ball;
 using InGame.Config;
 using InGame.Obstacle;
@@ -65,6 +66,8 @@ namespace Framework.Test
             result.unityVersion = Application.unityVersion;
             BallConfig ballSettings = null;
             ObstacleConfig obstacleSettings = null;
+            GroundFadeConfig groundFadeSettings = null;
+            LoopDispatcher loopDispatcher = null;
             try
             {
                 Assert(physicsScene.IsValid(), "The local Physics3D scene did not provide a valid PhysicsScene.");
@@ -82,9 +85,14 @@ namespace Framework.Test
 
                 ballSettings = ScriptableObject.CreateInstance<BallConfig>();
                 obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
+                groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
+                loopDispatcher = new LoopDispatcher();
+                loopDispatcher.StartLoop();
                 ContainerBuilder builder = new ContainerBuilder();
                 builder.RegisterInstance(ballSettings);
                 builder.RegisterInstance(obstacleSettings);
+                builder.RegisterInstance(groundFadeSettings);
+                builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -272,6 +280,10 @@ namespace Framework.Test
                 catch (Exception exception) { RecordCleanupFailure("BallConfig", exception); }
                 try { if (obstacleSettings != null) Destroy(obstacleSettings); }
                 catch (Exception exception) { RecordCleanupFailure("ObstacleConfig", exception); }
+                try { loopDispatcher?.Dispose(); }
+                catch (Exception exception) { RecordCleanupFailure("LoopDispatcher", exception); }
+                try { if (groundFadeSettings != null) Destroy(groundFadeSettings); }
+                catch (Exception exception) { RecordCleanupFailure("GroundFadeConfig", exception); }
                 try { if (fixtureRoot != null) Destroy(fixtureRoot); }
                 catch (Exception exception) { RecordCleanupFailure("Fixture root", exception); }
                 try { if (ballConfig != null) Destroy(ballConfig); }

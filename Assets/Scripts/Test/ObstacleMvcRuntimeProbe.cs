@@ -2,9 +2,12 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using Framework.Pool;
+using Framework.Loop;
 using InGame.Config;
 using InGame.Obstacle;
+using InGame.Presentation;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -37,6 +40,8 @@ namespace Framework.Test
         private PoolFactory factory;
         private IObjectResolver resolver;
         private ObstacleConfig obstacleSettings;
+        private GroundFadeConfig groundFadeSettings;
+        private LoopDispatcher loopDispatcher;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -54,8 +59,13 @@ namespace Framework.Test
             try
             {
                 obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
+                groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
+                loopDispatcher = new LoopDispatcher();
+                loopDispatcher.StartLoop();
                 ContainerBuilder builder = new ContainerBuilder();
                 builder.RegisterInstance(obstacleSettings);
+                builder.RegisterInstance(groundFadeSettings);
+                builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -141,6 +151,7 @@ namespace Framework.Test
                 Rigidbody invalidLeaseBody = invalidLeaseObject.AddComponent<Rigidbody>();
                 invalidLeaseBody.useGravity = false;
                 invalidLeaseObject.AddComponent<BoxCollider>();
+                AddRequiredGroundFade(invalidLeaseObject, config.Prefab);
                 ObstacleView invalidLeaseView = invalidLeaseObject.AddComponent<ObstacleView>();
                 resolver.InjectGameObject(invalidLeaseObject);
                 invalidLeaseView.OnPoolCreated(invalidLeaseView);
@@ -162,6 +173,7 @@ namespace Framework.Test
                 Rigidbody neverRentedBody = neverRentedObject.AddComponent<Rigidbody>();
                 neverRentedBody.useGravity = false;
                 neverRentedObject.AddComponent<BoxCollider>();
+                AddRequiredGroundFade(neverRentedObject, config.Prefab);
                 ObstacleView neverRentedView = neverRentedObject.AddComponent<ObstacleView>();
                 resolver.InjectGameObject(neverRentedObject);
                 neverRentedView.OnPoolCreated(neverRentedView);
@@ -194,6 +206,8 @@ namespace Framework.Test
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
                 if (obstacleSettings != null) Destroy(obstacleSettings);
+                loopDispatcher?.Dispose();
+                if (groundFadeSettings != null) Destroy(groundFadeSettings);
             }
 
             yield return null;
@@ -203,6 +217,24 @@ namespace Framework.Test
             if (result.success) Debug.Log("[ObstacleMvcValidation] Passed " + result.assertions + " assertions.");
             else Debug.LogError("[ObstacleMvcValidation] " + result.error);
             Destroy(gameObject);
+        }
+
+        private static void AddRequiredGroundFade(GameObject target, MonoBehaviour pooledSource)
+        {
+            Renderer sourceRenderer = pooledSource != null ? pooledSource.GetComponent<Renderer>() : null;
+            GroundFadeReturn sourceFade = pooledSource != null ? pooledSource.GetComponent<GroundFadeReturn>() : null;
+            FieldInfo fadeMaterialField = typeof(GroundFadeReturn).GetField("fadeMaterial",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Material fadeMaterial = sourceFade != null ? fadeMaterialField?.GetValue(sourceFade) as Material : null;
+            if (sourceRenderer == null || fadeMaterial == null)
+                throw new InvalidOperationException("Obstacle MVC validation requires the pooled production GroundFadeReturn setup.");
+
+            MeshRenderer renderer = target.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = sourceRenderer.sharedMaterial;
+            GroundFadeReturn fade = target.AddComponent<GroundFadeReturn>();
+            typeof(GroundFadeReturn).GetField("targetRenderer", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(fade, renderer);
+            fadeMaterialField.SetValue(fade, fadeMaterial);
         }
 
         private void Assert(bool condition, string message)

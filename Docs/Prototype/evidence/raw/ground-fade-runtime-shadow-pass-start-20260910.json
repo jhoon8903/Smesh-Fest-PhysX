@@ -1,0 +1,21 @@
+{
+  "id": "ground-fade-runtime-shadow-pass-start-20260910",
+  "task_id": "ground-fade-shadow-011",
+  "kind": "start",
+  "stage": "build",
+  "status": "in_progress",
+  "actor": "Daniel + Main + reviewers",
+  "summary": "URP/Lit가 Transparent Material의 ShadowCaster pass를 다시 끄는 실제 원인을 기준으로 런타임 pass 활성화를 최소 적용한다.",
+  "evidence": [
+    "Assets/Project/Materials/Ball_GroundFade.mat",
+    "Assets/Project/Materials/Cube_GroundFade.mat",
+    "Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs"
+  ],
+  "metadata": {
+    "observed_by_user": "Ball and Cube still cast no shadow in Play Mode",
+    "confirmed_cause": "URP BaseShaderGUI disables ShadowCaster whenever built-in Lit is Transparent",
+    "scope": "GroundFadeReturn runtime material pass activation only",
+    "custom_shader": false,
+    "fallback": false
+  }
+}

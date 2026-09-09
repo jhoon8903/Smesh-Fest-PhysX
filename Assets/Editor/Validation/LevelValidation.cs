@@ -64,9 +64,11 @@ namespace Framework.EditorValidation
                 AssertPose(runtimeRoot.GetChild(0), runtimeRoot, levelConfig.GetEntry(0));
                 AssertPose(runtimeRoot.GetChild(1), runtimeRoot, levelConfig.GetEntry(1));
                 LevelValidationPoolable first = runtimeRoot.GetChild(0).GetComponent<LevelValidationPoolable>();
-                AssertObservedPose(first, runtimeRoot, levelConfig.GetEntry(0));
+                AssertRentObservation(first, runtimeRoot, levelConfig.GetEntry(0));
                 spawner.ReturnAll();
                 Assert(factory.GetPool(poolConfig).CountActive == 0, "ReturnAll did not return every owned lease.");
+
+                ValidateLevelSession(fixtures.transform, runtimeRoot, levelConfig, spawner, factory, poolConfig);
 
                 // One external lease leaves capacity for only one of this level's two valid entries.
                 Assert(factory.TryRent(poolConfig, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease external),
@@ -79,7 +81,7 @@ namespace Framework.EditorValidation
 
                 ValidateTwentyFourEntryCapacity(smallPoolConfig);
                 ValidateOrderedCaptureAndBakeSafety(fixtures.transform, smallPoolConfig, poolConfig, out sentinelConfig);
-                Debug.Log("[LevelValidation] Passed: transformed parent pose/scale, rollback, ordered 24-entry capture, and capacity-safe Bake.");
+                Debug.Log("[LevelValidation] Passed: inactive rent pose, final active local TRS, LevelSession handoff/restore/rejection, rollback, ordered 24-entry capture, and capacity-safe Bake.");
             }
             catch (Exception exception)
             {
@@ -184,6 +186,60 @@ namespace Framework.EditorValidation
             return spawner;
         }
 
+        private static void ValidateLevelSession(Transform parent, Transform runtimeRoot, LevelConfig level,
+            LevelSpawner spawner, PoolFactory factory, PoolConfig poolConfig)
+        {
+            GameObject authored = new GameObject("AuthoredBlocks");
+            authored.transform.SetParent(parent, false);
+            LevelSession session = CreateSession(parent, authored.transform, spawner);
+
+            Assert(session.TryStart(out string startFailure), "LevelSession start failed: " + startFailure);
+            Assert(!authored.activeSelf && session.IsStarted && spawner.ActiveLeaseCount == level.Count,
+                "Successful LevelSession start did not hide authored Blocks or retain every lease.");
+            Assert(!session.TryStart(out string duplicateFailure) && !string.IsNullOrEmpty(duplicateFailure)
+                   && spawner.ActiveLeaseCount == level.Count,
+                "Duplicate LevelSession start changed the active leases.");
+            session.ReturnAll();
+            Assert(authored.activeSelf && !session.IsStarted && spawner.ActiveLeaseCount == 0,
+                "LevelSession ReturnAll did not restore authored activeSelf or clear leases.");
+
+            Assert(factory.TryRent(poolConfig, new PoolSpawnArgs(Vector3.zero, Quaternion.identity), out PoolLease external),
+                "LevelSession capacity fixture could not reserve its external lease.");
+            Assert(!session.TryStart(out string capacityFailure) && !string.IsNullOrEmpty(capacityFailure)
+                   && authored.activeSelf && spawner.ActiveLeaseCount == 0
+                   && factory.GetPool(poolConfig).CountActive == 1,
+                "Failed LevelSession spawn did not restore authored Blocks or roll back its rentals.");
+            Assert(external.Return(), "LevelSession capacity fixture could not return its external lease.");
+
+            Transform invalidRuntimeRoot = new GameObject("InvalidRuntimeRoot").transform;
+            invalidRuntimeRoot.SetParent(authored.transform, false);
+            SetSpawnerRuntimeRoot(spawner, invalidRuntimeRoot);
+            Assert(!session.TryStart(out string nestedFailure) && nestedFailure.Contains("cannot be the authored Blocks root")
+                   && authored.activeSelf && spawner.ActiveLeaseCount == 0,
+                "Nested RuntimeRoot was not rejected before authored Blocks changed.");
+            SetSpawnerRuntimeRoot(spawner, runtimeRoot);
+        }
+
+        private static LevelSession CreateSession(Transform parent, Transform authoredBlocksRoot, LevelSpawner spawner)
+        {
+            GameObject host = new GameObject("LevelSession");
+            host.transform.SetParent(parent, false);
+            LevelSession session = host.AddComponent<LevelSession>();
+            SerializedObject serialized = new SerializedObject(session);
+            serialized.FindProperty("authoredBlocksRoot").objectReferenceValue = authoredBlocksRoot;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            typeof(LevelSession).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(session, new object[] { spawner });
+            return session;
+        }
+
+        private static void SetSpawnerRuntimeRoot(LevelSpawner spawner, Transform runtimeRoot)
+        {
+            SerializedObject serialized = new SerializedObject(spawner);
+            serialized.FindProperty("runtimeRoot").objectReferenceValue = runtimeRoot;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         private static void ValidateTwentyFourEntryCapacity(PoolConfig maxEightConfig)
         {
             LevelConfig twentyFour = CreateEmptyLevelConfig();
@@ -281,6 +337,8 @@ namespace Framework.EditorValidation
 
         private static void AssertPose(Transform spawned, Transform root, LevelConfig.Entry entry)
         {
+            Assert(spawned.gameObject.activeSelf,
+                "spawn completed without activating the rented object.");
             Assert((spawned.position - root.TransformPoint(entry.LocalPosition)).sqrMagnitude < .000001f,
                 "spawned world position was not derived from the runtime root.");
             Assert(Quaternion.Angle(spawned.rotation, root.rotation * entry.LocalRotation) < .01f,
@@ -291,18 +349,15 @@ namespace Framework.EditorValidation
                 "spawned local transform did not exactly match the LevelConfig entry.");
         }
 
-        private static void AssertObservedPose(LevelValidationPoolable value, Transform root, LevelConfig.Entry entry)
+        private static void AssertRentObservation(LevelValidationPoolable value, Transform root, LevelConfig.Entry entry)
         {
             Vector3 expectedPosition = root.TransformPoint(entry.LocalPosition);
             Quaternion expectedRotation = root.rotation * entry.LocalRotation;
-            Assert(value != null && value.RentObserved && value.EnableObserved,
-                "Pool lifecycle did not expose both OnPoolRent and OnEnable observations.");
+            Assert(value != null && value.RentObserved && value.RentSawInactiveSelf,
+                "OnPoolRent did not observe the inactive pooled object.");
             Assert((value.RentPosition - expectedPosition).sqrMagnitude < .000001f
                    && Quaternion.Angle(value.RentRotation, expectedRotation) < .01f,
                 "OnPoolRent did not observe the entry-derived world pose.");
-            Assert((value.EnablePosition - expectedPosition).sqrMagnitude < .000001f
-                   && Quaternion.Angle(value.EnableRotation, expectedRotation) < .01f,
-                "OnEnable did not observe the entry-derived world pose.");
         }
 
         private static void Assert(bool condition, string message)
@@ -315,16 +370,15 @@ namespace Framework.EditorValidation
     public sealed class LevelValidationPoolable : MonoBehaviour, IPoolable
     {
         public bool RentObserved { get; private set; }
-        public bool EnableObserved { get; private set; }
+        public bool RentSawInactiveSelf { get; private set; }
         public Vector3 RentPosition { get; private set; }
         public Quaternion RentRotation { get; private set; }
-        public Vector3 EnablePosition { get; private set; }
-        public Quaternion EnableRotation { get; private set; }
 
         public GameObject PoolObject => gameObject;
         public void OnPoolCreated(IPoolable owner) { }
         public void OnPoolRent(PoolLease lease)
         {
+            RentSawInactiveSelf = !gameObject.activeSelf;
             RentPosition = transform.position;
             RentRotation = transform.rotation;
             RentObserved = true;
@@ -332,12 +386,5 @@ namespace Framework.EditorValidation
         public void OnPoolReturn() { }
         public void OnPoolDestroy() { }
 
-        private void OnEnable()
-        {
-            if (!RentObserved) return;
-            EnablePosition = transform.position;
-            EnableRotation = transform.rotation;
-            EnableObserved = true;
-        }
     }
 }

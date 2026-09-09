@@ -291,3 +291,17 @@ AI가 기존 빈 `Observable.cs`를 `Observable<T>`로 구현했다. 등록·해
 `Smesh Fest/Level Editor`는 지정 authoring root의 **직접 자식 `ObstacleView`**를 hierarchy 순서대로 Capture 미리보기로 읽고, 명시 Bake에서만 지정 SO에 쓴다. 선택이 바뀌면 미리보기를 비운다. 자동 Capture/Bake, Scene 저장·삭제·비활성화, Prefab 생성, 기존 Blocks 제거는 하지 않는다.
 
 `LevelSpawner`는 기존 `PoolFactory`에서 명시 `TrySpawn`할 때만 대여하며, 실패 시 보유 lease를 `ReturnAll`로 원자적으로 되돌린다. 현재 Blocks 기대 Capture=24지만 Cube MaxPool=8·Factory catalog 미등록이므로 Bake/spawn 거절은 의도된 상태다. 다음 사용자 승인 통합에서 capacity와 authored Blocks→runtime 전환 시점을 정한다.
+
+### 최신 Level 런타임 전환 체크포인트 — 정적 확인만 완료
+
+Cube PoolConfig의 사용자 설정 `MaxPool=100`과 Bake된 `Assets/Project/Level/Level1.asset`(Cube 24개, 순서·local TRS)을 기준으로 한다. Game 씬은 authored `Blocks`와 sibling `RuntimeBlocks`를 두며 RuntimeBlocks local position은 `(0, 0.29, 0)`이고 authored Blocks와 local TRS가 같다. `WorldObjects`는 `LevelSpawner`·`LevelSession`을 참조하고 `PoolContainer`는 Ball·Cube를 보유한다.
+
+런타임 진입은 `LevelSession.TryStart` 성공 뒤에만 `GameFlow`가 loop를 시작하는 단일 경로다. authored Blocks는 runtime에서 비활성화하고 시작 실패 또는 `ReturnAll` 시 복원한다. fallback/parallel pool은 없으며 `LevelSession`은 nested/ancestor root를 거절한다. 5개 스크립트 정적 진단과 Console은 0이지만 Level Editor 메뉴·Play Mode는 아직 미검증이다.
+
+## Ground 충돌 Fade 반환 — W-004-GROUND-FADE-RETURN-001
+
+Ball과 Obstacle의 풀 인스턴스는 같은 Collider 오브젝트에서 `GroundSurface`가 감지될 때만 반환 연출을 시작한다. `GroundFadeConfig`가 대기 시간과 Fade 시간을 소유하며 현재 기본값은 각각 1초다. 중앙 Loop의 배율 적용된 Update delta로 1초 동안 원래 모습을 유지한 뒤, 1초 동안 alpha를 선형으로 낮추고 현재 `PoolLease`를 한 번만 반환한다.
+
+Ball/Cube Prefab의 Renderer는 시작부터 각 전용 URP/Lit Transparent GroundFade Material을 사용하고 `GroundFadeReturn.fadeMaterial`도 같은 자산을 참조한다. `GroundFadeReturn.OnPoolCreated()`는 built-in URP/Lit가 Transparent Material의 ShadowCaster pass를 에셋 검증 때 자동으로 끄는 정책을 보정하기 위해 같은 공유 Material의 `ShadowCaster` pass를 런타임에 한 번 활성화하고 결과를 검증한다. Fade 자체는 renderer-level 또는 material-index-0 중 기존에 활성인 property block 범위의 `_BaseColor.a`만 낮춘 뒤 반환·재대여 때 원래 property block을 복구한다. 원래 비어 있던 property block 범위는 빈 block을 설정하지 않고 `null`로 제거하여 material-index override가 renderer-level alpha를 가리지 않게 한다. 런타임 Material 복제, 이름·태그·부모 탐색, legacy/fallback 경로는 없다.
+
+`ShotDirector`는 대기/Fade 중인 Ball을 일반 lifetime·y 경계 반환으로 선점하지 않는다. 계층이 풀보다 먼저 파괴돼도 Loop 구독을 해제한다. 컴파일과 정적 연결은 확인했지만 Ground 충돌 뒤 실제 1초+1초 타이밍, 투명 오브젝트 겹침 표현, 정확한 반환·재대여 복구는 Play Mode 확인 전이다.

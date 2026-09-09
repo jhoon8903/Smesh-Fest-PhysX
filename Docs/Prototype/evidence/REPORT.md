@@ -1,7 +1,7 @@
 <!-- prototype-workflow:generated:v1 -->
 # Smesh-Fest-PhysX 협업 제작 기록
 
-초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 86개
+초기화: 2026-09-08T09:25:55.772506Z · 기록된 체크포인트: 98개
 
 이 문서는 기록 명령을 호출할 때 자동 갱신됩니다. 모든 시각은 기록기가 관측한 UTC입니다. 호출하지 않은 작업은 수집하지 않습니다.
 
@@ -11,9 +11,9 @@
 
 | 수준 | 이벤트 수 | 의미 |
 |---|---:|---|
-| 미검증 | 26 | 미실행·계획·근거 미제출 |
-| 정적 확인 | 47 | 코드·설정·문서 등 정적 확인 |
-| 실행 확인 | 13 | 실제로 실행한 테스트·플레이 확인 |
+| 미검증 | 31 | 미실행·계획·근거 미제출 |
+| 정적 확인 | 53 | 코드·설정·문서 등 정적 확인 |
+| 실행 확인 | 14 | 실제로 실행한 테스트·플레이 확인 |
 | 실기기 확인 | 0 | 실기기에서 실행한 확인 |
 
 ## 관측된 작업 구간
@@ -42,8 +42,14 @@
 | flight-ccd-yaw-zgravity-001 | 2026-09-09T12:08:03.322623Z | 2026-09-09T13:20:39.528120Z | 4356.205 |
 | ball-gravity-collision-or-z-004 | 2026-09-09T13:39:25.284976Z | 2026-09-09T13:49:32.511458Z | 607.226 |
 | level-editor-mvp-005 | 2026-09-09T13:55:18.462523Z | 2026-09-09T14:18:33.412099Z | 1394.950 |
+| level-runtime-spawn-integration-006 | 2026-09-09T14:35:54.961208Z | 2026-09-09T14:52:52.737757Z | 1017.777 |
+| level-validation-editmode-fix-007 | 2026-09-09T15:00:40.059219Z | 2026-09-09T15:04:30.230978Z | 230.172 |
+| ground-fade-return-008 | 2026-09-09T15:27:17.344214Z | 2026-09-09T16:00:50.534549Z | 2013.190 |
+| ground-fade-visual-fix-009 | 2026-09-09T16:12:51.275264Z | 2026-09-09T16:33:24.823734Z | 1233.548 |
+| ground-fade-mpb-shadow-010 | 2026-09-09T16:55:25.125484Z | 2026-09-09T16:59:45.727814Z | 260.602 |
+| ground-fade-shadow-011 | 2026-09-09T17:02:40.161946Z | 2026-09-09T17:06:22.094979Z | 221.933 |
 
-시작·종료 짝이 없거나 중복되어 시간 계산에서 제외한 이벤트: 4개.
+시작·종료 짝이 없거나 중복되어 시간 계산에서 제외한 이벤트: 3개.
 
 ## 단계별 기록
 
@@ -560,6 +566,27 @@
   - [Cube.asset](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/So/Cube.asset>): SHA256 `a3c10d1da714532a55ce4a9b7085d890073f7e39558f489f26dcadbd7f4c8107` · 598 bytes
   - [LevelSpawner.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Level/LevelSpawner.cs>): SHA256 `b619edd81e911a806c8515abe11f8f24d90821b6780b2d222aff891ff85fee45` · 5162 bytes
   - 추가 기록: {"assigned_model":"gpt-5.6-terra and gpt-5.6-sol","context_mode":"none; 지정 경로와 계약만 전달","escalation_count":0,"escalation_reason":null,"execution_confirmation":"에이전트 배정에 모델과 effort를 명시","human_role":"Cube Config 변경과 Level1 Bake 완료; Unity Play Mode 검증 담당","observed_model":null,"observed_reasoning_effort":null,"reasoning_effort":"medium and high","routing_reason":"Terra가 구현하고 Sol이 수명주기와 원자 전환을 독립 검토","scene_preservation":"Blocks 및 수동 Transform과 오브젝트는 삭제하거나 재생성하지 않고 runtime에서만 전환","scope":"LevelSession, GameFlow startup gate, GameLifetimeScope registration, targeted Game scene references","task_scope":"runtime level spawn integration","usage":null}
+- **Ball과 Obstacle이 Ground 충돌 후 1초 대기와 1초 Shader Alpha Fade를 거쳐 현재 Pool lease를 반환하는 표현 수명주기 구현을 시작했다.**
+  - 기록: 2026-09-09T15:27:17.344214Z · 담당: Daniel + Main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `ground-fade-return-start-20260910` · 작업: `ground-fade-return-008`
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `202562d6772bbcba6a7908009fb8ce2c338fbc4081e85cb449cf1e903704e81a` · 42363 bytes
+  - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab>): SHA256 `1bc86013a07271c8f5e9d3eb3be77b5b6724aaab6ac737064f6d8614b3cf9c35` · 4382 bytes
+  - [Cube.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab>): SHA256 `fba57c05cb8d410befc2891eb4a5141d1748ed90a13df76c5b213b0836373dc4` · 4399 bytes
+  - 추가 기록: {"ai_role":"하위 제작 모델이 bounded 구현을 맡고 하위 검토 모델이 Shader와 Pool 수명주기 경쟁을 독립 검토하며 Main이 통합과 기록을 담당","assistant_assignments":[{"assigned_model":"gpt-5.6-terra","context_mode":"none; explicit contracts and owned paths only","reasoning_effort":"medium","role":"prototype_builder","routing_reason":"합의된 Shader와 pooled lifecycle의 bounded production implementation","usage":null},{"assigned_model":"gpt-5.6-sol","context_mode":"none; request, final diff, and validation evidence only","reasoning_effort":"high","role":"prototype_reviewer","routing_reason":"Shader material state와 stale lease 및 조기 반환 경쟁 독립 검토","usage":null}],"human_role":"구현 범위 승인 및 Unity Play Mode에서 Ball과 Obstacle의 실제 Fade와 반환 확인","preservation":"Game scene를 재생성하거나 저장하지 않고 기존 renderer material을 수정하지 않으며 새 fade material로만 전환; legacy와 fallback 없음","scope":"공용 GroundFadeReturn, 공유 GroundFadeConfig, Ball/Cube 전용 Transparent URP Lit material, 두 prefab의 필요한 component/reference, GameLifetimeScope 등록, BallView/ObstacleView/ShotDirector 연결과 격리 검증"}
+- **감소하는 alpha가 렌더링에 반영되지 않고 alpha 0의 Pool 반환 때만 사라지는 현상과 Transparent Material의 shadow 누락을 최소 수정한다.**
+  - 기록: 2026-09-09T16:55:25.125484Z · 담당: Daniel + Main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `ground-fade-mpb-shadow-start-20260910` · 작업: `ground-fade-mpb-shadow-010`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `b4d3d0d4fc3acd65c5039f709c1ba6c6ae49068578e5b027bcb26f65b3f39868` · 8912 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `898c0da6e579d85ce8f8956bb2106968a5120b29352db9d404b068dc63088c0f` · 4020 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `e133d8e344f97c04af6f933d86ed7e7597818d3408e8ec9da02ebf4c96222798` · 4261 bytes
+  - 추가 기록: {"ai_role":"Main이 단일 material slot 계약으로 코드를 단순화하고 하위 검토 모델이 원인과 최종 diff를 검토","confirmed_cause":"RestoreVisual creates an empty material-index property block that overrides the renderer-level alpha block; both materials serialize SHADOWCASTER as disabled","fallback":false,"human_role":"수정 후 Play Mode에서 중간 alpha 프레임과 shadow를 확인","observed_by_user":"alpha value decreases but the object remains opaque until alpha reaches zero; Ball and Cube shadows are absent","scope":"GroundFadeReturn material-index-0 MPB path and the two existing GroundFade Material shadow passes only"}
+- **URP/Lit가 Transparent Material의 ShadowCaster pass를 다시 끄는 실제 원인을 기준으로 런타임 pass 활성화를 최소 적용한다.**
+  - 기록: 2026-09-09T17:02:40.161946Z · 담당: Daniel + Main + reviewers · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `ground-fade-runtime-shadow-pass-start-20260910` · 작업: `ground-fade-shadow-011`
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Materials/Ball_GroundFade.mat>): 기록 시 파일 없음
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Materials/Cube_GroundFade.mat>): 기록 시 파일 없음
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): 기록 시 파일 없음
+  - 추가 기록: {"confirmed_cause":"URP BaseShaderGUI disables ShadowCaster whenever built-in Lit is Transparent","custom_shader":false,"fallback":false,"observed_by_user":"Ball and Cube still cast no shadow in Play Mode","scope":"GroundFadeReturn runtime material pass activation only"}
 
 ### 5. 리뷰
 
@@ -680,6 +707,98 @@
   - [BallConfig.asset](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Config/BallConfig.asset>): SHA256 `338dc95fa65ebf818da8ddcae55d7f508a64c1531d3ac9b7ad7239df286c6160` · 644 bytes
   - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab>): SHA256 `c518010d668005105ef264cd1824c04563dbf17467dd8038ba7ee1d9f9f14eff` · 4382 bytes
   - 추가 기록: {"ai_role":"BallConfig mode, ray hit point, Muzzle 계산, 초기속도와 Rigidbody gravity 순서를 대조했다.","cause":"Straight launch did not disable Rigidbody gravity before collision","coordinate_mismatch_primary_cause":false,"human_role":"실제 Game에서 목표보다 낮게 비행하는 현상을 관측해 전달했다.","observed_mode":"Straight","prefab_use_gravity":true,"retrospective":true,"usage":null}
+- **Level1의 Cube 24개를 단일 PoolFactory에서 명시 시작하도록 Game 씬과 수명주기를 연결하고 정적 검증 완료; Unity Play Mode는 사용자 확인 대기**
+  - 기록: 2026-09-09T14:52:52.737757Z · 담당: main orchestrator with lower-model builder, reviewer, and documenter · 종류: finish · 상태: done_static_runtime_pending · 검증: 정적 확인
+  - 이벤트 ID: `level-runtime-spawn-integration-finish-20260909` · 작업: `level-runtime-spawn-integration-006`
+  - [Level1.asset](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Level/Level1.asset>): SHA256 `cc16b6abf8a0310558be238524c0efbe50b0743c3ce19c4d8dafa46044b1c81c` · 5771 bytes
+  - [Cube.asset](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Pool/Cube.asset>): SHA256 `a3c10d1da714532a55ce4a9b7085d890073f7e39558f489f26dcadbd7f4c8107` · 598 bytes
+  - [Game.unity](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity>): SHA256 `aaf7f041551810a92099b51db6a04da869e98ca2014808275b0dd7946374e4df` · 194333 bytes
+  - [LevelSession.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Level/LevelSession.cs>): SHA256 `6e5bc6b1acb67efd02e3f21d1d2b7fdbe9918cbc4aed3ecfa72d89f644899d2c` · 4071 bytes
+  - [LevelSpawner.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Level/LevelSpawner.cs>): SHA256 `141f5dcf653d97a3d2b9861ab7d4856db447b77b8930f18bc2955ad430b1d55f` · 5215 bytes
+  - [LevelValidation.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LevelValidation.cs>): SHA256 `616c9d653abf8ef2d6b593bac9392fb899214736d0e23bbccfdcdb72d688571d` · 22407 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `b7fb30f2a2902593e7301ef81a059e900db7feaef877620fa3f290f75b6de635` · 29924 bytes
+  - 추가 기록: {"assigned_model":"gpt-5.6-terra, gpt-5.6-sol, and gpt-5.6-luna","context_mode":"none; each helper received only bounded paths and contracts","dotnet_build":"succeeded with 0 errors and 4 pre-existing assembly reference warnings","escalation_count":0,"escalation_reason":null,"execution_confirmation":"agent calls explicitly specified model and effort","level_entries":24,"observed_model":null,"observed_reasoning_effort":null,"outcome":"static integration passed; reviewer found no remaining P0-P2","pool_capacity":100,"reasoning_effort":"medium, high, and low","rework_completed":true,"rework_required":true,"routing_reason":"implementation, independent lifecycle review, and concise documentation split across lower models","runtime_pending":"Tools/Smesh Fest/Validation/Level Editor and Spawn and Play Mode","scene_preservation":"authored Blocks and its 24 children retained; activeSelf serialized value retained; RuntimeBlocks added as sibling with matching local TRS","scene_validation":"Game clean, 0 missing scripts, 0 broken prefabs","task_scope":"runtime level spawn integration","unity_console_errors":0,"unity_script_diagnostics":"5 files: 0 warnings, 0 errors","usage":null}
+- **Edit Mode preview scene에서 일반 MonoBehaviour OnEnable을 요구한 LevelValidation 오탐 수정 시작**
+  - 기록: 2026-09-09T15:00:40.059219Z · 담당: main orchestrator with lower-model builder and reviewer · 종류: start · 상태: in_progress · 검증: 실행 확인
+  - 이벤트 ID: `level-validation-editmode-fix-start-20260910` · 작업: `level-validation-editmode-fix-007`
+  - [LevelValidation.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LevelValidation.cs>): SHA256 `616c9d653abf8ef2d6b593bac9392fb899214736d0e23bbccfdcdb72d688571d` · 22407 bytes
+  - [PoolLifecycleRunner.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs>): SHA256 `fa737a079457eea0229e201b937f2f20b3aa9e6cef5f8f14572675f6f97cce59` · 5540 bytes
+  - 추가 기록: {"assigned_model":"gpt-5.6-terra and gpt-5.6-sol","context_mode":"none; failure stack and relevant pool files only","escalation_count":0,"escalation_reason":null,"execution_confirmation":"agent calls explicitly specified model and effort","observed_failure":"RuntimeBlocks 생성은 확인됐으나 Edit Mode validation의 EnableObserved가 false","observed_model":null,"observed_reasoning_effort":null,"reasoning_effort":"medium and high","routing_reason":"small fixture correction and independent lifecycle review","scope":"validation fixture only; production pool and level spawn code unchanged","task_scope":"LevelValidation false-negative correction","usage":null}
+- **생산 Pool을 변경하지 않고 LevelValidation의 Edit Mode OnEnable 오탐을 수정했으며 사용자 재실행 대기**
+  - 기록: 2026-09-09T15:04:30.230978Z · 담당: main orchestrator with lower-model builder and reviewer · 종류: finish · 상태: done_static_rerun_pending · 검증: 정적 확인
+  - 이벤트 ID: `level-validation-editmode-fix-finish-20260910` · 작업: `level-validation-editmode-fix-007`
+  - [LevelValidation.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LevelValidation.cs>): SHA256 `b18577669a38d621e6302ccbb8bd6983e898f2f94396dc41414cd43e13c3595f` · 22006 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `827faea40d0e7be924552d0ce3d605415393f0d32eef1edfa78831a2c94ecede` · 67148 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `a39f57e199b9e0779bfa949e4ca7af1b76ceeebeb095ff7640095ce71c88ff42` · 30434 bytes
+  - 추가 기록: {"assigned_model":"gpt-5.6-terra and gpt-5.6-sol","context_mode":"none; failure stack and relevant pool files only","dotnet_build":"succeeded with 0 errors and 4 pre-existing assembly reference warnings","escalation_count":0,"escalation_reason":null,"execution_confirmation":"agent calls explicitly specified model and effort","new_contract":"OnPoolRent에서 inactive와 world position/rotation; TrySpawn 완료 후 active와 final local position/rotation/scale","observed_model":null,"observed_reasoning_effort":null,"outcome":"reviewer clean; corrected validation rerun pending","production_changes":"none","reasoning_effort":"medium and high","rework_required":false,"root_cause":"Edit Mode preview scene에서 일반 MonoBehaviour.OnEnable 실행을 런타임처럼 요구한 false negative","routing_reason":"fixture-only implementation and independent lifecycle review","runtime_observation":"사용자가 RuntimeBlocks 생성 확인","runtime_pending":"교정된 Level Editor and Spawn validation 재실행","task_scope":"LevelValidation false-negative correction","unity_console_errors":0,"unity_script_diagnostics":"0 warnings, 0 errors","usage":null}
+- **Ball과 Obstacle이 Ground 직접 충돌 후 1초 대기와 1초 alpha Fade를 거쳐 현재 PoolLease를 한 번 반환하는 공통 수명주기를 구현하고 정적 검증했다.**
+  - 기록: 2026-09-09T16:00:50.534549Z · 담당: Daniel + Main + prototype_builder + prototype_reviewer · 종류: finish · 상태: static_complete_runtime_pending · 검증: 정적 확인
+  - 이벤트 ID: `ground-fade-return-finish-20260910` · 작업: `ground-fade-return-008`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `a46e8c3dc52dff5a51307718de0bbb2191346ecb1b4a20a28c670b8dac9e8967` · 9760 bytes
+  - [GroundFadeConfig.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Config/GroundFadeConfig.cs>): SHA256 `0611a1e3d6fe60b75f6cc7f2e28014cf988411c5fb9bcd5160d1a10073690e60` · 970 bytes
+  - [GroundFadeConfig.asset](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Config/GroundFadeConfig.asset>): SHA256 `9900ba8c195e34c330295d0bb96ff48c6e9f9d95f959515e681fc2959914efed` · 317 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `11bcd1adbd0d17bc4f72c1862d8207ab15bd05ef63c66ab682863e634603c023` · 1675 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `0c5808f0b6b04a0e94bd359943530b669f0a048f658557fb6719936e0415d02b` · 3876 bytes
+  - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab>): SHA256 `5543dd645343c375b1d6c86bb869a0c353500c9a5703a0955fb3d9ee1249d194` · 5004 bytes
+  - [Cube.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab>): SHA256 `75841e0db7fdf7d6aefc8efdab62664754fbf9242e17d624f1ecf6a946778621` · 5021 bytes
+  - [Game.unity](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scenes/Game.unity>): SHA256 `feb2746ce1e9e0c94113a47d5f6333e980141ace61d66d39e93490c9f44e0aea` · 93266 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `5ce052730ae636bc572bb8743280d9f3025db2a010f5ebb213eee156ac4ea16b` · 48215 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `bde3fed3f0e35abaa5387164232e64a1934cafd17a029fc463baf946e2e5727b` · 43332 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `85c1fee5a46ae22b767e2eb245173b81af14a0b9ef0f12b27f5794fb356b4e46` · 68474 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `7f0c16741af0f15721bbf84c769be6a7b9ceeb99d88b219e0c14486db67e2454` · 31431 bytes
+  - 추가 기록: {"ai_role":"하위 제작 모델이 bounded 구현과 fixture 정합을 맡고 하위 검토 모델이 MaterialPropertyBlock 및 Pool 수명 경쟁을 독립 검토하며 Main이 Unity 검증과 기록을 통합","builder":{"assigned_model":"gpt-5.6-terra","outcome":"production config, lifecycle, materials, prefab references and validation fixtures implemented","reasoning_effort":"medium","rework_completed":true,"rework_required":true,"usage":null},"contract":"direct same-GameObject GroundSurface collision; scaled Update delay 1 second; linear alpha fade 1 second; current lease return exactly once","dotnet_build":"runtime and editor projects succeeded with 0 errors and 4 pre-existing MCPForUnity assembly reference warnings","fallback":false,"git_diff_check":"passed for owned code, assets and docs; existing Unity scene trailing whitespace excluded from ownership claim","human_role":"Unity Play Mode에서 Ground 충돌 뒤 1초 유지, 다음 1초 Fade, 반환과 재대여 시각 복구를 확인","live_references":"Game scene clean after reload; GroundFadeConfig reference present; Ball and Cube prefabs each contain one GroundFadeReturn","material_import":"URP/Lit transparent surface, SrcAlpha and OneMinusSrcAlpha blend, ZWrite off, preserve specular off","play_mode_run":false,"preservation":{"original_materials_modified":false,"runtime_material_clones":false,"scene_partial_reference_added":"GameLifetimeScope.groundFadeSettings only","scene_regenerated":false,"user_owned_unrelated_changes_reverted":false},"reviewer":{"assigned_model":"gpt-5.6-sol","outcome":"final independent review found no P0 or P1 issues","reasoning_effort":"high","usage":null},"runtime_pending":"Ground timing, exactly-once return, rerent restoration and overlapping transparent Cube appearance","unity_compile":"Unity 6000.3.10f1 refresh and compile completed with 0 console errors","unity_script_diagnostics":"GroundFadeReturn, GroundFadeValidationFixture and ObstacleMvcRuntimeProbe: 0 warnings, 0 errors after final review fixes"}
+- **Ground 반환 시 alpha Fade보다 그림자 소실과 Lit 외관 변경이 먼저 보이는 사용자 관측을 재현 가능한 material 전환 계약으로 좁히고 수정한다.**
+  - 기록: 2026-09-09T16:12:51.275264Z · 담당: Daniel + Main · 종류: start · 상태: in_progress · 검증: 미검증
+  - 이벤트 ID: `ground-fade-visual-fix-start-20260910` · 작업: `ground-fade-visual-fix-009`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `a46e8c3dc52dff5a51307718de0bbb2191346ecb1b4a20a28c670b8dac9e8967` · 9760 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `11bcd1adbd0d17bc4f72c1862d8207ab15bd05ef63c66ab682863e634603c023` · 1675 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `0c5808f0b6b04a0e94bd359943530b669f0a048f658557fb6719936e0415d02b` · 3876 bytes
+  - 추가 기록: {"ai_role":"원본 Lit 속성을 보존하는 전용 fade shader/material과 lifecycle 최소 수정, 정적 컴파일 및 독립 검토","confirmed_static_causes":"BeginFade disables shadow immediately and swaps opaque URP Lit to transparent; Ball fade material does not clone the source default Lit visual properties","human_role":"수정 후 Unity Play Mode에서 외관 전환 없는 연속 Fade와 그림자 진행을 확인","observed_by_user":"shadow disappears, lit texture appearance changes, then object disappears instead of visibly fading","preservation":"원본 source material과 사용자 scene layout 및 unrelated prefab values를 수정하지 않고 fallback을 추가하지 않음","reader_assignment":{"assigned_model":"gpt-5.6-terra","reasoning_effort":"medium","usage":null}}
+- **Ball과 Cube Prefab이 시작부터 각 GroundFade Material을 사용하도록 한 사용자 설정을 기준으로, 런타임 Material 전환을 제거하고 alpha만 변경하도록 단순화했다.**
+  - 기록: 2026-09-09T16:33:24.823734Z · 담당: Daniel + Main + prototype_reviewer · 종류: finish · 상태: static_complete_runtime_pending · 검증: 정적 확인
+  - 이벤트 ID: `ground-fade-visual-fix-finish-20260910` · 작업: `ground-fade-visual-fix-009`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `2922572090e2908455c7d22b5ac50a33ddbf681c0c59b5be96655d24cb28d423` · 8982 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `85ab0c53e4d060ff66490aba4995dd0ab804e1b5349521c533b9d4b65ad9182d` · 3929 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `f24a1518dba05793eb4e034f8a3b406405990cacf260b2efd9050478b7eeeabf` · 4209 bytes
+  - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab>): SHA256 `e422d587eb08632d03b38136e5d9936548f3ddda42aec321072f574d389dea93` · 5004 bytes
+  - [Cube.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab>): SHA256 `57a5fd5802341766bfeff36a9b228d27b1a039cfdb376e169d789cf7e81a863d` · 5021 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `47464493bf76994f46eb6ac0f6efda522de06f48902f547d80839908b62afd46` · 48199 bytes
+  - [PLAN.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md>): SHA256 `d2ee022dafc3540898b61822e213859ef7eaca8a0c1ff5323a62232e3b691a30` · 43396 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `48b12678c5cf120e0534cde49e93e395783605ac73fad645476a180368d62754` · 69126 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `e7fd9d27e3c9098d2603519d3b02fe33a38d3c3b3194c25614a2fd4a26b7ae55` · 31566 bytes
+  - 추가 기록: {"ai_role":"Main이 현재 Prefab과 Material 연결을 다시 확인해 최소 수정하고 하위 검토 모델이 최종 P0/P1을 독립 확인","confirmed_state":"Ball/Cube Renderer와 GroundFadeReturn.fadeMaterial은 각각 동일한 GroundFade Material 자산을 참조","custom_shader_added":false,"fallback":false,"human_role":"Unity Play Mode에서 Ground 충돌 후 1초 대기와 1초 연속 alpha Fade, 그림자 유지, 반환과 재대여 alpha 복구를 확인","implementation":"두 URP/Lit Material을 Transparent alpha blend로 설정하고 ShadowCaster를 유지; runtime은 Material과 shadow를 변경하지 않고 MaterialPropertyBlock alpha만 변경","material_import":"both URP/Lit materials report Surface 1, SrcBlend 5, DstBlend 10 and ZWrite 0","play_mode_run":false,"preservation":{"ball_color_preserved":true,"cube_texture_normal_specular_preserved":true,"prefab_material_references_preserved":true,"scene_modified":false,"unrelated_changes_reverted":false},"reviewer":{"assigned_model":"gpt-5.6-sol","outcome":"ShadowCaster 설정 교정 후 남은 P0/P1 없음","reasoning_effort":"high","usage":null},"root_cause":"현재 Prefab 계약에서는 런타임 Material 교체가 중복이었고 두 GroundFade Material이 Opaque라 _BaseColor alpha가 화면 투명도에 반영되지 않음","runtime_pending":"실제 연속 Fade와 투명 Cube 겹침 표현","unity_compile":"Unity 6000.3.10f1 force refresh and compile completed","unity_console":"errors 0","unity_script_diagnostics":"GroundFadeReturn warnings 0, errors 0"}
+- **GroundFadeReturn의 필수 검증을 alpha Fade에 필요한 Transparent 속성으로만 제한하고, ShadowCaster는 Material의 현재 authored 설정으로 유지했다.**
+  - 기록: 2026-09-09T16:36:44.106226Z · 담당: Main · 종류: checkpoint · 상태: static_complete_runtime_pending · 검증: 정적 확인
+  - 이벤트 ID: `ground-fade-shadow-validation-amend-20260910` · 작업: `ground-fade-visual-fix-009`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `b4d3d0d4fc3acd65c5039f709c1ba6c6ae49068578e5b027bcb26f65b3f39868` · 8912 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `9ec7d8cad1ab0ed30e4a3a7f11f6d518bb16bba505a20fb9cadc88545d43e409` · 3976 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `de56a72706b959a4b7c8fc7d73a9592835dd6c26dbe4ced15026437eda0cb34f` · 4201 bytes
+  - 추가 기록: {"current_material_state":"두 Material의 ShadowCaster pass는 enabled 상태로 보존","fallback":false,"play_mode_run":false,"reason":"URP/Lit Material Inspector가 Transparent 편집 시 ShadowCaster pass를 다시 계산해도 alpha Fade 자체가 런타임 예외로 중단되지 않게 책임을 분리","runtime_shadow_mutation":false,"unity_console":"errors 0","unity_script_diagnostics":"warnings 0, errors 0"}
+- **빈 material-index PropertyBlock이 renderer-level alpha를 가리던 문제를 제거하고 Ball/Cube GroundFade Material의 ShadowCaster pass를 활성화했다.**
+  - 기록: 2026-09-09T16:59:45.727814Z · 담당: Daniel + Main + prototype_reviewer · 종류: finish · 상태: static_complete_runtime_pending · 검증: 정적 확인
+  - 이벤트 ID: `ground-fade-mpb-shadow-finish-20260910` · 작업: `ground-fade-mpb-shadow-010`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): SHA256 `c632dc7d58a1be258d02b1cd1eecbac951e28fd50779bb54eb12a6b95c973dcd` · 9003 bytes
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat>): SHA256 `898c0da6e579d85ce8f8956bb2106968a5120b29352db9d404b068dc63088c0f` · 4020 bytes
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat>): SHA256 `e133d8e344f97c04af6f933d86ed7e7597818d3408e8ec9da02ebf4c96222798` · 4261 bytes
+  - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab>): SHA256 `e422d587eb08632d03b38136e5d9936548f3ddda42aec321072f574d389dea93` · 5004 bytes
+  - [Cube.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab>): SHA256 `57a5fd5802341766bfeff36a9b228d27b1a039cfdb376e169d789cf7e81a863d` · 5021 bytes
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md>): SHA256 `b708721d6cd00007c58d0c36450d0cf23d3f3b6b0917f58b7de3029d2b129df2` · 48377 bytes
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md>): SHA256 `2aacc7c128a2a8e4d83581fb3eba866cffd5f6550844617790a8a182badc7efb` · 69756 bytes
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md>): SHA256 `7eda7b58efb35a5b3925fa10d0cefc9c2d9ff9a22b274c2e1cfad2e02cc20308` · 31876 bytes
+  - 추가 기록: {"custom_shader_added":false,"fallback":false,"fix":"clear originally empty renderer and material-index blocks with null; keep existing scope selection and alpha math unchanged","human_role":"Play Mode에서 중간 alpha가 실제 화면에 반영되는지와 Ball/Cube shadow를 확인","play_mode_run":false,"reviewer":{"assigned_model":"gpt-5.6-sol","outcome":"final fix has no concrete P0/P1 or Unity API misuse","reasoning_effort":"high","usage":null},"root_cause":"RestoreVisual set an empty material-index-0 MaterialPropertyBlock; Unity gives it priority over the renderer-level block where fade alpha was written","shadow_fix":"remove SHADOWCASTER from disabledShaderPasses in both existing GroundFade Materials; both Prefab Renderers already have Cast Shadows enabled","unity_api":"Unity 6000 Renderer.SetPropertyBlock overloads reflected and official docs confirm per-renderer/per-material overrides can be set or cleared","unity_compile":"Unity 6000.3.10f1 force refresh and compile completed","unity_console":"errors 0","unity_script_diagnostics":"warnings 0, errors 0"}
+- **URP/Lit Transparent 검증이 되끄는 ShadowCaster pass를 풀 생성 시 명시적으로 활성화하고 즉시 검증한다.**
+  - 기록: 2026-09-09T17:06:22.094979Z · 담당: Daniel + Main + reviewers · 종류: finish · 상태: static_complete_runtime_pending · 검증: 미검증
+  - 이벤트 ID: `ground-fade-runtime-shadow-pass-finish-20260910` · 작업: `ground-fade-shadow-011`
+  - [GroundFadeReturn.cs](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs>): 기록 시 파일 없음
+  - [Ball_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Materials/Ball_GroundFade.mat>): 기록 시 파일 없음
+  - [Cube_GroundFade.mat](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Materials/Cube_GroundFade.mat>): 기록 시 파일 없음
+  - [Ball.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Prefabs/Ball.prefab>): 기록 시 파일 없음
+  - [Cube.prefab](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Project/Prefabs/Cube.prefab>): 기록 시 파일 없음
+  - [Game.unity](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Assets/Scenes/Game.unity>): 기록 시 파일 없음
+  - [ARCHITECTURE.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Docs/Prototype/ARCHITECTURE.md>): 기록 시 파일 없음
+  - [REVIEW.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Docs/Prototype/REVIEW.md>): 기록 시 파일 없음
+  - [HANDOFF.md](</Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/evidence/Docs/HANDOFF.md>): 기록 시 파일 없음
+  - 추가 기록: {"custom_shader":false,"fallback":false,"fix":"GroundFadeReturn.OnPoolCreated enables ShadowCaster on the configured shared fade Material and fails immediately if it remains disabled","human_role":"Play Mode에서 Ball과 Cube가 Ground에 그림자를 만드는지 재확인","material_yaml_removed":false,"play_mode_run":false,"root_cause":"URP 17.3 BaseShaderGUI forces built-in Lit Transparent materials ShadowCaster pass off during material validation","unity_compile":"Unity 6000.3.10f1 compile idle","unity_console":"errors 0","unity_script_diagnostics":"warnings 0, errors 0"}
 
 ### 6. 문서로 증명
 

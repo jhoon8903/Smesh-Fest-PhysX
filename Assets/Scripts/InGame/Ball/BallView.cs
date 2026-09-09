@@ -4,6 +4,7 @@ using Framework.Object;
 using Framework.Pool;
 using InGame.Config;
 using InGame.Obstacle;
+using InGame.Presentation;
 using UnityEngine;
 using VContainer;
 
@@ -19,10 +20,12 @@ namespace InGame.Ball
         private BallController _controller;
         private BallConfig _settings;
         private uint _collisionRentalEpoch;
+        private GroundFadeReturn _groundFadeReturn;
 
         public GameObject PoolObject => gameObject;
         public BallModel OwnedModel => _ownedModel;
         public BallController Controller => _controller;
+        public GroundFadeReturn GroundFadeReturn => _groundFadeReturn;
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(BallConfig settings)
@@ -42,6 +45,8 @@ namespace InGame.Ball
                 throw new InvalidOperationException("BallView requires a Rigidbody on the same GameObject.");
             if (!TryGetComponent(out Collider _))
                 throw new InvalidOperationException("BallView requires a Collider on the same GameObject.");
+            if (!TryGetComponent(out _groundFadeReturn))
+                throw new InvalidOperationException("BallView requires GroundFadeReturn on the same GameObject.");
             if (body.isKinematic)
                 throw new InvalidOperationException("BallView requires a dynamic Rigidbody; it does not override Inspector physics settings.");
             if (_settings == null)

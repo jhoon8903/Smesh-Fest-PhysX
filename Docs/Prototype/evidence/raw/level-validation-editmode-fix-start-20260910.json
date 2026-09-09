@@ -1,0 +1,29 @@
+{
+  "id": "level-validation-editmode-fix-start-20260910",
+  "stage": "review",
+  "kind": "start",
+  "actor": "main orchestrator with lower-model builder and reviewer",
+  "task_id": "level-validation-editmode-fix-007",
+  "status": "in_progress",
+  "summary": "Edit Mode preview scene에서 일반 MonoBehaviour OnEnable을 요구한 LevelValidation 오탐 수정 시작",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Editor/Validation/LevelValidation.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/Framework/Pool/PoolLifecycleRunner.cs"
+  ],
+  "metadata": {
+    "validation_level": "runtime",
+    "observed_failure": "RuntimeBlocks 생성은 확인됐으나 Edit Mode validation의 EnableObserved가 false",
+    "scope": "validation fixture only; production pool and level spawn code unchanged",
+    "assigned_model": "gpt-5.6-terra and gpt-5.6-sol",
+    "reasoning_effort": "medium and high",
+    "routing_reason": "small fixture correction and independent lifecycle review",
+    "context_mode": "none; failure stack and relevant pool files only",
+    "task_scope": "LevelValidation false-negative correction",
+    "escalation_count": 0,
+    "escalation_reason": null,
+    "execution_confirmation": "agent calls explicitly specified model and effort",
+    "observed_model": null,
+    "observed_reasoning_effort": null,
+    "usage": null
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "ground-fade-mpb-shadow-finish-20260910",
+  "stage": "review",
+  "kind": "finish",
+  "actor": "Daniel + Main + prototype_reviewer",
+  "task_id": "ground-fade-mpb-shadow-010",
+  "status": "static_complete_runtime_pending",
+  "summary": "빈 material-index PropertyBlock이 renderer-level alpha를 가리던 문제를 제거하고 Ball/Cube GroundFade Material의 ShadowCaster pass를 활성화했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Ball_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Materials/Cube_GroundFade.mat",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/ARCHITECTURE.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/REVIEW.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "validation_level": "static",
+    "root_cause": "RestoreVisual set an empty material-index-0 MaterialPropertyBlock; Unity gives it priority over the renderer-level block where fade alpha was written",
+    "fix": "clear originally empty renderer and material-index blocks with null; keep existing scope selection and alpha math unchanged",
+    "shadow_fix": "remove SHADOWCASTER from disabledShaderPasses in both existing GroundFade Materials; both Prefab Renderers already have Cast Shadows enabled",
+    "fallback": false,
+    "custom_shader_added": false,
+    "reviewer": {
+      "assigned_model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "usage": null,
+      "outcome": "final fix has no concrete P0/P1 or Unity API misuse"
+    },
+    "unity_api": "Unity 6000 Renderer.SetPropertyBlock overloads reflected and official docs confirm per-renderer/per-material overrides can be set or cleared",
+    "unity_compile": "Unity 6000.3.10f1 force refresh and compile completed",
+    "unity_script_diagnostics": "warnings 0, errors 0",
+    "unity_console": "errors 0",
+    "play_mode_run": false,
+    "human_role": "Play Mode에서 중간 alpha가 실제 화면에 반영되는지와 Ball/Cube shadow를 확인"
+  }
+}

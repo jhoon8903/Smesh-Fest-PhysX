@@ -244,3 +244,15 @@ AI는 Scene·Prefab·PoolConfig를 편집하지 않았다. 검사 전후 Game �
 Terra Medium builder가 신규 `LevelConfig`·명시 Capture/Bake 창·명시 `LevelSpawner.TrySpawn/ReturnAll`과 격리 validation 메뉴를 만들고, Sol High 검토로 lifecycle pose·stale selection·capacity·cleanup 경계를 보완했다. Scene·Prefab·기존 PoolConfig·Blocks는 수정하거나 제거하지 않았다.
 
 Capture는 직접 child `ObstacleView` 24개를 hierarchy 순서로 미리보기만 만들며 Bake만 SO에 쓴다. PoolConfig별 필요 개수≤MaxPool이 필수라 현재 Cube MaxPool=8·Factory catalog 미등록으로 24개 Bake/spawn은 차단된 것이 정상이다. 신규 스크립트 4개 Unity 정적 진단은 warning/error 0, Console error 0이다. `Tools/Smesh Fest/Validation/Level Editor and Spawn`과 실제 Bake는 미실행이다. 다음은 사용자 승인 뒤 capacity/catalog 및 authored Blocks→runtime 전환을 수동 통합·검증하는 단계다.
+
+### 최신 Level 통합 체크포인트 — 정적 완료, 런타임 미검증
+
+Daniel이 Cube PoolConfig `MaxPool`을 100으로 바꾸고 `Assets/Project/Level/Level1.asset`을 Bake했다. 자산에는 Cube 24개가 hierarchy 순서와 local TRS로 기록돼 있다. Game 씬의 `RuntimeBlocks`는 authored `Blocks` sibling이며 local position `(0, 0.29, 0)`과 authored Blocks의 local TRS를 사용한다. `WorldObjects`에는 `LevelSpawner`·`LevelSession` 참조가, `PoolContainer`에는 Ball·Cube가 연결됐다.
+
+`GameFlow`는 `LevelSession.TryStart` 성공 뒤에만 loop를 시작한다. authored Blocks는 런타임에서 비활성화하고 시작 실패 또는 `ReturnAll`에서 복원한다. fallback/parallel pool은 없으며 `LevelSession`은 nested/ancestor root를 거절한다. 5개 스크립트 정적 진단 warning/error 0, Console 0이다. Level Editor validation 메뉴와 Play Mode는 아직 실행하지 않아 런타임은 미검증이다.
+
+## W-004-GROUND-FADE-RETURN-001 — Ball·Obstacle Ground Fade 반환
+
+구현 범위는 공통 `GroundFadeReturn`, `GroundFadeConfig`, Ball/Cube 전용 Transparent Material, 두 Prefab 연결, `GameLifetimeScope` 등록, `ShotDirector`의 Fade 중 조기 반환 차단이다. 두 Prefab은 시작부터 전용 Material을 Renderer에 사용하고 런타임에는 Material·shadow를 바꾸지 않은 채 `_BaseColor.a`만 조절한다. Ground 직접 충돌 뒤 Config의 대기·Fade 시간을 순서대로 적용하고 현재 lease를 한 번만 반환하며 legacy/fallback은 만들지 않는다.
+
+분담은 다음 체크포인트로 닫는다. AI는 구현·독립 검토·Unity 정적 컴파일과 연결 확인을 맡았다. Daniel은 Play Mode에서 (1) Ground 충돌 뒤 1초 유지와 다음 1초 Fade, (2) 완료 후 반환, (3) 재대여 시 alpha 복구, (4) 여러 Cube가 겹칠 때 투명 정렬 표현을 확인한다. 실제 시간·시각 검증 전까지 상태는 **정적 완료 / 런타임 확인 대기**다.

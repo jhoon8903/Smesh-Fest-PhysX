@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Framework.Pool;
+using Framework.Loop;
 using InGame.Ball;
 using InGame.Config;
 using UnityEngine;
@@ -36,6 +37,8 @@ namespace Framework.Test
         private PoolFactory factory;
         private IObjectResolver resolver;
         private BallConfig ballSettings;
+        private GroundFadeConfig groundFadeSettings;
+        private LoopDispatcher loopDispatcher;
         private string outputPath;
 
         public void Begin(GameObject root, PoolContainer container, PoolConfig config,
@@ -53,8 +56,13 @@ namespace Framework.Test
             try
             {
                 ballSettings = ScriptableObject.CreateInstance<BallConfig>();
+                groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
+                loopDispatcher = new LoopDispatcher();
+                loopDispatcher.StartLoop();
                 ContainerBuilder builder = new ContainerBuilder();
                 builder.RegisterInstance(ballSettings);
+                builder.RegisterInstance(groundFadeSettings);
+                builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
                 factory = new PoolFactory(container, resolver, true);
                 factory.Initialize(false);
@@ -157,6 +165,8 @@ namespace Framework.Test
                 if (config != null) Destroy(config);
                 if (hierarchyFirstConfig != null) Destroy(hierarchyFirstConfig);
                 if (ballSettings != null) Destroy(ballSettings);
+                loopDispatcher?.Dispose();
+                if (groundFadeSettings != null) Destroy(groundFadeSettings);
             }
 
             yield return null;

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: BallConfig
   m_EditorClassIdentifier: Assembly-CSharp::InGame.Config.BallConfig
   trajectoryMode: 0
-  launchSpeed: 12
-  curveFlightSeconds: 0.75
+  launchSpeed: 15
+  curveFlightSeconds: 0.4
   gravityActivationWorldZ: 0
-  maxLifetimeSeconds: 6
+  maxLifetimeSeconds: 3
   recycleBelowY: -1
-  mass: 2
-  linearDamping: 0
-  angularDamping: 0.05
+  mass: 1.5
+  linearDamping: 0.1
+  angularDamping: 4
   interpolation: 0
   collisionDetection: 2

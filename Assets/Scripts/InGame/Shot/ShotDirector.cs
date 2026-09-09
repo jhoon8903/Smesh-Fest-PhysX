@@ -4,6 +4,7 @@ using Framework.Pool;
 using InGame.Ball;
 using InGame.Cannon;
 using InGame.Config;
+using InGame.Presentation;
 using UnityEngine;
 
 namespace InGame.Shot
@@ -14,6 +15,7 @@ namespace InGame.Shot
         private struct ActiveShot
         {
             public BallView Ball;
+            public GroundFadeReturn Fade;
             public uint Epoch;
             public float Elapsed;
         }
@@ -75,7 +77,13 @@ namespace InGame.Shot
                 return false;
             }
 
-            _activeShots[_activeShotCount++] = new ActiveShot { Ball = ball, Epoch = epoch };
+            GroundFadeReturn fade = ball.GroundFadeReturn;
+            if (fade == null)
+            {
+                lease.Return();
+                return false;
+            }
+            _activeShots[_activeShotCount++] = new ActiveShot { Ball = ball, Fade = fade, Epoch = epoch };
             return true;
         }
 
@@ -92,6 +100,8 @@ namespace InGame.Shot
                     RemoveAt(i);
                     continue;
                 }
+                if (shot.Fade != null && shot.Fade.IsFading)
+                    continue;
 
                 shot.Elapsed += deltaTime;
                 _activeShots[i] = shot;

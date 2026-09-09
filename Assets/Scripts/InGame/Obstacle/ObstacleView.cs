@@ -3,6 +3,7 @@ using System.Runtime.ExceptionServices;
 using Framework.Object;
 using Framework.Pool;
 using InGame.Config;
+using InGame.Presentation;
 using UnityEngine;
 using VContainer;
 
@@ -18,11 +19,13 @@ namespace InGame.Obstacle
         private ObstacleController controller;
         private ObstacleConfig settings;
         private bool targetable = true;
+        private GroundFadeReturn groundFadeReturn;
 
         public GameObject PoolObject => gameObject;
         public ObstacleModel OwnedModel => ownedModel;
         public ObstacleController Controller => controller;
         public bool IsTargetable => targetable && isActiveAndEnabled;
+        public GroundFadeReturn GroundFadeReturn => groundFadeReturn;
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(ObstacleConfig obstacleSettings)
@@ -45,6 +48,8 @@ namespace InGame.Obstacle
                 throw new InvalidOperationException("ObstacleView requires a Rigidbody on the same GameObject.");
             if (!TryGetComponent(out Collider _))
                 throw new InvalidOperationException("ObstacleView requires a Collider on the same GameObject.");
+            if (!TryGetComponent(out groundFadeReturn))
+                throw new InvalidOperationException("ObstacleView requires GroundFadeReturn on the same GameObject.");
             if (body.isKinematic)
                 throw new InvalidOperationException("ObstacleView requires a dynamic Rigidbody; it does not override Inspector physics settings.");
             if (settings == null)
@@ -88,8 +93,7 @@ namespace InGame.Obstacle
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (targetable && collision.collider.TryGetComponent(out GroundSurface _))
-                targetable = false;
+            if (targetable && collision.collider.TryGetComponent(out GroundSurface _)) targetable = false;
         }
 
         protected override void OnDestroy()

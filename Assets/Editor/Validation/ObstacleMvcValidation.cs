@@ -31,6 +31,7 @@ namespace Framework.EditorValidation
             source.transform.SetParent(sourceRoot.transform, false);
             source.AddComponent<Rigidbody>().useGravity = false;
             source.AddComponent<BoxCollider>();
+            GroundFadeValidationFixture.Add(source, "Assets/Project/Prefabs/Cube.prefab", "Assets/Project/Materials/Cube_GroundFade.mat");
             ObstacleView view = source.AddComponent<ObstacleView>();
 
             PoolConfig config = CreateConfig("__ObstacleMvcValidation_Pool", view);

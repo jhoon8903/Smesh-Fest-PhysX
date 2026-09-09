@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InGame.Config.CannonConfig
   lookRotationOffsetEuler: {x: 0, y: 0, z: 0}
   muzzleOffset: {x: 0, y: 0.16, z: 0}
-  headRecoilDistance: 0
-  headRecoilSeconds: 0
-  headRecoverySeconds: 0
+  headRecoilDistance: 0.1
+  headRecoilSeconds: 0.2
+  headRecoverySeconds: 0.2

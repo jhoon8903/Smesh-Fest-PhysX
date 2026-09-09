@@ -83,6 +83,7 @@ namespace Framework.EditorValidation
             body.collisionDetectionMode = CollisionDetectionMode.Discrete;
             body.interpolation = RigidbodyInterpolation.Interpolate;
             source.AddComponent<SphereCollider>().radius = 0.5f;
+            GroundFadeValidationFixture.Add(source, "Assets/Project/Prefabs/Ball.prefab", "Assets/Project/Materials/Ball_GroundFade.mat");
             return source.AddComponent<BallView>();
         }
 
@@ -101,6 +102,7 @@ namespace Framework.EditorValidation
             body.interpolation = RigidbodyInterpolation.Extrapolate;
             source.AddComponent<BoxCollider>().size = Vector3.one;
             source.AddComponent<PhysXCollisionRecorder>();
+            GroundFadeValidationFixture.Add(source, "Assets/Project/Prefabs/Cube.prefab", "Assets/Project/Materials/Cube_GroundFade.mat");
             return source.AddComponent<ObstacleView>();
         }
 

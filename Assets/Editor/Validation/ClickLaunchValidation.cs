@@ -80,6 +80,7 @@ namespace Framework.EditorValidation
             body.useGravity = true;
             body.collisionDetectionMode = CollisionDetectionMode.Discrete;
             source.AddComponent<SphereCollider>().radius = .05f;
+            GroundFadeValidationFixture.Add(source, "Assets/Project/Prefabs/Ball.prefab", "Assets/Project/Materials/Ball_GroundFade.mat");
             return source.AddComponent<BallView>();
         }
 

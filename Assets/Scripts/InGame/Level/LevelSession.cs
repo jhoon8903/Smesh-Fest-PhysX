@@ -10,20 +10,17 @@ namespace InGame.Level
     /// </summary>
     public sealed class LevelSession : MonoBehaviour
     {
-        [SerializeField] private Transform authoredBlocksRoot;
+        private LevelSpawner _levelSpawner;
+        private bool _started;
+        private bool _authoredBlocksWereActive;
 
-        private LevelSpawner levelSpawner;
-        private bool started;
-        private bool authoredBlocksWereActive;
-
-        public bool IsStarted => started;
+        public bool IsStarted => _started;
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(LevelSpawner injectedLevelSpawner)
         {
-            if (levelSpawner != null)
-                throw new InvalidOperationException("LevelSession was already configured.");
-            levelSpawner = injectedLevelSpawner ?? throw new ArgumentNullException(nameof(injectedLevelSpawner));
+            if (_levelSpawner != null) throw new InvalidOperationException("LevelSession was already configured.");
+            _levelSpawner = injectedLevelSpawner ?? throw new ArgumentNullException(nameof(injectedLevelSpawner));
         }
 
         /// <summary>
@@ -33,29 +30,27 @@ namespace InGame.Level
         public bool TryStart(out string failure)
         {
             failure = null;
-            if (started)
+            if (_started)
             {
                 failure = "LevelSession is already started. Call ReturnAll before starting again.";
                 return false;
             }
-            if (levelSpawner == null)
+            if (_levelSpawner == null)
             {
                 failure = "LevelSession requires LevelSpawner injection before starting.";
                 return false;
             }
-            if (authoredBlocksRoot == null)
+            Transform runtimeRoot = _levelSpawner.RuntimeRoot;
+            if (runtimeRoot == null)
             {
-                failure = "LevelSession requires an explicit authored Blocks root.";
+                failure = "LevelSession requires LevelSpawner to have an explicit RuntimeRoot before starting.";
                 return false;
             }
-
-            authoredBlocksWereActive = authoredBlocksRoot.gameObject.activeSelf;
-            authoredBlocksRoot.gameObject.SetActive(false);
             try
             {
-                if (levelSpawner.TrySpawn(out failure))
+                if (_levelSpawner.TrySpawn(out failure))
                 {
-                    started = true;
+                    _started = true;
                     return true;
                 }
             }
@@ -63,37 +58,25 @@ namespace InGame.Level
             {
                 failure = exception.Message;
             }
-
-            authoredBlocksRoot.gameObject.SetActive(authoredBlocksWereActive);
             return false;
         }
 
         /// <summary>Explicitly returns the runtime level and restores the authored Blocks state captured at start.</summary>
         public void ReturnAll()
         {
-            if (levelSpawner == null)
-                throw new InvalidOperationException("LevelSession requires LevelSpawner injection before returning.");
+            if (_levelSpawner == null) throw new InvalidOperationException("LevelSession requires LevelSpawner injection before returning.");
 
             try
             {
-                levelSpawner.ReturnAll();
+                _levelSpawner.ReturnAll();
             }
             finally
             {
-                RestoreAuthoredBlocks();
-                started = false;
+                _started = false;
             }
         }
 
         /// <summary>Explicit reset alias for callers that own a level restart command.</summary>
         public void ResetSession() => ReturnAll();
-
-        private void RestoreAuthoredBlocks()
-        {
-            if (authoredBlocksRoot == null)
-                throw new InvalidOperationException("LevelSession lost its authored Blocks root before returning.");
-            if (started)
-                authoredBlocksRoot.gameObject.SetActive(authoredBlocksWereActive);
-        }
     }
 }

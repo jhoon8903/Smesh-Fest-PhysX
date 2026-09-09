@@ -8,7 +8,7 @@ namespace InGame.Config
     public sealed class CannonConfig : ScriptableObject
     {
         [SerializeField] private Vector3 lookRotationOffsetEuler;
-        [SerializeField] private Vector3 muzzleOffset = new Vector3(0f, 0.16f, 0f);
+        [SerializeField] private Vector3 muzzleOffset = new(0f, 0.16f, 0f);
         [SerializeField, Min(0f)] private float headRecoilDistance;
         [SerializeField, Min(0f)] private float headRecoilSeconds;
         [SerializeField, Min(0f)] private float headRecoverySeconds;

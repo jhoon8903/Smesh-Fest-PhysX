@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ObstacleConfig
   m_EditorClassIdentifier: Assembly-CSharp::InGame.Config.ObstacleConfig
   targetableAtStart: 1
-  mass: 2
+  mass: 1.7
   linearDamping: 1
-  angularDamping: 0.05
+  angularDamping: 2
   interpolation: 0
   collisionDetection: 1

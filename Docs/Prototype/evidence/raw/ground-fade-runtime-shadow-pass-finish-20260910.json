@@ -1,0 +1,32 @@
+{
+  "id": "ground-fade-runtime-shadow-pass-finish-20260910",
+  "task_id": "ground-fade-shadow-011",
+  "kind": "finish",
+  "stage": "review",
+  "status": "static_complete_runtime_pending",
+  "actor": "Daniel + Main + reviewers",
+  "summary": "URP/Lit Transparent 검증이 되끄는 ShadowCaster pass를 풀 생성 시 명시적으로 활성화하고 즉시 검증한다.",
+  "evidence": [
+    "Assets/Scripts/InGame/Presentation/GroundFadeReturn.cs",
+    "Assets/Project/Materials/Ball_GroundFade.mat",
+    "Assets/Project/Materials/Cube_GroundFade.mat",
+    "Assets/Project/Prefabs/Ball.prefab",
+    "Assets/Project/Prefabs/Cube.prefab",
+    "Assets/Scenes/Game.unity",
+    "Docs/Prototype/ARCHITECTURE.md",
+    "Docs/Prototype/REVIEW.md",
+    "Docs/HANDOFF.md"
+  ],
+  "metadata": {
+    "root_cause": "URP 17.3 BaseShaderGUI forces built-in Lit Transparent materials ShadowCaster pass off during material validation",
+    "fix": "GroundFadeReturn.OnPoolCreated enables ShadowCaster on the configured shared fade Material and fails immediately if it remains disabled",
+    "material_yaml_removed": false,
+    "custom_shader": false,
+    "fallback": false,
+    "unity_compile": "Unity 6000.3.10f1 compile idle",
+    "unity_script_diagnostics": "warnings 0, errors 0",
+    "unity_console": "errors 0",
+    "play_mode_run": false,
+    "human_role": "Play Mode에서 Ball과 Cube가 Ground에 그림자를 만드는지 재확인"
+  }
+}

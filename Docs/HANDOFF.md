@@ -252,3 +252,21 @@ MVC 측정은 사전 생성 모델/View/delegate를 100회 워밍업한 후 통�
 신규 `LevelConfig`·명시 Capture/Bake EditorWindow·명시 `LevelSpawner.TrySpawn/ReturnAll`이 있다. 자동 Spawn/Bake, Scene·Prefab·기존 config 변경, old Blocks 제거는 없으며 spawn은 기존 PoolFactory 대여가 하나라도 실패하면 보유 lease를 원자적으로 반환한다. Blocks 기대 Capture=24지만 Cube MaxPool=8·Factory catalog 미등록이라 Bake/spawn은 의도적으로 막힌다.
 
 신규 스크립트 4개 정적 진단 warning/error 0·Console error 0이다. `Tools/Smesh Fest/Validation/Level Editor and Spawn`과 실제 Bake는 미실행이다. 다음은 사용자 승인 뒤 capacity/catalog 및 authored Blocks→runtime 전환을 수동 통합·검증하는 단계다.
+
+## 최신 인계 — Level1 Bake 및 런타임 전환 (정적 완료 / 런타임 미검증)
+
+- Cube PoolConfig `MaxPool=100`; `Assets/Project/Level/Level1.asset` Bake 완료, Cube 24개 항목(순서·local TRS).
+- Game 씬: `RuntimeBlocks`는 authored `Blocks` sibling이며 local position `(0, 0.29, 0)`, authored Blocks와 local TRS 일치. `WorldObjects`의 `LevelSpawner`·`LevelSession` 및 `PoolContainer`의 Ball·Cube 연결을 보존한다.
+- `GameFlow`는 `LevelSession.TryStart` 성공 뒤에만 loop를 시작한다. authored Blocks는 runtime에서 비활성화하고 시작 실패 또는 `ReturnAll`에서 복원한다. fallback/parallel pool 없음. `LevelSession`은 nested/ancestor root를 거절한다.
+- 5개 스크립트 Unity 정적 진단 warning/error 0, Console 0. Level Editor validation 메뉴와 Play Mode는 아직 실행하지 않았으므로 런타임 동작은 미검증이다.
+
+2026-09-10 첫 Level Editor validation은 Edit Mode preview scene에서 일반 `MonoBehaviour.OnEnable` 관측을 요구해 실패했지만, 사용자는 Play Mode에서 `RuntimeBlocks` 생성을 확인했다. 생산 Pool 순서는 변경하지 않았다. 검증 fixture만 `OnPoolRent` 시 inactive+world position/rotation, `TrySpawn` 완료 뒤 active+최종 local TRS를 확인하도록 수정했으며 Unity 정적 진단과 Console은 0이다. 수정 후 validation 재실행 결과는 대기 중이다.
+
+## 최신 인계 — Ground Fade 반환 (정적 완료 / Play Mode 확인 대기)
+
+- `GroundFadeReturn`이 Ball/Cube의 `GroundSurface` 직접 충돌을 받아 Config 기준 1초 대기 후 1초 선형 Fade하고 현재 PoolLease를 한 번 반환한다.
+- `Assets/Project/Config/GroundFadeConfig.asset`에서 두 시간을 조정한다. Ball/Cube Prefab Renderer는 시작부터 각 GroundFade URP/Lit Transparent Material을 사용하고 `fadeMaterial`도 같은 자산을 참조한다. Fade는 `_BaseColor.a` PropertyBlock만 낮추며, 반환·재대여 때 원래 property block을 복구한다. legacy/fallback은 없다.
+- alpha 값만 감소하고 화면은 opaque로 남던 원인은 빈 material-index-0 PropertyBlock이 renderer-level block보다 우선한 것이었다. 빈 원본 block은 이제 `null`로 제거한다.
+- built-in URP/Lit는 Transparent Material을 검증할 때 ShadowCaster pass를 다시 끈다. 따라서 Material YAML을 직접 고치는 방식은 사용하지 않고, `GroundFadeReturn.OnPoolCreated()`가 공유 Fade Material의 `ShadowCaster` pass를 활성화하고 실패 시 즉시 예외를 낸다. 두 Prefab Renderer의 Cast Shadows는 켜져 있다. 실제 그림자는 Play Mode 재확인 대기다.
+- `ShotDirector`는 대기/Fade 중인 Ball을 lifetime·y 경계로 먼저 반환하지 않는다. Game 씬 `GameLifetimeScope.groundFadeSettings` 참조와 두 Prefab 컴포넌트 연결은 재로딩 뒤 확인했다.
+- Unity compile·관련 진단·Console은 오류 0, Sol High 최종 P0/P1 없음. Play Mode에서는 `Ground 충돌 → 1초 유지 → 1초 Fade → 반환`, 재대여 복구, 여러 Cube 겹침 표현을 Daniel이 확인해야 한다.

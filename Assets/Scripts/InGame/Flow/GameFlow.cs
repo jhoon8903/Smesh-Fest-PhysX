@@ -1,11 +1,11 @@
 using System;
-using InGame.Level;
 using Framework.Loop;
+using InGame.Level;
 using UnityEngine;
 using VContainer;
 using static Framework.Log.GameLog;
 
-namespace Framework.Flow
+namespace InGame.Flow
 {
     public class GameFlow : MonoBehaviour
     {
@@ -28,8 +28,7 @@ namespace Framework.Flow
 
         private void Start()
         {
-            if (_loop == null || _levelSession == null)
-                throw new InvalidOperationException("GameFlow requires GameLifetimeScope injection before starting.");
+            if (_loop == null || _levelSession == null) throw new InvalidOperationException("GameFlow requires GameLifetimeScope injection before starting.");
             if (!_levelSession.TryStart(out string failure))
             {
                 Debug.LogError("[GameFlow] Level start failed: " + failure, this);

@@ -1,6 +1,7 @@
 using System.IO;
 using Framework.Pool;
 using Framework.Test;
+using InGame.DI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;

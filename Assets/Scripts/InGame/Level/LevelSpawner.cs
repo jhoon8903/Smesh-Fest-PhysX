@@ -21,6 +21,7 @@ namespace InGame.Level
 
         public bool IsSpawned => activeLeaseCount > 0;
         public int ActiveLeaseCount => activeLeaseCount;
+        public Transform RuntimeRoot => runtimeRoot;
 
         [Inject, UnityEngine.Scripting.Preserve]
         private void Construct(PoolFactory injectedPoolFactory)

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Framework.Pool;
+using Framework.Loop;
 using InGame.Ball;
 using InGame.Cannon;
 using InGame.Config;
@@ -55,6 +56,8 @@ namespace Framework.Test
         private PoolConfig ballConfig;
         private BallConfig ballSettings;
         private ObstacleConfig obstacleSettings;
+        private GroundFadeConfig groundFadeSettings;
+        private LoopDispatcher loopDispatcher;
         private PhysXConfig physXSettings;
         private string outputPath;
 
@@ -113,9 +116,14 @@ namespace Framework.Test
 
                 ballSettings = ScriptableObject.CreateInstance<BallConfig>();
                 obstacleSettings = ScriptableObject.CreateInstance<ObstacleConfig>();
+                groundFadeSettings = ScriptableObject.CreateInstance<GroundFadeConfig>();
+                loopDispatcher = new LoopDispatcher();
+                loopDispatcher.StartLoop();
                 ContainerBuilder builder = new ContainerBuilder();
                 builder.RegisterInstance<BallConfig>(ballSettings);
                 builder.RegisterInstance<ObstacleConfig>(obstacleSettings);
+                builder.RegisterInstance(groundFadeSettings);
+                builder.RegisterInstance<ILoopEvents>(loopDispatcher);
                 resolver = builder.Build();
                 resolver.InjectGameObject(obstacle.gameObject);
                 factory = new PoolFactory(container, resolver, true);
@@ -217,6 +225,8 @@ namespace Framework.Test
                 try { if (ballConfig != null) Destroy(ballConfig); } catch (Exception exception) { RecordCleanupFailure("PoolConfig", exception); }
                 try { if (ballSettings != null) Destroy(ballSettings); } catch (Exception exception) { RecordCleanupFailure("BallConfig", exception); }
                 try { if (obstacleSettings != null) Destroy(obstacleSettings); } catch (Exception exception) { RecordCleanupFailure("ObstacleConfig", exception); }
+                try { loopDispatcher?.Dispose(); } catch (Exception exception) { RecordCleanupFailure("LoopDispatcher", exception); }
+                try { if (groundFadeSettings != null) Destroy(groundFadeSettings); } catch (Exception exception) { RecordCleanupFailure("GroundFadeConfig", exception); }
                 try { if (physXSettings != null) Destroy(physXSettings); } catch (Exception exception) { RecordCleanupFailure("PhysXConfig", exception); }
             }
 

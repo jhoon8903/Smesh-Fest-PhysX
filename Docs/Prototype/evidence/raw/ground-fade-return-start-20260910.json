@@ -1,0 +1,39 @@
+{
+  "id": "ground-fade-return-start-20260910",
+  "stage": "build",
+  "kind": "start",
+  "actor": "Daniel + Main",
+  "task_id": "ground-fade-return-008",
+  "status": "in_progress",
+  "summary": "Ball과 Obstacle이 Ground 충돌 후 1초 대기와 1초 Shader Alpha Fade를 거쳐 현재 Pool lease를 반환하는 표현 수명주기 구현을 시작했다.",
+  "evidence": [
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Docs/Prototype/PLAN.md",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Ball.prefab",
+    "/Volumes/Dock_SSD/Projects/Smesh-Fest-PhysX/Assets/Project/Prefabs/Cube.prefab"
+  ],
+  "metadata": {
+    "validation_level": "pending",
+    "human_role": "구현 범위 승인 및 Unity Play Mode에서 Ball과 Obstacle의 실제 Fade와 반환 확인",
+    "ai_role": "하위 제작 모델이 bounded 구현을 맡고 하위 검토 모델이 Shader와 Pool 수명주기 경쟁을 독립 검토하며 Main이 통합과 기록을 담당",
+    "scope": "공용 GroundFadeReturn, 공유 GroundFadeConfig, Ball/Cube 전용 Transparent URP Lit material, 두 prefab의 필요한 component/reference, GameLifetimeScope 등록, BallView/ObstacleView/ShotDirector 연결과 격리 검증",
+    "preservation": "Game scene를 재생성하거나 저장하지 않고 기존 renderer material을 수정하지 않으며 새 fade material로만 전환; legacy와 fallback 없음",
+    "assistant_assignments": [
+      {
+        "role": "prototype_builder",
+        "assigned_model": "gpt-5.6-terra",
+        "reasoning_effort": "medium",
+        "routing_reason": "합의된 Shader와 pooled lifecycle의 bounded production implementation",
+        "context_mode": "none; explicit contracts and owned paths only",
+        "usage": null
+      },
+      {
+        "role": "prototype_reviewer",
+        "assigned_model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "routing_reason": "Shader material state와 stale lease 및 조기 반환 경쟁 독립 검토",
+        "context_mode": "none; request, final diff, and validation evidence only",
+        "usage": null
+      }
+    ]
+  }
+}
